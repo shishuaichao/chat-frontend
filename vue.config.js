@@ -1,6 +1,7 @@
 const { defineConfig } = require('@vue/cli-service');
 // 引入webpack（Vue CLI 内置了webpack，无需额外安装）
 const webpack = require('webpack');
+const path = require('path')
 
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -15,6 +16,12 @@ module.exports = defineConfig({
         __VUE_OPTIONS_API__: 'true' // 保留Options API（只用组合式API可设为false）
       })
     ],
+    resolve: {
+      alias: {
+        // 配置 @ 指向 src 目录
+        '@': path.resolve(__dirname, 'src')
+      }
+    }
   },
   css: {
     loaderOptions: {

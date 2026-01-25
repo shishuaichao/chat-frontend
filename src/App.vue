@@ -1,15 +1,14 @@
 <template>
-  <chatRoom />
-  
+  <router-view />
 </template>
 
 <script>
-import chatRoom from './components/chatRoom.vue'
+// import chatRoom from './components/chatRoom.vue'
 import { onMounted, onBeforeMount } from 'vue'
 export default {
   name: 'App',
   components: {
-    chatRoom
+    // chatRoom
   },
   setup() {
     

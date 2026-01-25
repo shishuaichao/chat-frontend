@@ -17,13 +17,13 @@ import io from 'socket.io-client'
 import moment from 'moment'
 import axios from 'axios'
 import { showToast } from 'vant';
-import chatHeader from './chatPage/chatHeader.vue';
-import chartFooter from './chatPage/chatFfooter.vue';
-import chatItem from './chatPage/chatItem.vue';
-import indexSetting from './setting/indexSetting.vue';
+import chatHeader from '@/components/chatPage/chatHeader.vue';
+import chartFooter from '@/components/chatPage/chatFfooter.vue';
+import chatItem from '@/components/chatPage/chatItem.vue';
+import indexSetting from '@/components/setting/indexSetting.vue';
 
 export default {
-  name: 'chatRoom',
+  name: 'ChatRoom',
   components: {
     chatHeader,
     chartFooter,
