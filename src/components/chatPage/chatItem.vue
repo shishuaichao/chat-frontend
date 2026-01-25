@@ -6,14 +6,14 @@
         <img :src="msgInfo.avatar" alt="">
       </div>
       <div class="msg_box">
-        <div class="nickname">{{ msgInfo.nickname }}</div>
+        <div class="nickname">{{ msgInfo.nickname }} {{ formatTime(msgInfo.time) }}</div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
     </div>
     <!-- 自己 -->
     <div class="msg_self msg_item right" v-if="msgInfo.type == 'message' && userInfo.id == msgInfo.id">
       <div class="msg_box">
-        <div class="nickname">{{ msgInfo.nickname }}</div>
+        <div class="nickname">{{ formatTime(msgInfo.time) }} {{ msgInfo.nickname }}</div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar">
@@ -30,6 +30,7 @@
 
 <script setup>
 import { defineProps } from 'vue';
+import formatTime from '@/utils/formatTime.js'
 
 defineProps({
   // 消息

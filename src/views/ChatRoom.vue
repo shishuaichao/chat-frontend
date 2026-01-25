@@ -18,7 +18,7 @@ import moment from 'moment'
 import axios from 'axios'
 import { showToast } from 'vant';
 import chatHeader from '@/components/chatPage/chatHeader.vue';
-import chartFooter from '@/components/chatPage/chatFfooter.vue';
+import chartFooter from '@/components/chatPage/chatFooter.vue';
 import chatItem from '@/components/chatPage/chatItem.vue';
 import indexSetting from '@/components/setting/indexSetting.vue';
 
