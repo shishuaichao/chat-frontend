@@ -1,10 +1,13 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
+import settingRoutes from './setting.js'
+
 
 
 // 懒加载写法（推荐，优化打包体积）
 const NotFound = () => import('@/views/NotFound.vue')
 const ChatRoom = () => import('@/views/ChatRoom.vue')
+
 
 // 路由规则
 const routes = [
@@ -14,6 +17,8 @@ const routes = [
     component: ChatRoom,
     meta: { title: '聊天页面' } // 自定义元信息（如页面标题）
   },
+  ...settingRoutes,
+  
   // 404 页面
   {
     path: '/:pathMatch(.*)*',

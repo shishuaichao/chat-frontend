@@ -18,28 +18,16 @@
         聊天室（{{ onlineUser.length }}）
     </div>
     <div class="right">
-      <div class="setting" @click="showSetting = !showSetting">设置</div>
-      <div class="setting_box" v-if="showSetting">
-        <div class="set">
-          <button 
-            class="submit-btn"
-             @click.stop="setInfo('nickname')"
-          > 设置昵称 </button>
-        </div>
-        <div class="set">
-          <button 
-            class="submit-btn"
-             @click.stop="setInfo('avatar')"
-          > 设置头像 </button>
-        </div>
-      </div>
+      <div class="setting" @click="goSettingInfo">设置</div>
     </div>
   </div>
   <div class="header_pad"></div>
+   
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 // 仅保留核心配置：文字、高度、背景色
 defineProps({
@@ -51,14 +39,11 @@ defineProps({
   },
 });
 
-const emit = defineEmits(['setInfo']);
-const setInfo = (type) => {
-  showSetting.value = false
-  emit('setInfo', type)
-}
-const showTop = ref(false)
 
-const showSetting = ref(false)
+const goSettingInfo = () => {
+  router.push({ name: 'IndexSetting' })
+}
+
 
 </script>
 
@@ -101,40 +86,7 @@ const showSetting = ref(false)
 .right {
   position: relative;
   font-size: 14px;
-  .setting_box {
-    background: #fff;
-    position: absolute;
-    top: 60px;
-    right: -5px;
-    width: 150px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 4px 20px;
-    z-index: 1000;
-  }
-}
-.set {
-  line-height: 40px;
-}
-
-/* 提交按钮 */
-.submit-btn {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: none;
-  border-radius: 8px;
-  background: #3b82f6;
-  color: white;
-  /* font-weight: 500; */
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 12px;
 }
 
 
-/* 按钮点击状态 */
-.submit-btn:not(:disabled):active {
-  transform: translateY(0);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 </style>
