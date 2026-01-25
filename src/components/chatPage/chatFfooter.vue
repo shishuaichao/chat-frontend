@@ -7,7 +7,7 @@
   <div class="footer_pad"></div>
 </template>
 <script setup>
-import { ref, defineEmits, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 const inputMsg = ref('')
 
 const emit = defineEmits(['sendMessage', 'focus'])

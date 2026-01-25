@@ -14,8 +14,34 @@ module.exports = defineConfig({
         __VUE_PROD_DEVTOOLS__: 'false', // 生产环境禁用devtools
         __VUE_OPTIONS_API__: 'true' // 保留Options API（只用组合式API可设为false）
       })
-    ]
+    ],
   },
+  css: {
+    loaderOptions: {
+      sass: {
+        // 全局引入变量文件（所有组件无需手动 import）
+        // 注意：sass 用 additionalData，scss 也通用；如果是旧版 sass-loader 用 prependData
+        // additionalData: `@import "@/styles/variables.scss";`,
+        // 区分 sass/scss 语法（可选，默认 scss）
+        sassOptions: {
+          indentedSyntax: false // false=scss 语法，true=sass 语法
+        }
+      }
+    }
+  },
+  // chainWebpack: config => {
+  //   // 确保 ESLint 插件识别 Vue 编译器宏
+  //   config.module
+  //     .rule('eslint')
+  //     .use('eslint-loader')
+  //     .tap(options => {
+  //       options.globals = {
+  //         defineProps: 'readonly',
+  //         defineEmits: 'readonly'
+  //       }
+  //       return options
+  //     })
+  // },
   devServer: {
     port: 1234, // 自定义端口
     host: '0.0.0.0', // 允许局域网访问

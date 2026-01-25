@@ -19,7 +19,7 @@
     </div>
     <div class="right">
       <div class="setting" @click="showSetting = !showSetting">设置</div>
-      <div class="setting_box" v-if="showSetting" ref="settingBoxRef">
+      <div class="setting_box" v-if="showSetting">
         <div class="set">
           <button 
             class="submit-btn"
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from 'vue';
+import { ref } from 'vue';
 
 // 仅保留核心配置：文字、高度、背景色
 defineProps({
@@ -59,19 +59,10 @@ const setInfo = (type) => {
 const showTop = ref(false)
 
 const showSetting = ref(false)
-const settingBoxRef = ref(null)
-
-// document.addEventListener('click', (e) => {
-//   console.log(e.target.contains(settingBoxRef.value), showSetting.value)
-//   if (!e.target.contains(settingBoxRef.value) && showSetting.value) {
-//     showSetting.value = false
-//   }
-// })
-
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 /* 1. 顶部固定导航栏（50px） */
 .nickname {
   font-size: 12px;
@@ -110,22 +101,22 @@ const settingBoxRef = ref(null)
 .right {
   position: relative;
   font-size: 14px;
+  .setting_box {
+    background: #fff;
+    position: absolute;
+    top: 60px;
+    right: -5px;
+    width: 150px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 4px 20px;
+    z-index: 1000;
+  }
 }
 .set {
   line-height: 40px;
 }
-.setting_box {
-  position: absolute;
-  top: 60px;
-  right: -5px;
-  width: 150px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 4px 20px;
-  z-index: 1000;
-  
-}
+
 /* 提交按钮 */
 .submit-btn {
   width: 100%;
