@@ -27,6 +27,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 const router = useRouter()
 
 // 仅保留核心配置：文字、高度、背景色
@@ -39,6 +40,7 @@ defineProps({
   },
 });
 
+const showTop = ref(false)
 
 const goSettingInfo = () => {
   router.push({ name: 'IndexSetting' })

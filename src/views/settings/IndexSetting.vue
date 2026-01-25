@@ -2,7 +2,6 @@
   <div>
     <van-nav-bar
       :title="route.meta.title"
-      left-arrow
       @click-left="onClickLeft"
     />
     <van-cell title="设置头像" is-link url="/setting/avatar" />

@@ -1,6 +1,7 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
 import settingRoutes from './setting.js'
+import tabBarsRoutes from './tabbars.js'
 
 
 
@@ -18,7 +19,7 @@ const routes = [
     meta: { title: '聊天页面' } // 自定义元信息（如页面标题）
   },
   ...settingRoutes,
-  
+  ...tabBarsRoutes,
   // 404 页面
   {
     path: '/:pathMatch(.*)*',

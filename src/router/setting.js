@@ -1,15 +1,15 @@
 
 
-const IndexSetting = () => import('@/views/settings/IndexSetting.vue')
+// const IndexSetting = () => import('@/views/settings/IndexSetting.vue')
 const SettingAvatar = () => import('@/views/settings/SettingAvatar.vue')
 const SettingNickname = () => import('@/views/settings/SettingNickname.vue')
 export default [
-  {
-    path: '/setting',
-    name: 'IndexSetting',
-    component: IndexSetting,
-    meta: { title: '设置' },
-  },
+  // {
+  //   path: '/setting',
+  //   name: 'IndexSetting',
+  //   component: IndexSetting,
+  //   meta: { title: '设置' },
+  // },
   {
     path: '/setting/avatar',
     name: 'SettingAvatar',

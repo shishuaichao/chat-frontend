@@ -2,7 +2,7 @@
   <div class="chat_room_box">
     <indexSetting @canLink="linkStart" ref="indexSettingRef" v-show="settingShow"></indexSetting>
     <div class="main_container" v-show="!settingShow">
-      <chatHeader :onlineUser="onlineUser"  @setInfo="setUserInfo"></chatHeader>
+      <chatHeader :onlineUser="onlineUser"></chatHeader>
       <div class="chat_content_box" ref="chatContent">
         <chatItem v-for="v,i in msgList" :key="i" :msgInfo="v" :userInfo="userInfo"></chatItem>
       </div>
@@ -78,17 +78,6 @@ export default {
       })
     }
 
-    // 设置用户信息
-    const setUserInfo = (type) => {
-      settingShow.value = true
-      ws?.close()
-      if (type === 'nickname') {
-        indexSettingRef.value.setNickname()
-      } else if (type === 'avatar') {
-        indexSettingRef.value.setAvatar()
-      }
-    }
-
     // 滚动到底部
     const chatContent = ref(null)
     const scrollToBottom = () => {
@@ -161,7 +150,6 @@ export default {
       chatContent,
       linkStart,
       indexSettingRef,
-      setUserInfo,
       scrollToBottom,
     }
   }
