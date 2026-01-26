@@ -1,0 +1,37 @@
+// styles/mixins/_text-ellipsis.scss
+/**
+ * 文本省略混合指令（支持单行/多行）
+ * @param {Number} $lines - 显示行数（默认1行）
+ * @param {String} $width - 容器宽度（默认100%）
+ * @param {String} $ellipsis - 省略号（默认...）
+ * @param {Number} $line-height - 行高（默认1.5）
+ */
+@mixin text-ellipsis(
+  $lines: 1,
+  $ellipsis: '...',
+  $line-height: 1.5) 
+{
+  overflow: hidden;
+  line-height: $line-height;
+  word-break: break-all;
+
+  // /* 4. 超出部分显示省略号 */
+  // text-overflow: ellipsis;
+  // display: block;
+
+  @if $lines ==1 {
+    white-space: nowrap;
+    text-overflow: $ellipsis;
+  }
+
+  @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+
+    @supports not (-webkit-line-clamp: $lines) {
+      max-height: $line-height * $lines;
+      content: '';
+    }
+  }
+}

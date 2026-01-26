@@ -1,0 +1,12 @@
+// styles/main.scss
+// @use 引入（路径 + 命名空间，推荐）
+@use './mixins/text-ellipsis' as ellipsis;
+
+// 调用时需加命名空间
+.single-line-demo {
+  @include ellipsis.text-ellipsis; // 命名空间 + Mixin 名
+}
+
+.multi-line-demo {
+  @include ellipsis.text-ellipsis($lines: 2); // 传参不变
+}

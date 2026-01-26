@@ -21,16 +21,17 @@ class SocketClient {
       transports: ['websocket', 'polling'], // 优先 WS，降级长轮询
       auth: {
         // 鉴权参数（登录后动态赋值）
-        token: '',
         userId: '',
+        userName: '',
+        userAvatar: '',
       }
     };
   }
 
-  // 初始化 Socket 连接 @param {Object} auth - 可选，鉴权参数 { token, userId }
+  // 初始化 Socket 连接 @param {Object} auth - 可选，鉴权参数 { userId, userName, userAvatar }
   connect(auth = {}) {
     // 1. 更新鉴权参数（登录后传入）
-    if (auth.token && auth.userId) {
+    if (auth.userId && auth.userId) {
       this.options.auth = auth;
     }
     // 2. 避免重复连接
@@ -56,9 +57,6 @@ class SocketClient {
         if (event === 'connect_success') {
           this.isConnected = true;
         }
-        if (event === 'disconnect') {
-          showToast({ message: '服务链接失败，请刷新页面', duration: 2000, });
-        }
       });
     });
   }
@@ -68,10 +66,10 @@ class SocketClient {
     this.socket.emit(event, data);
   }
 
-  // 断开 Socket 连接 @param {Object} userInfo - 可选，用户信息 { token, userId }
-  disconnect(auth = {}) {
+  // 断开 Socket 连接 @param {Object} userInfo - 可选，用户信息 { userId, userName, userAvatar }
+  disconnect() {
     if (this.socket) {
-      this.socket.disconnect(auth);
+      this.socket.disconnect();
       this.isConnected = false
     }
   }
@@ -104,17 +102,18 @@ class SocketClient {
 // 导出全局单例（确保整个项目只有一个 Socket 实例）
 export const WS_Client = new SocketClient();
 
-export const linkStart = () => {
+export const linkStart = async () => {
   let auth = {
-    token: localStorage.getItem('token'),
     userId: localStorage.getItem('id'),
+    userName: localStorage.getItem('nickname'),
+    userAvatar: localStorage.getItem('avatar'),
   }
   WS_Client.connect(auth);
 
   const handleVisibilityChange = () => {
     if (document.hidden) {
       // 切到后台
-      WS_Client.disconnect(auth)
+      WS_Client.disconnect()
     } else {
       // 切到前台
       WS_Client.connect(auth);

@@ -61,7 +61,7 @@ defineProps({
   .avatar {
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: 4px;
     overflow: hidden;
     margin: 0 10px;
     flex-shrink: 0;

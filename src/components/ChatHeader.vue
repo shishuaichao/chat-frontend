@@ -1,12 +1,9 @@
 <template>
   <!-- 1. 顶部固定导航栏 -->
   <van-popup v-model:show="showTop" position="top">
-    <van-grid :border="false" :column-num="3">
+    <van-grid :border="false" :column-num="5">
       <van-grid-item :text="v.nickname" v-for="v,i in onlineUser" :key="i">
-        <van-image
-          :src="v.avatar"
-        />
-        <div class="nickname">{{ v.nickname }}</div>
+        <AvatarName :info="v" />
       </van-grid-item>
     </van-grid>
   </van-popup>
@@ -28,6 +25,8 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+import AvatarName from '@/components/AvatarName.vue'
+
 const router = useRouter()
 
 // 仅保留核心配置：文字、高度、背景色
@@ -52,7 +51,7 @@ const goSettingInfo = () => {
 <style scoped lang="scss">
 /* 1. 顶部固定导航栏（50px） */
 .nickname {
-  font-size: 12px;
+  font-size: 8px;
   margin-top: 4px;
 }
 .header {
@@ -89,6 +88,11 @@ const goSettingInfo = () => {
   position: relative;
   font-size: 14px;
 }
-
+.van-popup--top {
+  padding: 10px 4px;
+}
+:deep(.van-grid-item__content) {
+  padding: 10px 4px;
+}
 
 </style>

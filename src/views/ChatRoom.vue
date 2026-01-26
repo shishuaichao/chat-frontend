@@ -44,7 +44,7 @@ const init = () => {
   })
   // 在线人数
   WS_mitt.on('online_count', (data) => {
-    onlineUser.value = data
+    onlineUser.value = [...data, ...data, ...data, ...data]
   })
   WS_Client.emit('query_online_count')
 }
