@@ -2,7 +2,7 @@
 <template>
   <van-nav-bar
     :title="route.meta.title"
-    left-arrow
+    :left-arrow="isChange"
     @click-left="onClickLeft"
   />
   <!-- 提交按钮 -->
@@ -26,22 +26,45 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
-import { showToast, showLoadingToast, closeToast } from 'vant';
+import { showLoadingToast, showSuccessToast, closeToast } from 'vant'
+import { fetchUpdateAvatar } from '@/api/index.js'
+
+
 const router = useRouter()
 const route = useRoute() 
 
+const isChange = ref(localStorage.getItem('avatar') !== null)
 const handleSubmit = () => {
   let imgUrl = smallImgList.value.find(img => img.id === activeImgId.value).smallUrl
-  localStorage.setItem('avatar', imgUrl)
-  isLoading.value = false
-  activeImgId.value = null
-  showToast({
-    message: '设置成功',
-    duration: 500
+  showLoadingToast({
+    message: '上传中...',
+    forbidClick: true,
+    duration: 0,
   })
-  setInterval(() => {
-    router.back()
-  }, 500)
+  let params = {
+    username: localStorage.getItem('username'),
+    avatar: imgUrl
+  }
+  fetchUpdateAvatar(params)
+    .then(res => {
+      if (res.code === 200) {
+        localStorage.setItem('avatar', imgUrl)
+        showSuccessToast({
+          message: '上传成功',
+          duration: 500,
+        })
+        setTimeout(() => {
+          isChange.value ? router.back() : router.replace('/')
+        }, 500)
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+    .finally(() => {
+      isLoading.value = false
+      activeImgId.value = null
+    })
 };
 
 const smallImgList = ref([]); // 存储批量小图

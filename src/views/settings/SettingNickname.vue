@@ -1,101 +1,138 @@
 <template>
   <van-nav-bar
     :title="route.meta.title"
-    left-arrow
+    :left-arrow="isChange"
     @click-left="onClickLeft"
   />
-  <div class="username-edit-container">
+  <div class="nickname-edit-container">
     <!-- 昵称输入框 -->
     <div class="input-wrapper">
-      <label class="input-label" for="username">
+      <label class="input-label" for="nickname">
       </label>
       
       <input
-        ref="usernameInput"
-        v-model="username"
-        id="username"
-        class="username-input"
+        ref="nicknameInput"
+        v-model="nickname"
+        id="nickname"
+        class="nickname-input"
         type="text"
         placeholder="请输入新的昵称"
-        @input="validateUsername"
+        @input="validatenickname"
         @focus="handleFocus"
         @blur="handleBlur"
         @keyup.enter="handleSubmit"
       />
       
       <!-- 验证状态提示 -->
-      <div v-if="showTip" class="tip-text" :class="{ success: isValid, error: !isValid && username.length > 0 }">
+      <div v-if="showTip" class="tip-text" :class="{ success: isValid, error: !isValid && nickname.length > 0 }">
         {{ tipText }}
       </div>
     </div>
     
-    <van-button type="primary" :disabled="!isValid || !username" block @click="handleSubmit">保  存</van-button>
+    <van-button type="primary" :disabled="!isValid || !nickname" block @click="handleSubmit">保  存</van-button>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { showToast } from 'vant'
+import { showLoadingToast, showSuccessToast } from 'vant'
+import { fetchRegister } from '@/api/index.js'
+import { v4 as uuidv4 } from 'uuid'
+
+// 响应式数据
+const isChange = ref(localStorage.getItem('username') && localStorage.getItem('nickname'))
 const router = useRouter()
 const route = useRoute() 
 
 // 响应式数据
-const username = ref('')
+const nickname = ref('')
 const isFocused = ref(false)
 const isValid = ref(false)
 const showTip = ref(false)
 
 // 验证提示文本
 const tipText = computed(() => {
-  if (!username.value) return '昵称不能为空'
-  if (username.value.length < 3) return '昵称至少3个字符'
-  if (username.value.length > 16) return '昵称最多16个字符'
-  if (!/^[a-zA-Z0-9_\u4e00-\u9fa5]+$/.test(username.value)) return '仅支持字母、数字、下划线、中文字符'
+  if (!nickname.value) return '昵称不能为空'
+  if (nickname.value.length < 3) return '昵称至少3个字符'
+  if (nickname.value.length > 16) return '昵称最多16个字符'
+  if (!/^[a-zA-Z0-9_\u4e00-\u9fa5]+$/.test(nickname.value)) return '仅支持字母、数字、下划线、中文字符'
   return '昵称格式正确'
 })
 
 // 验证昵称
-const validateUsername = () => {
+const validatenickname = () => {
   showTip.value = true
   // 验证规则：3-16位，仅字母、数字、下划线、中文字符
   const reg = /^[a-zA-Z0-9_\u4e00-\u9fa5]{3,16}$/
-  isValid.value = reg.test(username.value)
+  isValid.value = reg.test(nickname.value)
 }
 
 // 输入框聚焦
 const handleFocus = () => {
   isFocused.value = true
-  if (username.value) showTip.value = true
+  if (nickname.value) showTip.value = true
 }
 
 // 输入框失焦
 const handleBlur = () => {
   isFocused.value = false
-  if (!username.value) showTip.value = false
+  if (!nickname.value) showTip.value = false
 }
 
 // 提交处理
+const isLoading = ref(false)
 const handleSubmit = () => {
   if (isValid.value) {
-    showToast({
-      message: localStorage.getItem('nickname') ? '修改成功' : '设置成功',
-      duration: 500,
-    })
-    localStorage.setItem('nickname', username.value)
-    setTimeout(() => {
-      onClickLeft()
-    }, 500) 
+    if (!isChange.value) {
+      isLoading.value = true
+      showLoadingToast({
+        message: '注册中...',
+        forbidClick: true,
+        duration: 0,
+      })
+      let username = uuidv4().substring(0, 8)
+      let params = {
+        username: username,
+        nickname: nickname.value,
+        password: username,
+      }
+      fetchRegister(params)
+        .then(res => {
+          console.log('fetchRegister', res)
+          localStorage.setItem('username', username)
+          localStorage.setItem('nickname', nickname.value)
+          showSuccessToast({
+            message: '注册成功',
+            duration: 500,
+          })
+          setTimeout(() => {
+            goToSettingAvatar()
+          }, 500)
+        })
+        .catch(err => {
+          console.log('fetchRegister', err)
+        })
+        .finally(() => {
+          setTimeout(() => {
+            isLoading.value = false
+          }, 500)
+        })
+    }
   }
 }
 const onClickLeft = () => {
   router.back()
 }
+// 跳转设置头像
+const goToSettingAvatar = () => {
+  router.replace('/setting/avatar')
+}
 </script>
 
 <style scoped>
 /* 容器样式 */
-.username-edit-container {
+.nickname-edit-container {
   max-width: 400px;
   margin: 2rem auto;
   padding: 2rem;
@@ -132,7 +169,7 @@ const onClickLeft = () => {
 }
 
 /* 输入框样式 */
-.username-input {
+.nickname-input {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 2px solid #e5e7eb;
@@ -145,7 +182,7 @@ const onClickLeft = () => {
 }
 
 /* 输入框聚焦状态 */
-.username-input:focus {
+.nickname-input:focus {
   outline: none;
   border-color: #3b82f6;
   background: #ffffff;
