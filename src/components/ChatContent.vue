@@ -2,7 +2,7 @@
   <div class="item_box">
     <!-- 其他人 -->
     <div class="msg_other msg_item left" v-if="msgInfo.type == 'message' && userInfo.id != msgInfo.id">
-      <div class="avatar">
+      <div class="avatar" @click="handleClickUserInfo(msgInfo)">
         <img :src="msgInfo.avatar" alt="">
       </div>
       <div class="msg_box">
@@ -16,7 +16,7 @@
         <div class="nickname">{{ formatTime(msgInfo.time) }} {{ msgInfo.nickname }}</div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
-      <div class="avatar">
+      <div class="avatar" @click="handleClickUserInfo(msgInfo)">
         <img :src="msgInfo.avatar" alt="">
       </div>
     </div>
@@ -31,6 +31,8 @@
 <script setup>
 import { defineProps } from 'vue';
 import formatTime from '@/utils/formatTime.js'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 defineProps({
   // 消息
@@ -44,6 +46,17 @@ defineProps({
     required: true,
   },
 });
+
+const handleClickUserInfo = (msgInfo) => {
+  router.push({
+    name: 'OtherUserInfo',
+    query: {
+      userId: msgInfo.id,
+      userAvatar: msgInfo.avatar,
+      userName: msgInfo.nickname,
+    }
+  })
+}
 </script>
 
 <style scoped>

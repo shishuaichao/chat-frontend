@@ -8,7 +8,7 @@ import tabBarsRoutes from './tabbars.js'
 // 懒加载写法（推荐，优化打包体积）
 const NotFound = () => import('@/views/NotFound.vue')
 const ChatRoom = () => import('@/views/ChatRoom.vue')
-// const TabMessage = () => import('@/views/tabBars/TabMessage.vue')
+const otherUserInfo = () => import('@/views/OtherUserInfo.vue')
 
 
 // 路由规则
@@ -22,6 +22,12 @@ const routes = [
     name: 'ChatRoom',
     component: ChatRoom,
     meta: { title: '聊天页面' } 
+  },
+  {
+    path: '/otherUserInfo',
+    name: 'OtherUserInfo',
+    component: otherUserInfo,
+    meta: { title: '其他用户信息' } 
   },
   ...settingRoutes,
   ...tabBarsRoutes,

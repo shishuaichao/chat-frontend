@@ -1,6 +1,6 @@
 
 <template>
-  <div class="avatar_name">
+  <div class="avatar_name" @click="onClick">
     <van-image
       class="avatar"
       :src="info.userAvatar"
@@ -10,7 +10,10 @@
 </template>
 
 <script setup>
-defineProps({
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+let props = defineProps({
   info: {
     type: Object,
     default: () => ({
@@ -19,6 +22,17 @@ defineProps({
     })
   }
 })
+
+const onClick = () => {
+  router.push({
+    name: 'OtherUserInfo',
+    query: {
+      userId: props.info.userId,
+      userName: props.info.userName,
+      userAvatar: encodeURIComponent(props.info.userAvatar)
+    }
+  })
+}
 </script>
 
 <style scoped lang="scss">
