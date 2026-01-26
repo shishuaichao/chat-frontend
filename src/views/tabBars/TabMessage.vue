@@ -12,7 +12,7 @@ import ChatList from '@/components/ChatList.vue';
 import router from '@/router';
 // 点击聊天项
 const clickChat = (item) => {
-  console.log(item)
+  // console.log(item)
   router.push({
     name: 'ChatRoom',
     query: {

@@ -69,7 +69,7 @@ const render = (msgData) => {
 // 发送消息
 const sendMsg = (msg) => {
   const msgData = { content: msg, ...userInfo.value }
-  console.log('sendMsg1111', userInfo.value )
+  // console.log('sendMsg1111', userInfo.value )
   WS_Client.emit('message', msgData)
 }
 

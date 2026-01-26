@@ -29,7 +29,6 @@ const showTabbar = ref(false)
 const homePageList = tabBarsRoutes.map(item => item.name)
 const active = ref(homePageList[0])
 router.beforeEach((to, from, next) => {
-  console.log('to.name', to.name)
   active.value = to.name
   if (homePageList.includes(to.name)) {
     active.value = to.name
