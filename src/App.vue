@@ -18,27 +18,19 @@ import { onMounted, ref } from 'vue'
 import router from './router'
 import tabBarsRoutes from '@/router/tabbars.js'
 
-const active = ref('home')
+
 
 onMounted(() => {
-  // console.log('app ')
-  // 阻止Ctrl+滚轮缩放
-  // 阻止双指触摸缩放
-  document.addEventListener('wheel', function(e) {
-    if (e.ctrlKey) {
-      e.preventDefault();
-    }
-  }, { passive: false });
-  document.addEventListener('touchmove', function(e) {
-    if (e.touches.length > 1) {
-      e.preventDefault();
-    }
-  }, { passive: false });
+  
 })
+
 
 const showTabbar = ref(false)
 const homePageList = tabBarsRoutes.map(item => item.name)
+const active = ref(homePageList[0])
 router.beforeEach((to, from, next) => {
+  console.log('to.name', to.name)
+  active.value = to.name
   if (homePageList.includes(to.name)) {
     active.value = to.name
     showTabbar.value = true
@@ -49,7 +41,7 @@ router.beforeEach((to, from, next) => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 /* 核心 CSS：禁用全局滚动 */
 html, body {
   height: 100%; /* 改用 100% 而非 100vh，基于父容器高度计算 */
@@ -80,7 +72,6 @@ html, body {
     z-index: 1000;
   }
 }
-
 
 * {
   box-sizing: border-box;

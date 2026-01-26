@@ -64,8 +64,8 @@ export function formatRelativeTime(time) {
     // 6. 解析中国时区的时分秒/年月日
     const hh = padZero(chinaDate.getHours());
     const mm = padZero(chinaDate.getMinutes());
-    const ss = padZero(chinaDate.getSeconds());
-    const timeStr = `${hh}:${mm}:${ss}`;
+    // const ss = padZero(chinaDate.getSeconds());
+    const timeStr = `${hh}:${mm}`;
 
     const year = padZero(chinaDate.getFullYear());
     const month = padZero(chinaDate.getMonth() + 1);

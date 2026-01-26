@@ -1,8 +1,4 @@
 <template>
-  <van-nav-bar
-    :title="title"
-    @click-left="onClickLeft"
-  />
   <div class="chat-list-container">
     <!-- 单个聊天项 -->
     <div class="chat_item" v-for="(item, index) in chatList" :key="index" @click="onClickChat(item)">
@@ -40,14 +36,12 @@
 
 <script setup>
 import { ref } from 'vue';
-import router from '@/router';
-// 定义标题
-const title = ref('消息');
+
 
 const chatList = ref([
   {
     avatar: ['https://picsum.photos/30/30?image=12'],
-    name: '徐海花',
+    name: '张三',
     message: '[动画表情]',
     time: '昨天 11:31',
     hasRedDot: false,
@@ -59,7 +53,7 @@ const chatList = ref([
       'https://picsum.photos/30/30?image=17',
       'https://picsum.photos/30/30?image=18',
     ],
-    name: '郑鹏',
+    name: '李四',
     message: '来吧',
     time: '星期五',
     hasRedDot: false,
@@ -128,21 +122,16 @@ const chatList = ref([
   },
 ]);
 // 点击聊天项
-const onClickChat = () => {
-  router.push({
-    name: 'ChatRoom',
-    // params: {
-    //   name: item.name,
-    //   avatar: item.avatar,
-    // }
-  })
+const emit = defineEmits(['clickChat'])
+const onClickChat = (item) => {
+  emit('clickChat', item)
 }
 </script>
 
 <style scoped lang="scss">
 .chat-list-container {
   width: 100%;
-  max-width: 480px;
+  // max-width: 480px;
   background-color: #fff;
   border-radius: 4px;
 }
@@ -184,15 +173,16 @@ const onClickChat = () => {
       flex-wrap: wrap;
       gap: 2px;
     }
-    .red-dot {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 8px;
-      height: 8px;
-      background-color: #ed3b31;
-      border-radius: 50%;
-    }
+    // TODO: 聊天项红点
+    // .red-dot {
+    //   position: absolute;
+    //   top: 10px;
+    //   right: 10px;
+    //   width: 8px;
+    //   height: 8px;
+    //   background-color: #ed3b31;
+    //   border-radius: 50%;
+    // }
   }
 
   .content-wrapper {

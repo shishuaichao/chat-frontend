@@ -6,18 +6,16 @@ import tabBarsRoutes from './tabbars.js'
 
 
 // 懒加载写法（推荐，优化打包体积）
-// const NotFound = () => import('@/views/NotFound.vue')
+const NotFound = () => import('@/views/NotFound.vue')
 const ChatRoom = () => import('@/views/ChatRoom.vue')
-const TabMessage = () => import('@/views/tabBars/TabMessage.vue')
+// const TabMessage = () => import('@/views/tabBars/TabMessage.vue')
 
 
 // 路由规则
 const routes = [
   {
     path: '/',
-    name: 'TabMessage',
-    component: TabMessage,
-    meta: { title: '聊天列表' } 
+    redirect: '/message'
   },
   {
     path: '/chatRoom',
@@ -31,7 +29,7 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: TabMessage
+    component: NotFound
   }
 ]
 

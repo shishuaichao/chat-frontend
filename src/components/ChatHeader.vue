@@ -15,10 +15,10 @@
       设置
     </div>
     <div class="title" @click="showTop = true">
-        聊天室（{{ onlineUser.length }}）
+        在线人数（{{ onlineUser.length }}）
     </div>
     <div class="right">
-      <div class="setting" @click="goSettingInfo">设置</div>
+      <div class="setting" @click="goSettingInfo">。。。</div>
     </div>
   </div>
   <div class="header_pad"></div>
@@ -43,7 +43,7 @@ defineProps({
 const showTop = ref(false)
 
 const goSettingInfo = () => {
-  router.push({ name: 'IndexSetting' })
+  router.push({ name: 'TabMine' })
 }
 
 
