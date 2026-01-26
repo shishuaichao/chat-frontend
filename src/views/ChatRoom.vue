@@ -10,13 +10,12 @@
 
 <script setup>
 import { ref, onMounted, nextTick, onUnmounted } from 'vue'
-// import io from 'socket.io-client'
-import axios from 'axios'
 import { showToast } from 'vant';
 import ChatHeader from '@/components/ChatHeader.vue';
 import ChatContent from '@/components/ChatContent.vue';
 import ChartFooter from '@/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
+import { fetchChatRecords } from '@/api/index.js'
 
 const onlineUser = ref([])
 const userInfo = ref({})
@@ -52,11 +51,17 @@ const init = () => {
 // 聊天记录
 const msgList = ref([])
 const originList = ref([])
-const getAllChats = async () => {
-  const res = await axios.get('http://172.20.10.2:5000/api/wechats')
-  originList.value = res.data || []
-  msgList.value = originList.value.splice(-40)
-  scrollToBottom()
+const getAllChats = () => {
+  fetchChatRecords({ id: userInfo.value.id })
+    .then(res => {
+      originList.value = res || []
+      msgList.value = originList.value.splice(-40)
+      scrollToBottom()
+    })
+    .catch(err => {
+      console.log('fetchChatRecords', err)
+    })
+  
 }
 
 // 渲染消息

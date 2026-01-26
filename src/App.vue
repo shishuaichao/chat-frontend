@@ -17,18 +17,46 @@
 import { onMounted, ref } from 'vue'
 import router from './router'
 import tabBarsRoutes from '@/router/tabbars.js'
-
+import { v4 as uuidv4 } from 'uuid'
+import { fetchRegister, fetchLogin } from '@/api/index.js'
 
 
 onMounted(() => {
-  
+  fetchRegister()
+    .then(res => {
+      console.log('fetchRegister', res)
+    })
+    .catch(err => {
+      console.log('fetchRegister', err)
+    })
+
+  fetchLogin()
+    .then(res => {
+      console.log('fetchLogin', res)
+    })
+    .catch(err => {
+      console.log('fetchLogin', err)
+    })
 })
+
+const checkLogined = () => {
+  let username = localStorage.getItem('username')
+  let avatar = localStorage.getItem('avatar')
+  let nickname = localStorage.getItem('nickname')
+  if (!username || !avatar || !nickname) {
+    username = uuidv4().substring(0, 8)
+    localStorage.setItem('username', username)
+    console.log('username', username)
+  }
+}
 
 
 const showTabbar = ref(false)
 const homePageList = tabBarsRoutes.map(item => item.name)
 const active = ref(homePageList[0])
 router.beforeEach((to, from, next) => {
+  checkLogined()
+  console.log('to.name', to.name)
   active.value = to.name
   if (homePageList.includes(to.name)) {
     active.value = to.name
