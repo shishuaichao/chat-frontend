@@ -37,7 +37,7 @@
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { showLoadingToast, showSuccessToast } from 'vant'
-import { fetchRegister } from '@/api/index.js'
+import { fetchRegister, fetchUserUpdate } from '@/api/index.js'
 import { v4 as uuidv4 } from 'uuid'
 
 // 响应式数据
@@ -118,6 +118,36 @@ const handleSubmit = () => {
             isLoading.value = false
           }, 500)
         })
+    } else {
+      isLoading.value = true
+      showLoadingToast({
+        message: '更新中...',
+        forbidClick: true,
+        duration: 0,
+      })
+      let params = {
+        username: localStorage.getItem('username'),
+        nickname: nickname.value,
+      }
+      fetchUserUpdate(params)
+        .then(() => {
+          localStorage.setItem('nickname', nickname.value)
+          showSuccessToast({
+            message: '更新成功',
+            duration: 500,
+          })
+          setTimeout(() => {
+            router.back()
+          }, 500)
+        })
+        .catch(err => {
+          console.log('fetchUserUpdate', err)
+        })
+        .finally(() => {
+          setTimeout(() => {
+            isLoading.value = false
+          }, 500)
+        })
     }
   }
 }
@@ -136,9 +166,7 @@ const goToSettingAvatar = () => {
   max-width: 400px;
   margin: 2rem auto;
   padding: 2rem;
-  /* background: #ffffff; */
   border-radius: 12px;
-  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); */
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 

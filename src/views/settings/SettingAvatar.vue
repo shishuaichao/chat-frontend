@@ -27,8 +27,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { showLoadingToast, showSuccessToast, closeToast } from 'vant'
-import { fetchUpdateAvatar } from '@/api/index.js'
-
+import { fetchUserUpdate } from '@/api/index.js'
 
 const router = useRouter()
 const route = useRoute() 
@@ -36,35 +35,69 @@ const route = useRoute()
 const isChange = ref(localStorage.getItem('avatar') !== null)
 const handleSubmit = () => {
   let imgUrl = smallImgList.value.find(img => img.id === activeImgId.value).smallUrl
-  showLoadingToast({
-    message: '上传中...',
-    forbidClick: true,
-    duration: 0,
-  })
-  let params = {
-    username: localStorage.getItem('username'),
-    avatar: imgUrl
-  }
-  fetchUpdateAvatar(params)
-    .then(res => {
-      if (res.code === 200) {
+  isLoading.value = true
+  if (!isChange.value) {
+    showLoadingToast({
+      message: '上传中...',
+      forbidClick: true,
+      duration: 0,
+    })
+    let params = {
+      username: localStorage.getItem('username'),
+      avatar: imgUrl
+    }
+    fetchUserUpdate(params)
+      .then(res => {
+        if (res.code === 200) {
+          localStorage.setItem('avatar', imgUrl)
+          showSuccessToast({
+            message: '上传成功',
+            duration: 500,
+          })
+          setTimeout(() => {
+            isChange.value ? router.back() : router.replace('/')
+          }, 500)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      .finally(() => {
+        setTimeout(() => {
+          isLoading.value = false
+        }, 500)
+    })
+  } else {
+    showLoadingToast({
+      message: '更新中...',
+      forbidClick: true,
+      duration: 0,
+    })
+    let params = {
+      username: localStorage.getItem('username'),
+      avatar: imgUrl,
+    }
+    fetchUserUpdate(params)
+      .then(() => {
         localStorage.setItem('avatar', imgUrl)
         showSuccessToast({
-          message: '上传成功',
+          message: '更新成功',
           duration: 500,
         })
         setTimeout(() => {
-          isChange.value ? router.back() : router.replace('/')
+          router.back()
         }, 500)
-      }
-    })
-    .catch(err => {
-      console.log(err)
-    })
-    .finally(() => {
-      isLoading.value = false
-      activeImgId.value = null
-    })
+      })
+      .catch(err => {
+        console.log('fetchUserUpdate', err)
+      })
+      .finally(() => {
+        setTimeout(() => {
+          isLoading.value = false
+        }, 500)
+      })
+  }
+  
 };
 
 const smallImgList = ref([]); // 存储批量小图
