@@ -21,17 +21,17 @@ class SocketClient {
       transports: ['websocket', 'polling'], // 优先 WS，降级长轮询
       auth: {
         // 鉴权参数（登录后动态赋值）
-        userId: '',
-        userName: '',
-        userAvatar: '',
+        id: '',
+        nickname: '',
+        avatar: '',
       }
     };
-  }
+  } 
 
-  // 初始化 Socket 连接 @param {Object} auth - 可选，鉴权参数 { userId, userName, userAvatar }
+  // 初始化 Socket 连接 @param {Object} auth - 可选，鉴权参数 { id, nickname, avatar }
   connect(auth = {}) {
     // 1. 更新鉴权参数（登录后传入）
-    if (auth.userId && auth.userId) {
+    if (auth.id && auth.nickname && auth.avatar) {
       this.options.auth = auth;
     }
     // 2. 避免重复连接
@@ -66,7 +66,7 @@ class SocketClient {
     this.socket.emit(event, data);
   }
 
-  // 断开 Socket 连接 @param {Object} userInfo - 可选，用户信息 { userId, userName, userAvatar }
+  // 断开 Socket 连接 @param {Object} userInfo - 可选，用户信息 { id, nickname, avatar }
   disconnect() {
     if (this.socket) {
       this.socket.disconnect();
@@ -84,7 +84,7 @@ class SocketClient {
     this.socket.emit('chat:message', {
       ...data,
       timestamp: Date.now(), // 客户端时间戳
-      fromUserId: this.options.auth.userId // 发送者ID
+      fromUserId: this.options.auth.id // 发送者ID
     });
   }
 
@@ -104,9 +104,9 @@ export const WS_Client = new SocketClient();
 
 export const linkStart = async () => {
   let auth = {
-    userId: localStorage.getItem('id'),
-    userName: localStorage.getItem('nickname'),
-    userAvatar: localStorage.getItem('avatar'),
+    id: localStorage.getItem('id'),
+    nickname: localStorage.getItem('nickname'),
+    avatar: localStorage.getItem('avatar'),
   }
   WS_Client.connect(auth);
 

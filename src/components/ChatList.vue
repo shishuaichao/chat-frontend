@@ -40,86 +40,86 @@ import { ref } from 'vue';
 
 const chatList = ref([
   {
-    avatar: ['https://picsum.photos/30/30?image=12'],
-    name: '张三',
-    message: '[动画表情]',
-    time: '昨天 11:31',
+    avatar: ['https://picsum.photos/30/30?image=16'],
+    name: '公共聊天室',
+    message: '',
+    time: '',
     hasRedDot: false,
     hasAttachment: false
   },
-  {
-    avatar: [
-      'https://picsum.photos/30/30?image=16',
-      'https://picsum.photos/30/30?image=17',
-      'https://picsum.photos/30/30?image=18',
-    ],
-    name: '李四',
-    message: '来吧',
-    time: '星期五',
-    hasRedDot: false,
-    hasAttachment: false
-  },
-  {
-    avatar: [
-      'https://picsum.photos/30/30?image=116',
-      'https://picsum.photos/30/30?image=117',
-      'https://picsum.photos/30/30?image=118',
-      'https://picsum.photos/30/30?image=119',
-      'https://picsum.photos/30/30?image=120',
-      'https://picsum.photos/30/30?image=121',
-      'https://picsum.photos/30/30?image=122',
-    ],
-    name: 'QQ Mail',
-    message: 'ChatGPT: Write faster with ChatGPT',
-    time: '星期五',
-    hasRedDot: true,
-    hasAttachment: true
-  },
-  {
-    avatar: [
-      'https://picsum.photos/30/30?image=216',
-      'https://picsum.photos/30/30?image=217',
-      'https://picsum.photos/30/30?image=218',
-      'https://picsum.photos/30/30?image=219',
-      'https://picsum.photos/30/30?image=220',
-      'https://picsum.photos/30/30?image=221',
-      'https://picsum.photos/30/30?image=222',
-      'https://picsum.photos/30/30?image=223',
-      'https://picsum.photos/30/30?image=214',
-    ],
-    name: '12月20日遇见7周年活动群',
-    message: '勇爸: [链接] 冬天零下5度跑步，是一场双向博弈',
-    time: '星期五',
-    hasRedDot: true,
-    hasAttachment: true
-  },
-  {
-    avatar: [
-      'https://picsum.photos/30/30?image=126',
-      'https://picsum.photos/30/30?image=127',
-      'https://picsum.photos/30/30?image=128',
-      'https://picsum.photos/30/30?image=129',
-      'https://picsum.photos/30/30?image=220',
-    ],
-    name: '有知有行金钱魔法师🐍',
-    message: '[2条] "夏天" recalled a message',
-    time: '星期四',
-    hasRedDot: true,
-    hasAttachment: false
-  },
-  {
-    avatar: [
-      'https://picsum.photos/30/30?image=16',
-      'https://picsum.photos/30/30?image=17',
-      'https://picsum.photos/30/30?image=18',
-      'https://picsum.photos/30/30?image=20',
-    ],
-    name: '有知有行金钱魔法师🐍',
-    message: '[2条] "夏天" recalled a message',
-    time: '星期四',
-    hasRedDot: true,
-    hasAttachment: false
-  },
+  // {
+  //   avatar: [
+  //     'https://picsum.photos/30/30?image=16',
+  //     'https://picsum.photos/30/30?image=17',
+  //     'https://picsum.photos/30/30?image=18',
+  //   ],
+  //   name: '李四',
+  //   message: '来吧',
+  //   time: '星期五',
+  //   hasRedDot: false,
+  //   hasAttachment: false
+  // },
+  // {
+  //   avatar: [
+  //     'https://picsum.photos/30/30?image=116',
+  //     'https://picsum.photos/30/30?image=117',
+  //     'https://picsum.photos/30/30?image=118',
+  //     'https://picsum.photos/30/30?image=119',
+  //     'https://picsum.photos/30/30?image=120',
+  //     'https://picsum.photos/30/30?image=121',
+  //     'https://picsum.photos/30/30?image=122',
+  //   ],
+  //   name: 'QQ Mail',
+  //   message: 'ChatGPT: Write faster with ChatGPT',
+  //   time: '星期五',
+  //   hasRedDot: true,
+  //   hasAttachment: true
+  // },
+  // {
+  //   avatar: [
+  //     'https://picsum.photos/30/30?image=216',
+  //     'https://picsum.photos/30/30?image=217',
+  //     'https://picsum.photos/30/30?image=218',
+  //     'https://picsum.photos/30/30?image=219',
+  //     'https://picsum.photos/30/30?image=220',
+  //     'https://picsum.photos/30/30?image=221',
+  //     'https://picsum.photos/30/30?image=222',
+  //     'https://picsum.photos/30/30?image=223',
+  //     'https://picsum.photos/30/30?image=214',
+  //   ],
+  //   name: '12月20日遇见7周年活动群',
+  //   message: '勇爸: [链接] 冬天零下5度跑步，是一场双向博弈',
+  //   time: '星期五',
+  //   hasRedDot: true,
+  //   hasAttachment: true
+  // },
+  // {
+  //   avatar: [
+  //     'https://picsum.photos/30/30?image=126',
+  //     'https://picsum.photos/30/30?image=127',
+  //     'https://picsum.photos/30/30?image=128',
+  //     'https://picsum.photos/30/30?image=129',
+  //     'https://picsum.photos/30/30?image=220',
+  //   ],
+  //   name: '有知有行金钱魔法师🐍',
+  //   message: '[2条] "夏天" recalled a message',
+  //   time: '星期四',
+  //   hasRedDot: true,
+  //   hasAttachment: false
+  // },
+  // {
+  //   avatar: [
+  //     'https://picsum.photos/30/30?image=16',
+  //     'https://picsum.photos/30/30?image=17',
+  //     'https://picsum.photos/30/30?image=18',
+  //     'https://picsum.photos/30/30?image=20',
+  //   ],
+  //   name: '有知有行金钱魔法师🐍',
+  //   message: '[2条] "夏天" recalled a message',
+  //   time: '星期四',
+  //   hasRedDot: true,
+  //   hasAttachment: false
+  // },
 ]);
 // 点击聊天项
 const emit = defineEmits(['clickChat'])

@@ -3,9 +3,9 @@
   <div class="avatar_name" @click="onClick">
     <van-image
       class="avatar"
-      :src="info.userAvatar"
+      :src="info.avatar"
     />
-    <div class="nickname single-line-demo">{{ info.userName }}</div>
+    <div class="nickname single-line-demo">{{ info.nickname }}</div>
   </div>
 </template>
 
@@ -17,8 +17,8 @@ let props = defineProps({
   info: {
     type: Object,
     default: () => ({
-      userAvatar: '',
-      userName: ''
+      avatar: '',
+      nickname: ''
     })
   }
 })
@@ -26,7 +26,7 @@ let props = defineProps({
 const onClick = () => {
   router.push({
     name: 'OtherUserInfo',
-    params: {
+    query: {
       id: props.info.id
     }
   })

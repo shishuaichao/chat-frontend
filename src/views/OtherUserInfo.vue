@@ -16,21 +16,24 @@
       </div>
     </div>
     <div class="operate">
-      <van-button 
-        type="primary" 
-        icon="plus" 
-        block
-        plain
-        >
-          加为好友
-      </van-button>
+      
       <van-button 
         type="primary" 
         icon="chat" 
         block
         plain
+        v-if="isFriendShip && !isSelf"
         >
             发消息
+      </van-button>
+      <van-button 
+        type="primary" 
+        icon="plus" 
+        block
+        plain
+        v-if="!isFriendShip && !isSelf"
+        >
+          加为好友
       </van-button>
     </div>
   </div>
@@ -44,10 +47,15 @@ import { fetchUserInfo } from '@/api/index.js'
 const router = useRouter()
 const route = useRoute()
 
+const isFriendShip = ref(false)
+const isSelf = ref(true)
+
 onMounted(() => {
   fetchUserInfo({ id: route.query.id })
     .then(res => {
       info.value = res.data
+      isFriendShip.value = res.data.isFriendShip
+      isSelf.value = localStorage.getItem('id') == route.query.id
     })
     .catch(err => {
       console.log(err)

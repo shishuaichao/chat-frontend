@@ -34,6 +34,9 @@ import router from '@/router';
 const clickChat = () => {
   router.push({
     name: 'ChatRoom',
+    query: {
+      convId: '1',
+    }
   })
 }
 // 定义标题
