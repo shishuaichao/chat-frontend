@@ -2,7 +2,7 @@
 <template>
   <van-nav-bar
     :title="route.meta.title"
-    :left-arrow="isChange"
+    :left-arrow="!!isChange"
     @click-left="onClickLeft"
   />
   <!-- 提交按钮 -->
