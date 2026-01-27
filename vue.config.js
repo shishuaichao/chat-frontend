@@ -39,5 +39,16 @@ module.exports = defineConfig({
     hot: true, // 热更新（修改代码无需刷新页面）
     open: false, // 启动后自动打开浏览器
     historyApiFallback: true, // 解决 Vue Router 历史模式的 404 问题
+    // 核心：代理配置
+    proxy: {
+      // 场景1：匹配以 /api 开头的请求
+      '/api': {
+        target: 'http://172.20.10.2:5000', // 后端接口的基础地址
+        changeOrigin: true, // 开启跨域（关键）
+        pathRewrite: { // 路径重写（可选）
+          '^/api': '' // 如果后端接口没有 /api 前缀，就把前端的 /api 去掉
+        },
+      },
+    }
   },
 });

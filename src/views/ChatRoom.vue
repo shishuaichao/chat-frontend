@@ -15,12 +15,12 @@ import ChatHeader from '@/components/ChatHeader.vue';
 import ChatContent from '@/components/ChatContent.vue';
 import ChartFooter from '@/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
-import { fetchChatRecords } from '@/api/index.js'
+// import { fetchChatRecords } from '@/api/index.js'
 
 const onlineUser = ref([])
 const userInfo = ref({})
 const init = () => {
-  getAllChats()
+  // getAllChats()
   userInfo.value = {
     id: localStorage.getItem('id'),
     nickname: localStorage.getItem('nickname'),
@@ -43,7 +43,7 @@ const init = () => {
   })
   // 在线人数
   WS_mitt.on('online_count', (data) => {
-    onlineUser.value = [...data, ...data, ...data, ...data]
+    onlineUser.value = data
   })
   WS_Client.emit('query_online_count')
 }
@@ -51,18 +51,18 @@ const init = () => {
 // 聊天记录
 const msgList = ref([])
 const originList = ref([])
-const getAllChats = () => {
-  fetchChatRecords({ id: userInfo.value.id })
-    .then(res => {
-      originList.value = res || []
-      msgList.value = originList.value.splice(-40)
-      scrollToBottom()
-    })
-    .catch(err => {
-      console.log('fetchChatRecords', err)
-    })
+// const getAllChats = () => {
+//   fetchChatRecords({ id: userInfo.value.id })
+//     .then(res => {
+//       originList.value = res || []
+//       msgList.value = originList.value.splice(-40)
+//       scrollToBottom()
+//     })
+//     .catch(err => {
+//       console.log('fetchChatRecords', err)
+//     })
   
-}
+// }
 
 // 渲染消息
 const render = (msgData) => {

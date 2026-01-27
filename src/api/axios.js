@@ -1,9 +1,10 @@
 
 
 import axios from 'axios'
-import { API_BASE_URL } from '@/utils/constant.js'
 
-axios.defaults.baseURL = API_BASE_URL
+axios.defaults.baseURL = '/api'
+// axios.defaults.headers.post['Content-Type'] = 'application/json';
+// axios.defaults.headers.put['Content-Type'] = 'application/json';
 
 axios.interceptors.response.use(
   response => response,
@@ -18,7 +19,8 @@ axios.interceptors.response.use(
 
 axios.interceptors.request.use(
   config => {
-    config.headers['Authorization'] = localStorage.getItem('token')
+    config.headers['Authorization'] = 'token111'
+    // config.headers['Content-Type'] = 'application/json'
     return config
   },
   error => Promise.reject(error)
@@ -26,7 +28,11 @@ axios.interceptors.request.use(
 
 export const fetchGet = async (url, params) => {
   return new Promise((resolve, reject) => {
-    axios.get(url, { params })
+    axios.get(url, { params, }, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
       .then(response => resolve(response.data))
       .catch(error => {
         console.error('GET 请求失败:', error)

@@ -34,7 +34,7 @@ import formatTime from '@/utils/formatTime.js'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-defineProps({
+let props = defineProps({
   // 消息
   msgInfo: {
     type: Object,
@@ -47,13 +47,12 @@ defineProps({
   },
 });
 
-const handleClickUserInfo = (msgInfo) => {
+const handleClickUserInfo = () => {
+  console.log('msprops.userInfo.idgInfo', props.userInfo.id)
   router.push({
     name: 'OtherUserInfo',
     query: {
-      userId: msgInfo.id,
-      userAvatar: msgInfo.avatar,
-      userName: msgInfo.nickname,
+      id: props.userInfo.id,
     }
   })
 }

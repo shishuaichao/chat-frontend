@@ -26,10 +26,8 @@ let props = defineProps({
 const onClick = () => {
   router.push({
     name: 'OtherUserInfo',
-    query: {
-      userId: props.info.userId,
-      userName: props.info.userName,
-      userAvatar: encodeURIComponent(props.info.userAvatar)
+    params: {
+      id: props.info.id
     }
   })
 }

@@ -8,22 +8,22 @@
     <div class="info_box">
       <van-image
         class="avatar"
-        :src="info.userAvatar"
+        :src="info.avatar"
       />
       <div class="info">
-        <div class="nickname">{{ info.userName }}</div>
-        <div class="userId">ID: {{ info.userId }}</div>
+        <div class="nickname">{{ info.nickname }}</div>
+        <div class="userId">ID: {{ info.username }}</div>
       </div>
     </div>
     <div class="operate">
-      <!-- <van-button 
+      <van-button 
         type="primary" 
         icon="plus" 
         block
         plain
         >
           加为好友
-      </van-button> -->
+      </van-button>
       <van-button 
         type="primary" 
         icon="chat" 
@@ -37,16 +37,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { fetchUserInfo } from '@/api/index.js'
+
 const router = useRouter()
 const route = useRoute()
 
-const info = ref({
-  userId: route.query.userId,
-  userAvatar: decodeURIComponent(route.query.userAvatar),
-  userName: route.query.userName,
-})
+onMounted(() => {
+  fetchUserInfo({ id: route.query.id })
+    .then(res => {
+      info.value = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}) 
+
+const info = ref({})
 
 
 
