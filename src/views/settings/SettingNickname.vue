@@ -100,8 +100,10 @@ const handleSubmit = () => {
       fetchRegister(params)
         .then(res => {
           console.log('fetchRegister', res)
-          localStorage.setItem('username', username)
-          localStorage.setItem('nickname', nickname.value)
+          let data = res.data || {}
+          localStorage.setItem('id', data.id || '')
+          localStorage.setItem('username', data.username || '')
+          localStorage.setItem('nickname', data.nickname || '')
           showSuccessToast({
             message: '注册成功',
             duration: 500,
