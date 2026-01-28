@@ -3,7 +3,7 @@
     <!-- 其他人 -->
     <div class="msg_other msg_item left" v-if="msgInfo.type == 'message' && userInfo.id != msgInfo.id">
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img :src="msgInfo.avatar" alt="">
+        <img :src="IMG_REAL_URL + msgInfo.avatar" alt="">
       </div>
       <div class="msg_box">
         <div class="nickname">{{ msgInfo.nickname }} {{ formatTime(msgInfo.time) }}</div>
@@ -17,7 +17,7 @@
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img :src="msgInfo.avatar" alt="">
+        <img :src="IMG_REAL_URL + msgInfo.avatar" alt="">
       </div>
     </div>
     <!-- 系统消息 -->
@@ -32,6 +32,8 @@
 import { defineProps } from 'vue';
 import formatTime from '@/utils/formatTime.js'
 import { useRouter } from 'vue-router'
+import { IMG_REAL_URL } from '@/utils/constant.js'
+
 const router = useRouter()
 
 defineProps({
