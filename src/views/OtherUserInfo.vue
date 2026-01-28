@@ -15,14 +15,14 @@
         <div class="userId">ID: {{ info.username }}</div>
       </div>
     </div>
-    <div class="operate">
-      
+    <div class="operate" v-if="!isSelf">
       <van-button 
         type="primary" 
         icon="chat" 
         block
         plain
-        v-if="isFriendShip && !isSelf"
+        v-if="friendShipStatus == 1"
+        @click="clickChat"
         >
             发消息
       </van-button>
@@ -31,9 +31,16 @@
         icon="plus" 
         block
         plain
-        v-if="!isFriendShip && !isSelf"
+        v-if="friendShipStatus == null"
+        @click="addFriend"
         >
           加为好友
+      </van-button>
+      <van-button 
+        type="primary" block plain
+        v-if="friendShipStatus == 3"
+        >
+          已申请，等待确认
       </van-button>
     </div>
   </div>
@@ -42,24 +49,55 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { fetchUserInfo } from '@/api/index.js'
+import { showToast } from 'vant'
+import { 
+  fetchUserInfo, 
+  fetchFriendAdd, 
+} from '@/api/index.js'
+
 
 const router = useRouter()
 const route = useRoute()
 
-const isFriendShip = ref(false)
-const isSelf = ref(true)
+const friendShipStatus = ref(null)
+const isSelf = ref(localStorage.getItem('id') == route.query.id)
+// 点击聊天
+const clickChat = () => {
+  router.push({
+    name: 'ChatRoom',
+    query: {
+      convId: '1',
+    }
+  })
+}
 
-onMounted(() => {
+
+
+const addFriend = () => {
+  fetchFriendAdd({ friendId: route.query.id })
+    .then((res) => {
+      friendShipStatus.value = res?.data?.friendshipsStatus
+      showToast(res?.msg)
+    })
+    .catch(err => {
+      console.log(err)
+      showToast(err.msg)
+    })
+}
+
+const getOtherUserInfo = () => {
   fetchUserInfo({ id: route.query.id })
     .then(res => {
-      info.value = res.data
-      isFriendShip.value = res.data.isFriendShip
-      isSelf.value = localStorage.getItem('id') == route.query.id
+      info.value = res.data || {}
+      friendShipStatus.value = res?.data?.friendshipsStatus
     })
     .catch(err => {
       console.log(err)
     })
+}
+
+onMounted(() => {
+  getOtherUserInfo()
 }) 
 
 const info = ref({})

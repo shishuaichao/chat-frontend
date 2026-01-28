@@ -26,9 +26,12 @@ axios.interceptors.request.use(
   error => Promise.reject(error)
 )
 
-export const fetchGet = async (url, params) => {
+export const fetchGet = async (url, params = {}) => {
+  const baseParams = {
+    userId: localStorage.getItem('id'),
+  }
   return new Promise((resolve, reject) => {
-    axios.get(url, { params, }, {
+    axios.get(url, { params: { ...baseParams, ...params }, }, {
       headers: {
         'Content-Type': 'application/json',
       }
@@ -41,9 +44,12 @@ export const fetchGet = async (url, params) => {
   })
 }
 
-export const fetchPost = (url, data) => {
+export const fetchPost = (url, params = {}) => {
+  const baseParams = {
+    userId: localStorage.getItem('id'),
+  }
   return new Promise((resolve, reject) => {
-    axios.post(url, data)
+    axios.post(url, { ...baseParams, ...params })
       .then(response => resolve(response.data))
       .catch(error => {
         console.error('POST 请求失败:', error)

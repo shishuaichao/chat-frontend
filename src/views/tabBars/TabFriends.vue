@@ -1,33 +1,25 @@
 <template>
-  <!-- 父容器：100×100 正方形，直接包含三个小方块 -->
-  <div class="parent-box">
-    <div class="small-box"></div>
-    <div class="small-box"></div>
-    <div class="small-box"></div>
-  </div>
+  <van-nav-bar
+      :title="title"
+    />
+  <van-collapse v-model="activeNames">
+    <van-collapse-item title="好友申请" name="1">
+      代码是写出来给人看的，附带能在机器上运行。
+    </van-collapse-item>
+    <van-collapse-item title="好友列表" name="2">
+      技术无非就是那些开发它的人的共同灵魂。
+    </van-collapse-item>
+  </van-collapse>
 </template>
 
 <script setup>
-// 无需业务逻辑
+import { ref } from 'vue';
+// 定义标题
+const title = ref('好友');
+// 定义当前激活的项
+const activeNames = ref(['1', '2']);
 </script>
 
 <style scoped lang="scss">
-/* 父容器：100×100 正方形，Flex 换行 + 整体居中 */
-.parent-box {
-  width: 100px;
-  height: 100px;
-  border: 1px solid #000; /* 方便查看边界，可删 */
-  display: flex;
-  flex-wrap: wrap; /* 开启换行，关键！ */
-  justify-content: center; /* 水平方向居中（每行都居中） */
-  align-content: center; /* 垂直方向居中（多行整体居中） */
-  gap: 5px; /* 小方块之间的间距（行内+行间） */
-}
 
-/* 小方块：40×40 正方形，直接放在父容器中 */
-.small-box {
-  width: 40px;
-  height: 40px;
-  background: #409eff; /* 背景色，方便查看 */
-}
 </style>

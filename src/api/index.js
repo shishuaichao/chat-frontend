@@ -5,7 +5,7 @@ export const fetchLogin = (params) => fetchPost('/user/login', params)
 export const fetchUserUpdate = (params) => fetchPost('/user/update', params)
 export const fetchUserInfo = (params) => fetchGet('/user/info', params)
 export const getAllUsers = () => fetchGet('/user/all')
-
+export const fetchFriendAdd = (params) => fetchPost('/user/friendship/add', params)
 
 
 export const fetchChatRecords = (params) => fetchGet('/chat/records', params)
