@@ -83,6 +83,7 @@ import {
   fetchUserInfo, 
   fetchFriendAdd, 
   fetchRemarkname,
+  fetchCreateConversation,
 } from '@/api/index.js'
 import { IMG_REAL_URL } from '@/utils/constant.js'
 
@@ -95,12 +96,37 @@ const friendShipStatus = ref(null)
 const isSelf = ref(localStorage.getItem('id') == route.query.id)
 // 点击聊天
 const clickChat = () => {
-  router.push({
-    name: 'ChatRoom',
-    query: {
-      convId: '1',
+  if (userInfo.value.convId) {
+    router.push({
+      name: 'ChatRoom',
+      query: {
+        convId: userInfo.value.convId,
+      }
+    })
+  } else {
+    let params = {
+      friendId: route.query.id,
+      memberIds: [
+        { id: localStorage.getItem('id'), type: 1, },
+        { id: route.query.id, type: 1, },
+      ],
+      type: 1,
     }
-  })
+    fetchCreateConversation(params)
+      .then(res => {
+        userInfo.value.convId = res?.data?.convId
+        router.push({
+          name: 'ChatRoom',
+          query: {
+            convId: res?.data?.convId,
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        showToast(err.msg)
+      })
+  }
 }
 const remarkname = ref('')
 const isEdit = ref(false)
