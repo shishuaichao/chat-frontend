@@ -8,7 +8,7 @@
     <div class="info_box">
       <van-image
         class="avatar"
-        :src="userInfo.avatar"
+        :src="IMG_REAL_URL + userInfo.avatar"
       />
       <div class="info">
         <div class="edit_remarkname flex" v-if="isEdit">
@@ -84,6 +84,8 @@ import {
   fetchFriendAdd, 
   fetchRemarkname,
 } from '@/api/index.js'
+import { IMG_REAL_URL } from '@/utils/constant.js'
+
 
 
 const router = useRouter()

@@ -35,7 +35,6 @@ const route = useRoute()
 
 const isChange = ref(localStorage.getItem('avatar') !== null)
 const handleSubmit = () => {
-  let imgUrl = smallImgList.value.find(img => img.id === activeImgId.value).smallUrl
   isLoading.value = true
   if (!isChange.value) {
     showLoadingToast({
@@ -45,12 +44,12 @@ const handleSubmit = () => {
     })
     let params = {
       username: localStorage.getItem('username'),
-      avatar: imgUrl
+      avatar: activeImgId.value
     }
     fetchUserUpdate(params)
       .then(res => {
         if (res.code === 200) {
-          localStorage.setItem('avatar', imgUrl)
+          localStorage.setItem('avatar', activeImgId.value)
           showSuccessToast({
             message: '上传成功',
             duration: 500,
@@ -76,11 +75,11 @@ const handleSubmit = () => {
     })
     let params = {
       username: localStorage.getItem('username'),
-      avatar: imgUrl,
+      avatar: activeImgId.value,
     }
     fetchUserUpdate(params)
       .then(() => {
-        localStorage.setItem('avatar', imgUrl)
+        localStorage.setItem('avatar', activeImgId.value)
         showSuccessToast({
           message: '更新成功',
           duration: 500,

@@ -7,7 +7,7 @@
     <div class="info_box">
       <van-image
         class="avatar"
-        :src="userInfo.avatar"
+        :src="IMG_REAL_URL + userInfo.avatar"
         @click="editAvatar"
       />
       <div class="info">
@@ -32,6 +32,10 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { IMG_REAL_URL } from '@/utils/constant.js'
+
+
+
 const router = useRouter()
 const route = useRoute()  
 

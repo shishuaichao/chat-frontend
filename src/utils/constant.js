@@ -9,6 +9,6 @@ export const IMG_SIZE = '30/30'
 export const IMG_BASE_URL = 'https://picsum.photos'
 export const IMG_LIST_URL = `${IMG_BASE_URL}/v2/list`
 export const IMG_REAL_URL = `${IMG_BASE_URL}/${IMG_SIZE}?image=`
-export const IMG_ONEPAGE_NUM = 24   // 每页图片数量，随机头像用
+export const IMG_ONEPAGE_NUM = 12   // 每页图片数量，随机头像用
 
 
