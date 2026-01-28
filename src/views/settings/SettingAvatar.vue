@@ -28,6 +28,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { showLoadingToast, showSuccessToast, closeToast } from 'vant'
 import { fetchUserUpdate } from '@/api/index.js'
+import { IMG_LIST_URL, IMG_REAL_URL, IMG_ONEPAGE_NUM } from '@/utils/constant.js'
 
 const router = useRouter()
 const route = useRoute() 
@@ -97,23 +98,23 @@ const handleSubmit = () => {
         }, 500)
       })
   }
-  
 };
 
 const smallImgList = ref([]); // 存储批量小图
 // 批量获取小图方法
-const getBatchSmallImgs = async (size, limit, page) => {
+const getBatchSmallImgs = async () => {
+  let pageNum = Math.floor(Math.random() * pageMaxNum) + 1
   showLoadingToast({
     message: '加载中...',
     forbidClick: true,
     duration: 0,
   });
   loadNum = 0
-  const res = await fetch(`https://picsum.photos/v2/list?limit=${limit}&page=${page}`);
+  const res = await fetch(`${IMG_LIST_URL}?limit=${IMG_ONEPAGE_NUM}&page=${pageNum}`);
   const imgData = await res.json();
   smallImgList.value = imgData.map(item => ({
     id: item.id,
-    smallUrl: `https://picsum.photos/${size}?image=${item.id}`
+    smallUrl: `${IMG_REAL_URL}${item.id}`
   }));
 };
 
@@ -124,21 +125,18 @@ const onClickLeft = () => {
 let loadNum = 0
 const imgLoad = () => {
   loadNum++
-  if (loadNum > imgNum/2) {
+  if (loadNum > IMG_ONEPAGE_NUM/2) {
     isLoading.value = false
     closeToast()
   }
 }
 
 const isLoading = ref(true);
-const imgNum = 18
 const pageMaxNum = 20
-const imgSize = '30/30'
 const changeImgs = () => {
   smallImgList.value = [];
   isLoading.value = true;
-  let pageNum = Math.floor(Math.random() * pageMaxNum) + 1
-  getBatchSmallImgs(imgSize, imgNum, pageNum);
+  getBatchSmallImgs();
 };
 
 const activeImgId = ref(null); 
@@ -147,8 +145,7 @@ const imageCheck = (id) => {
 };
 
 onMounted(() => {
-  let pageNum = Math.floor(Math.random() * pageMaxNum) + 1
-  getBatchSmallImgs(imgSize, imgNum, pageNum);
+  getBatchSmallImgs();
 });
 </script>
 <style scoped lang="scss">

@@ -3,7 +3,7 @@
     <van-nav-bar
       :title="title"
     />
-    <ChatList @clickChat="clickChat" />
+    <ChatList />
     <!-- <van-button 
       type="primary" 
       icon="plus" 
@@ -27,18 +27,9 @@
 <script setup>
 import { ref } from 'vue';
 import ChatList from '@/components/ChatList.vue';
-import router from '@/router';
 // import { fetchJoinConversation } from '@/api/index.js'
 // import { showToast } from 'vant';
-// 点击聊天项
-const clickChat = () => {
-  router.push({
-    name: 'ChatRoom',
-    query: {
-      convId: '1',
-    }
-  })
-}
+
 // 定义标题
 const title = ref('消息');
 // 新建聊天

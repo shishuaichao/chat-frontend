@@ -1,7 +1,6 @@
 <template>
   <div class="chat-list-container">
-    <!-- 单个聊天项 -->
-    <div class="chat_item" v-for="(item, index) in chatList" :key="index" @click="onClickChat(item)">
+    <div class="chat_item" v-for="(item, index) in chatList" :key="index" @click="entryChat(item)">
       <div class="avatar_wrapper">
         <div 
           class="img_box img_box_mul" 
@@ -35,97 +34,50 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { getConversationList } from '@/api/index.js'
+import { IMG_REAL_URL } from '@/utils/constant.js'
+import router from '@/router';
 
 
-const chatList = ref([
-  {
-    avatar: ['https://picsum.photos/30/30?image=16'],
-    name: '公共聊天室',
-    message: '',
-    time: '',
-    hasRedDot: false,
-    hasAttachment: false
-  },
-  // {
-  //   avatar: [
-  //     'https://picsum.photos/30/30?image=16',
-  //     'https://picsum.photos/30/30?image=17',
-  //     'https://picsum.photos/30/30?image=18',
-  //   ],
-  //   name: '李四',
-  //   message: '来吧',
-  //   time: '星期五',
-  //   hasRedDot: false,
-  //   hasAttachment: false
-  // },
-  // {
-  //   avatar: [
-  //     'https://picsum.photos/30/30?image=116',
-  //     'https://picsum.photos/30/30?image=117',
-  //     'https://picsum.photos/30/30?image=118',
-  //     'https://picsum.photos/30/30?image=119',
-  //     'https://picsum.photos/30/30?image=120',
-  //     'https://picsum.photos/30/30?image=121',
-  //     'https://picsum.photos/30/30?image=122',
-  //   ],
-  //   name: 'QQ Mail',
-  //   message: 'ChatGPT: Write faster with ChatGPT',
-  //   time: '星期五',
-  //   hasRedDot: true,
-  //   hasAttachment: true
-  // },
-  // {
-  //   avatar: [
-  //     'https://picsum.photos/30/30?image=216',
-  //     'https://picsum.photos/30/30?image=217',
-  //     'https://picsum.photos/30/30?image=218',
-  //     'https://picsum.photos/30/30?image=219',
-  //     'https://picsum.photos/30/30?image=220',
-  //     'https://picsum.photos/30/30?image=221',
-  //     'https://picsum.photos/30/30?image=222',
-  //     'https://picsum.photos/30/30?image=223',
-  //     'https://picsum.photos/30/30?image=214',
-  //   ],
-  //   name: '12月20日遇见7周年活动群',
-  //   message: '勇爸: [链接] 冬天零下5度跑步，是一场双向博弈',
-  //   time: '星期五',
-  //   hasRedDot: true,
-  //   hasAttachment: true
-  // },
-  // {
-  //   avatar: [
-  //     'https://picsum.photos/30/30?image=126',
-  //     'https://picsum.photos/30/30?image=127',
-  //     'https://picsum.photos/30/30?image=128',
-  //     'https://picsum.photos/30/30?image=129',
-  //     'https://picsum.photos/30/30?image=220',
-  //   ],
-  //   name: '有知有行金钱魔法师🐍',
-  //   message: '[2条] "夏天" recalled a message',
-  //   time: '星期四',
-  //   hasRedDot: true,
-  //   hasAttachment: false
-  // },
-  // {
-  //   avatar: [
-  //     'https://picsum.photos/30/30?image=16',
-  //     'https://picsum.photos/30/30?image=17',
-  //     'https://picsum.photos/30/30?image=18',
-  //     'https://picsum.photos/30/30?image=20',
-  //   ],
-  //   name: '有知有行金钱魔法师🐍',
-  //   message: '[2条] "夏天" recalled a message',
-  //   time: '星期四',
-  //   hasRedDot: true,
-  //   hasAttachment: false
-  // },
-]);
-// 点击聊天项
-const emit = defineEmits(['clickChat'])
-const onClickChat = (item) => {
-  emit('clickChat', item)
+const chatList = ref([]);
+// 进入聊天
+const entryChat = (item) => {
+  router.push({
+    name: 'ChatRoom',
+    query: {
+      convId: item.convId,
+    }
+  })
 }
+
+onMounted(() => {
+  getConversationList()
+    .then(res => {
+      console.log('getConversationList', res)
+      chatList.value = res.data.map(item => {
+        let avatarList = []
+        if (item.type == 2) {
+          item.avatar.split(',').forEach(e => {
+            avatarList.push(IMG_REAL_URL + e.split('_')[1])
+          })
+        }
+        return {
+          convId: item.convId,
+          avatar: item.type == 2 ? avatarList : [IMG_REAL_URL + item.avatar],
+          name: item.name,
+          type: item.type,
+          message: '',
+          time: '',
+          hasRedDot: false,
+          hasAttachment: false
+        }
+      })
+    })
+    .catch(err => {
+      console.log('getConversationList', err)
+    })
+})
 </script>
 
 <style scoped lang="scss">
