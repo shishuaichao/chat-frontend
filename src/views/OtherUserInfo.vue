@@ -8,11 +8,40 @@
     <div class="info_box">
       <van-image
         class="avatar"
-        :src="info.avatar"
+        :src="userInfo.avatar"
       />
       <div class="info">
-        <div class="nickname">{{ info.nickname }}</div>
-        <div class="userId">ID: {{ info.username }}</div>
+        <div class="edit_remarkname flex" v-if="isEdit">
+          <van-field
+            type="text"
+            autofocus
+            v-model="remarkname"
+            placeholder="备注名..."
+          />
+          <van-button
+            type="primary"
+            size="mini"
+            plain 
+            @click="saveRemarkname('cancel')"
+            >
+            取 消
+          </van-button>
+          <van-button
+            type="primary"
+            size="mini"
+            :disabled="remarkname.trim().length == 0"
+            @click="saveRemarkname"
+            >
+            保 存
+          </van-button>
+        </div>
+        <div class="nickname flex align_items_center" v-else>
+          {{ userInfo.remark || userInfo.nickname }}
+          <div class="edit_icon" v-if="friendShipStatus == 1" @click="editRemarkname">
+            <van-icon name="edit" />
+          </div>
+        </div>
+        <div class="userId">昵称: {{ userInfo.nickname }}</div>
       </div>
     </div>
     <div class="operate" v-if="!isSelf">
@@ -24,7 +53,7 @@
         v-if="friendShipStatus == 1"
         @click="clickChat"
         >
-            发消息
+        发消息
       </van-button>
       <van-button 
         type="primary" 
@@ -34,13 +63,13 @@
         v-if="friendShipStatus == null"
         @click="addFriend"
         >
-          加为好友
+        加为好友
       </van-button>
       <van-button 
         type="primary" block plain
         v-if="friendShipStatus == 3"
         >
-          已申请，等待确认
+        已申请，等待确认
       </van-button>
     </div>
   </div>
@@ -53,6 +82,7 @@ import { showToast } from 'vant'
 import { 
   fetchUserInfo, 
   fetchFriendAdd, 
+  fetchRemarkname,
 } from '@/api/index.js'
 
 
@@ -70,8 +100,39 @@ const clickChat = () => {
     }
   })
 }
+const remarkname = ref('')
+const isEdit = ref(false)
+// 编辑备注名
+const editRemarkname = () => {
+  isEdit.value = true
+  remarkname.value = userInfo.value.remark || userInfo.value.nickname
+}
 
-
+// 保存备注名
+const saveRemarkname = (type) => {
+  if (type == 'cancel') {
+    isEdit.value = false
+    return
+  }
+  if (remarkname.value.trim().length > 10) {
+    showToast('请输入备注名（10个字符以内）')
+    return
+  }
+  fetchRemarkname({
+    friendId: route.query.id,
+    remarkname: remarkname.value,
+    remark: remarkname.value,
+  })
+    .then(() => {
+      isEdit.value = false
+      showToast('备注成功')
+      userInfo.value.remark = remarkname.value
+    })
+    .catch(err => {
+      console.log(err)
+      showToast(err.msg)
+    })
+}
 
 const addFriend = () => {
   fetchFriendAdd({ friendId: route.query.id })
@@ -88,7 +149,7 @@ const addFriend = () => {
 const getOtherUserInfo = () => {
   fetchUserInfo({ id: route.query.id })
     .then(res => {
-      info.value = res.data || {}
+      userInfo.value = res.data || {}
       friendShipStatus.value = res?.data?.friendshipsStatus
     })
     .catch(err => {
@@ -100,7 +161,7 @@ onMounted(() => {
   getOtherUserInfo()
 }) 
 
-const info = ref({})
+const userInfo = ref({})
 
 
 
@@ -131,6 +192,16 @@ const onClickLeft = () => {
   font-size: 18px;
   font-weight: bold;
   color: #333;
+  .edit_icon {
+    font-size: 14px;
+    color: #999;
+    margin-left: 8px;
+  }
+  
+}
+:deep(.van-field) {
+  width: 110px !important;
+  padding: 0;
 }
 .userId {
   font-size: 14px;
