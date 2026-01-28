@@ -1,2 +1,18 @@
 // styles/index.scss
 @import './main';
+// styles/main.scss
+.padding_20 {
+  padding: 20px;
+}
+
+.flex {
+  display: flex;
+}
+.align_itemss_center {
+  display: flex;
+  align-items: center;
+}
+.justify_content_center {
+  display: flex;
+  justify-content: center;
+}

@@ -1,6 +1,6 @@
 
 import router from '@/router/index.js'
-import { getAllUsers } from '@/api/index.js'
+// import { getAllUsers } from '@/api/index.js'
 
 
 
@@ -17,20 +17,20 @@ export const checkLogined = () => {
     router.replace({ name: 'SettingAvatar' })
     return
   }
-  getAllUsers()
-    .then(res => {
-      if (res.code === 200) {
-        let users = res.data
-        let user = users.find(item => item.id == localStorage.getItem('id'))
-        console.log('getAllUsers', user)
-        if (!user) {
-          localStorage.clear()
-          router.replace({ name: 'SettingNickname' })
-          return
-        }
-      }
-    })
-    .catch(err => {
-      console.log('getAllUsers', err)
-    })
+  // getAllUsers()
+  //   .then(res => {
+  //     if (res.code === 200) {
+  //       let users = res.data
+  //       let user = users.find(item => item.id == localStorage.getItem('id'))
+  //       console.log('getAllUsers', user)
+  //       if (!user) {
+  //         localStorage.clear()
+  //         router.replace({ name: 'SettingNickname' })
+  //         return
+  //       }
+  //     }
+  //   })
+  //   .catch(err => {
+  //     console.log('getAllUsers', err)
+  //   })
 }
