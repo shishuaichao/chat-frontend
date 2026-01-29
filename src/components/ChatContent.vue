@@ -1,27 +1,28 @@
 <template>
   <div class="item_box">
-    <!-- 其他人 -->
-    <div class="msg_other msg_item left" v-if="msgInfo.type == 'message' && userInfo.id != msgInfo.id">
+    
+    <!-- 自己 -->
+    <div class="msg_self msg_item right" v-if="userInfo?.id == msgInfo.sender_id || userInfo?.id == msgInfo.senderId">
+      <div class="msg_box">
+        <div class="nickname">{{ formatTime(msgInfo.created_at) }} {{ msgInfo.nickname }}</div>
+        <div class="msg_content">{{ msgInfo.content }}</div>
+      </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
         <img :src="IMG_REAL_URL + msgInfo.avatar" alt="">
-      </div>
-      <div class="msg_box">
-        <div class="nickname">{{ msgInfo.nickname }} {{ formatTime(msgInfo.time) }}</div>
-        <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
     </div>
-    <!-- 自己 -->
-    <div class="msg_self msg_item right" v-if="msgInfo.type == 'message' && userInfo.id == msgInfo.id">
-      <div class="msg_box">
-        <div class="nickname">{{ formatTime(msgInfo.time) }} {{ msgInfo.nickname }}</div>
-        <div class="msg_content">{{ msgInfo.content }}</div>
-      </div>
+    <!-- 其他人 -->
+    <div class="msg_other msg_item left" v-else>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
         <img :src="IMG_REAL_URL + msgInfo.avatar" alt="">
+      </div>
+      <div class="msg_box">
+        <div class="nickname">{{ msgInfo.nickname }} {{ formatTime(msgInfo.created_at) }}</div>
+        <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
     </div>
     <!-- 系统消息 -->
-    <div class="msg_system" v-if="msgInfo.type == 'system_msg'">
+    <div class="msg_system" v-if="msgInfo.type == 5">
       <div class="msg_system_content">{{ msgInfo.content }}</div>
     </div>
   </div>
@@ -29,7 +30,7 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, onMounted, ref } from 'vue';
 import formatTime from '@/utils/formatTime.js'
 import { useRouter } from 'vue-router'
 import { IMG_REAL_URL } from '@/utils/constant.js'
@@ -39,11 +40,6 @@ const router = useRouter()
 defineProps({
   // 消息
   msgInfo: {
-    type: Object,
-    required: true,
-  },
-  // 用户信息
-  userInfo: {
     type: Object,
     required: true,
   },
@@ -57,6 +53,15 @@ const handleClickUserInfo = (msgInfo) => {
     }
   })
 }
+
+const userInfo = ref({})
+onMounted(() => {
+  userInfo.value = {
+    id: localStorage.getItem('id'),
+    nickname: localStorage.getItem('nickname'),
+    avatar: localStorage.getItem('avatar'),
+  }
+})
 </script>
 
 <style scoped>

@@ -15,6 +15,7 @@ export function formatRelativeTime(time) {
       // 时间戳（秒级→毫秒级）：本身是UTC，直接用
       utcTimestamp = time.toString().length === 10 ? time * 1000 : time;
     } else if (typeof time === 'string') {
+      time += '+8'
       // 处理所有字符串格式（重点修复GMT/UTC格式）
       const date = new Date(time);
       if (isNaN(date.getTime())) throw new Error('无效时间字符串');

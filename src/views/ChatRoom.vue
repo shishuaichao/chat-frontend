@@ -2,7 +2,7 @@
   <div class="main_container">
     <ChatHeader :onlineUser="onlineUser"></ChatHeader>
     <div class="chat_content_box" ref="chatContentRef">
-      <ChatContent v-for="v,i in msgList" :key="i" :msgInfo="v" :userInfo="userInfo"></ChatContent>
+      <ChatContent v-for="v,i in msgList" :key="i" :msgInfo="v"></ChatContent>
     </div>
     <ChartFooter @sendMessage="sendMsg"  @focus="scrollToBottom" />
   </div>
@@ -15,25 +15,47 @@ import ChatHeader from '@/components/ChatHeader.vue';
 import ChatContent from '@/components/ChatContent.vue';
 import ChartFooter from '@/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
-// import { fetchChatRecords } from '@/api/index.js'
+import { useRoute } from 'vue-router'
+
+import { fetchChatRecords } from '@/api/chat.js'
+
+
+const route = useRoute()  
+
+
 
 const onlineUser = ref([])
 const userInfo = ref({})
 const init = () => {
-  // getAllChats()
+  getAllChats()
+  // 加入房间
+  WS_Client.joinRoom(route.query.convId)
+  // 监听连接成功
+  WS_mitt.on('join_room', (msg) => {
+    showToast({
+      message: msg,
+      duration: 500
+    })
+  })
+
   userInfo.value = {
-    id: localStorage.getItem('id'),
+    senderId: localStorage.getItem('id'),
     nickname: localStorage.getItem('nickname'),
     avatar: localStorage.getItem('avatar'),
   }
   // 链接成功 
   WS_mitt.on('connect_success', () => {
-    WS_Client.emit('set_nickname', { ...userInfo.value })
+    WS_Client.joinRoom(route.query.convId)
   })
+
   // 聊天消息
   WS_mitt.on('message', (data) => {
+    console.log('11111', data)
     render(data)
   })
+
+
+
   // 系统消息
   WS_mitt.on('system_msg', (data) => {
     if (data.id !== userInfo.value.id) {
@@ -51,30 +73,34 @@ const init = () => {
 // 聊天记录
 const msgList = ref([])
 const originList = ref([])
-// const getAllChats = () => {
-//   fetchChatRecords({ id: userInfo.value.id })
-//     .then(res => {
-//       originList.value = res || []
-//       msgList.value = originList.value.splice(-40)
-//       scrollToBottom()
-//     })
-//     .catch(err => {
-//       console.log('fetchChatRecords', err)
-//     })
-  
-// }
+const getAllChats = () => {
+  fetchChatRecords({ convId: route.query.convId })
+    .then(res => {
+      originList.value = res.data || []
+      msgList.value = originList.value.splice(-40)
+      scrollToBottom()
+    })
+    .catch(err => {
+      console.log('fetchChatRecords', err)
+    })
+}
 
 // 渲染消息
 const render = (msgData) => {
   msgList.value.push(msgData)
-  // console.log(msgList.value)
+  console.log('msgList', msgList.value)
   scrollToBottom()
 }
 
 // 发送消息
 const sendMsg = (msg) => {
-  const msgData = { content: msg, ...userInfo.value }
-  // console.log('sendMsg1111', userInfo.value )
+  const msgData = { 
+    content: msg, 
+    convId: route.query.convId, 
+    type: 1,
+    status: 1,
+    ...userInfo.value,
+  }
   WS_Client.emit('message', msgData)
 }
 

@@ -89,20 +89,27 @@ import { IMG_REAL_URL } from '@/utils/constant.js'
 
 
 
+
+
 const router = useRouter()
 const route = useRoute()
 
 const friendShipStatus = ref(null)
 const isSelf = ref(localStorage.getItem('id') == route.query.id)
+
+const entryChat = (convId) => {
+  router.push({
+    name: 'ChatRoom',
+    query: {
+      convId: convId,
+    }
+  })
+}
+
 // 点击聊天
 const clickChat = () => {
   if (userInfo.value.convId) {
-    router.push({
-      name: 'ChatRoom',
-      query: {
-        convId: userInfo.value.convId,
-      }
-    })
+    entryChat(userInfo.value.convId)
   } else {
     let params = {
       friendId: route.query.id,
@@ -114,13 +121,7 @@ const clickChat = () => {
     }
     fetchCreateConversation(params)
       .then(res => {
-        userInfo.value.convId = res?.data?.convId
-        router.push({
-          name: 'ChatRoom',
-          query: {
-            convId: res?.data?.convId,
-          }
-        })
+        entryChat(res?.data?.convId)
       })
       .catch(err => {
         console.log(err)

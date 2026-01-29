@@ -49,14 +49,15 @@ class SocketClient {
       'online_count', // 在线用户数
       'disconnect', // 连接断开
       'connect_error', // 连接错误
+      'join_room', // 加入房间
     ];
     eventListeners.forEach(event => {
       this.socket.on(event, (data) => {
         console.log(`收到事件 ${event}：`, data);
-        WS_mitt.emit(`${event}`, data);
         if (event === 'connect_success') {
           this.isConnected = true;
         }
+        WS_mitt.emit(`${event}`, data);
       });
     });
   }
@@ -92,6 +93,7 @@ class SocketClient {
 
   // 加入指定房间（适配群聊场景）@param {String}  roomId - 房间ID
   joinRoom(roomId) {
+    console.log('加入房间', roomId, this.isConnected)
     if (this.isConnected) {
       this.socket.emit('room:join', roomId);
       WS_mitt.emit('socket:room:joined', roomId);
