@@ -43,7 +43,8 @@ module.exports = defineConfig({
     proxy: {
       // 场景1：匹配以 /api 开头的请求
       '/api': {
-        target: 'http://172.20.10.2:5000', // 后端接口的基础地址
+        target: 'http://192.168.1.5:5000', // 后端接口的基础地址
+        // target: 'http://172.20.10.2:5000', // 后端接口的基础地址
         changeOrigin: true, // 开启跨域（关键）
         pathRewrite: { // 路径重写（可选）
           '^/api': '' // 如果后端接口没有 /api 前缀，就把前端的 /api 去掉
