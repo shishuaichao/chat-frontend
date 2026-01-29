@@ -9,7 +9,7 @@
         class="img_box"
         v-if="avatarList.length == 1 || avatar">
         <img 
-          :src="avatar" alt="" class="avatar avatar_1"
+          :src="avatar" alt="" class="avatar avatar_one"
           
           />
       </div>
@@ -17,8 +17,10 @@
         class="img_box img_box_mul" 
         :class="{
           'img_box_234': avatarList.length > 1 && avatarList.length <= 4,
+          'img_box_1': avatarList.length == 1,
           'img_box_2': avatarList.length == 2,
           'img_box_3': avatarList.length == 3,
+          'img_box_4': avatarList.length == 4,
           'img_box_5': avatarList.length == 5,
           'img_box_6': avatarList.length == 6,
           'img_box_7': avatarList.length == 7,
@@ -92,6 +94,11 @@ defineProps({
   box-sizing: border-box;
   // background-color: #a562e3;
   overflow: hidden;
+  .avatar_one {
+    width: 50px;
+    height: 50px;
+    display: block;
+  }
 }
 .img_box_mul {
   display: grid;

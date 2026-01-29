@@ -1,6 +1,8 @@
 
 <template>
   <div class="search_box">
+    <UserImg :avatar="avatar" size="normal" />
+    <hr />
     <UserImg :avatarList="avatarList.slice(0,2)" size="normal" />
     <hr />
     <UserImg :avatarList="avatarList.slice(0,3)" size="normal" />
@@ -25,7 +27,7 @@ import { ref } from 'vue'
 
 
 const size = ref('normal')
-// const avatar = ref(`${IMG_REAL_URL}23`)
+const avatar = ref(`${IMG_REAL_URL}23`)
 const avatarList = ref([
   `${IMG_REAL_URL}23`, 
   `${IMG_REAL_URL}24`, 
