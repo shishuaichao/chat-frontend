@@ -8,15 +8,25 @@
     </van-grid>
   </van-popup>
   <div class="header">
-    <div class="left"> 
-      设置
+    <van-nav-bar
+      :title="title"
+      left-arrow
+      @click-left="onClickLeft"
+      @click-right="goSettingInfo"
+    >
+      <template #right>
+        <van-icon name="setting-o" />
+      </template>
+    </van-nav-bar>
+    <!-- <div class="left"> 
+      
     </div>
     <div class="title" @click="showTop = true">
-        在线人数（{{ onlineUser.length }}）
+        {{ title }}
     </div>
     <div class="right">
       <div class="setting" @click="goSettingInfo">。。。</div>
-    </div>
+    </div> -->
   </div>
   <div class="header_pad"></div>
    
@@ -37,7 +47,16 @@ defineProps({
     required: true,
     default: () => [],
   },
+  title: {
+    type: String,
+    required: true,
+    default: () => '',
+  },
 });
+
+const onClickLeft = () => {
+  router.back()
+}
 
 const showTop = ref(false)
 
@@ -55,27 +74,18 @@ const goSettingInfo = () => {
   margin-top: 4px;
 }
 .header {
+  width: 100%;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: 50px;
   line-height: 50px;
-  background: #f7f7f7;
-  /* opacity: 0.8; */
   border-bottom: 1px solid #e5e5e5;
   text-align: center;
   font-size: 18px;
   font-weight: 500;
   z-index: 999;
-  /* iOS 关键：硬件加速 + 强制渲染 */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  will-change: top;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 15px;
 }
 .header_pad {
   /* height: 50px; */

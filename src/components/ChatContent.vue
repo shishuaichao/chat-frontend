@@ -48,7 +48,7 @@ const handleClickUserInfo = (msgInfo) => {
   router.push({
     name: 'OtherUserInfo',
     query: {
-      id: msgInfo.id,
+      id: msgInfo.sender_id,
     }
   })
 }

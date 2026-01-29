@@ -1,6 +1,6 @@
 <template>
   <div class="main_container">
-    <ChatHeader :onlineUser="onlineUser"></ChatHeader>
+    <ChatHeader :onlineUser="onlineUser" :title="title"></ChatHeader>
     <div class="chat_content_box" ref="chatContentRef">
       <ChatContent v-for="v,i in msgList" :key="i" :msgInfo="v"></ChatContent>
     </div>
@@ -25,11 +25,14 @@ const route = useRoute()
 
 
 const onlineUser = ref([])
+const title = ref('')
 const userInfo = ref({})
 const init = () => {
+  title.value = route.query.title || ''
   getAllChats()
   // 加入房间
   WS_Client.joinRoom(route.query.convId)
+
   // 监听连接成功
   WS_mitt.on('join_room', () => {
     // showToast({

@@ -24,6 +24,7 @@ const entryChat = (item) => {
     name: 'ChatRoom',
     query: {
       convId: item.convId,
+      title: item.name || item.remark || item.nickname,
     }
   })
 }
