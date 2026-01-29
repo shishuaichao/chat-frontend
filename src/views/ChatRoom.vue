@@ -40,6 +40,7 @@ const getConvInfo = () => {
 }
 
 const init = () => {
+  WS_Client.joinRoom(route.query.convId)
   getConvInfo()
   getAllChats()
   
@@ -56,7 +57,7 @@ const init = () => {
 
   // 聊天消息
   WS_mitt.on('message', (data) => {
-    console.log('11111', data)
+    // console.log('message', data)
     render(data)
   })
 
@@ -94,7 +95,7 @@ const getAllChats = () => {
 // 渲染消息
 const render = (msgData) => {
   msgList.value.push(msgData)
-  console.log('msgList', msgList.value)
+  // console.log('msgList', msgList.value)
   scrollToBottom()
 }
 

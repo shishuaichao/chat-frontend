@@ -96,7 +96,7 @@ class SocketClient {
     console.log('加入房间', roomId, this.isConnected)
     if (this.isConnected) {
       this.socket.emit('room:join', roomId);
-      WS_mitt.emit('socket:room:joined', roomId);
+      WS_mitt.emit('room:joined', roomId);
     }
   }
 }

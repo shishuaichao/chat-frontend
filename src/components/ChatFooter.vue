@@ -57,7 +57,7 @@ onMounted(() => {
     left: 0;
     right: 0;
     height: 50px;
-    background: #f7f7f7;
+    background: #fff;
     border-top: 1px solid #e5e5e5;
     display: flex;
     align-items: center;
