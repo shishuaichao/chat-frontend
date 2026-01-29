@@ -5,7 +5,7 @@
         class="img_box img_box_mul" 
         :class="{'img_box_mul': item?.avatar?.length > 1}">
         <img 
-          :src="IMG_REAL_URL + avatar" 
+          :src="avatar" 
           class="avatar"
           :class="{
             'avatar_1': item?.avatar?.length == 1,
@@ -31,7 +31,6 @@
   </div>
 </template>
 <script setup>
-import { IMG_REAL_URL } from '@/utils/constant.js'
 
 
 defineProps({

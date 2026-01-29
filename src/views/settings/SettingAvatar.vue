@@ -79,7 +79,7 @@ const handleSubmit = () => {
     }
     fetchUserUpdate(params)
       .then(() => {
-        localStorage.setItem('avatar', activeImgId.value)
+        localStorage.setItem('avatar', `${IMG_REAL_URL}${activeImgId.value}`)
         showSuccessToast({
           message: '更新成功',
           duration: 500,

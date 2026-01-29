@@ -8,13 +8,13 @@
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img :src="IMG_REAL_URL + msgInfo.avatar" alt="">
+        <img :src="msgInfo.avatar" alt="">
       </div>
     </div>
     <!-- 其他人 -->
     <div class="msg_other msg_item left" v-else>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img :src="IMG_REAL_URL + msgInfo.avatar" alt="">
+        <img :src="msgInfo.avatar" alt="">
       </div>
       <div class="msg_box">
         <div class="nickname">{{ msgInfo.nickname }} {{ formatTime(msgInfo.created_at) }}</div>
@@ -33,7 +33,6 @@
 import { defineProps, onMounted, ref } from 'vue';
 import formatTime from '@/utils/formatTime.js'
 import { useRouter } from 'vue-router'
-import { IMG_REAL_URL } from '@/utils/constant.js'
 
 const router = useRouter()
 

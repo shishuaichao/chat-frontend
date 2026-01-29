@@ -31,11 +31,11 @@ const init = () => {
   // 加入房间
   WS_Client.joinRoom(route.query.convId)
   // 监听连接成功
-  WS_mitt.on('join_room', (msg) => {
-    showToast({
-      message: msg,
-      duration: 500
-    })
+  WS_mitt.on('join_room', () => {
+    // showToast({
+    //   message: msg,
+    //   duration: 500
+    // })
   })
 
   userInfo.value = {
