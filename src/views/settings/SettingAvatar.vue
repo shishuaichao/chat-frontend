@@ -117,6 +117,7 @@ const imageCheck = (id) => {
 
 onMounted(() => {
   getBatchSmallImgs();
+  isChange.value = localStorage.getItem('avatar') !== null
 });
 </script>
 <style scoped lang="scss">
