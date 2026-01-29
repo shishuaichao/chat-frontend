@@ -1,22 +1,10 @@
 <template>
   <div class="chat_item" @click="$emit('handleClick', item)">
     <div class="avatar_wrapper">
-      <div 
-        class="img_box img_box_mul" 
-        :class="{'img_box_mul': item?.avatar?.length > 1}">
-        <img 
-          :src="avatar" 
-          class="avatar"
-          :class="{
-            'avatar_1': item?.avatar?.length == 1,
-            'avatar_234': item?.avatar?.length > 1 && item?.avatar?.length <= 4,
-            'avatar_5-9': item?.avatar?.length >= 5 && item?.avatar?.length <= 9,
-          }"
-          alt="avatar" 
-          v-for="(avatar, index) in item.avatar" 
-          :key="index" />
-      </div>
-      <span v-if="item.hasRedDot" class="red-dot"></span>
+      <UserImg 
+        :avatarList="item.type == 2 ? item.avatar.split(',') : []"
+        :avatar="item.type == 1 ? item.avatar : ''" 
+      />
     </div>
     <div class="content-wrapper">
       <div class="top-row">
@@ -31,6 +19,8 @@
   </div>
 </template>
 <script setup>
+import UserImg from '@/components/UserImg.vue'
+
 
 
 defineProps({
@@ -55,37 +45,9 @@ defineProps({
   transition: background-color 0.2s;
   .avatar_wrapper {
     position: relative;
-    padding: 12px;
+    padding: 11px;
     box-sizing: border-box;
-    .img_box {
-      width: 48px;
-      height: 48px;
-      background-color: #f0f0f0;
-      border-radius: 4px;
-      overflow: hidden;
-      .avatar {
-        // display: block;
-      }
-      .avatar_1 {
-        width: 100%;
-        height: 100%;
-      }
-      .avatar_234 {
-        width: 20px;
-        height: 20px;
-      }
-      .avatar_5-9 {
-        width: 13px;
-        height: 13px;
-      }
-    }
-    .img_box_mul {
-      display: flex;
-      justify-content: center;
-      align-content: center;
-      flex-wrap: wrap;
-      gap: 2px;
-    }
+    
     // TODO: 聊天项红点
     // .red-dot {
     //   position: absolute;
@@ -101,7 +63,7 @@ defineProps({
   .content-wrapper {
     flex: 1;
     min-width: 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #e3e2e2;
     padding: 12px 16px 12px 0;
     height: 72px;
     display: flex;

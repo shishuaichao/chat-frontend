@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onActivated } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { showLoadingToast, showSuccessToast, closeToast } from 'vant'
 import { fetchUserUpdate } from '@/api/index.js'
@@ -33,70 +33,42 @@ import { IMG_LIST_URL, IMG_REAL_URL, IMG_ONEPAGE_NUM } from '@/utils/constant.js
 const router = useRouter()
 const route = useRoute() 
 
-const isChange = ref(localStorage.getItem('avatar') !== null)
+const isChange = ref(null)
+onActivated(() => {
+  isChange.value = localStorage.getItem('avatar') !== null
+})
 const handleSubmit = () => {
   isLoading.value = true
-  if (!isChange.value) {
-    showLoadingToast({
-      message: '上传中...',
-      forbidClick: true,
-      duration: 0,
-    })
-    let params = {
-      username: localStorage.getItem('username'),
-      avatar: activeImgId.value
-    }
-    fetchUserUpdate(params)
-      .then(res => {
-        if (res.code === 200) {
-          localStorage.setItem('avatar', activeImgId.value)
-          showSuccessToast({
-            message: '上传成功',
-            duration: 500,
-          })
-          setTimeout(() => {
-            isChange.value ? router.back() : router.replace('/')
-          }, 500)
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
-      .finally(() => {
-        setTimeout(() => {
-          isLoading.value = false
-        }, 500)
-    })
-  } else {
-    showLoadingToast({
-      message: '更新中...',
-      forbidClick: true,
-      duration: 0,
-    })
-    let params = {
-      username: localStorage.getItem('username'),
-      avatar: activeImgId.value,
-    }
-    fetchUserUpdate(params)
-      .then(() => {
-        localStorage.setItem('avatar', `${IMG_REAL_URL}${activeImgId.value}`)
+  showLoadingToast({
+    message: '上传中...',
+    forbidClick: true,
+    duration: 0,
+  })
+  let params = {
+    username: localStorage.getItem('username'),
+    avatar: IMG_REAL_URL + activeImgId.value
+  }
+  fetchUserUpdate(params)
+    .then(res => {
+      if (res.code === 200) {
+        localStorage.setItem('avatar', IMG_REAL_URL + activeImgId.value)
         showSuccessToast({
-          message: '更新成功',
+          message: '头像上传成功',
           duration: 500,
         })
         setTimeout(() => {
-          router.back()
+          isChange.value ? router.back() : router.replace('/')
         }, 500)
-      })
-      .catch(err => {
-        console.log('fetchUserUpdate', err)
-      })
-      .finally(() => {
-        setTimeout(() => {
-          isLoading.value = false
-        }, 500)
-      })
-  }
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+    .finally(() => {
+      setTimeout(() => {
+        isLoading.value = false
+      }, 500)
+  })
 };
 
 const smallImgList = ref([]); // 存储批量小图
