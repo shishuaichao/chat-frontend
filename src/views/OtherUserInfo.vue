@@ -42,6 +42,7 @@
           </div>
         </div>
         <div class="userId">昵称: {{ userInfo.nickname }}</div>
+        <div class="userId">ID: {{ $route.query.id }}</div>
       </div>
     </div>
     <div class="operate" v-if="!isSelf">
@@ -76,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onActivated } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { showToast } from 'vant'
 import { 
@@ -85,6 +86,7 @@ import {
   fetchRemarkname,
   fetchCreateConversation,
 } from '@/api/index.js'
+import { setRemark } from '@/utils/localStorage.js'
 
 
 
@@ -156,6 +158,7 @@ const saveRemarkname = (type) => {
       isEdit.value = false
       showToast('备注成功')
       userInfo.value.remark = remarkname.value
+      setRemark(route.query.id, remarkname.value)
     })
     .catch(err => {
       console.log(err)
@@ -186,7 +189,7 @@ const getOtherUserInfo = () => {
     })
 }
 
-onMounted(() => {
+onActivated(() => {
   getOtherUserInfo()
 }) 
 

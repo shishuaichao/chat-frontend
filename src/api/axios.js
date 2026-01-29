@@ -3,8 +3,6 @@
 import axios from 'axios'
 
 axios.defaults.baseURL = '/api'
-// axios.defaults.headers.post['Content-Type'] = 'application/json';
-// axios.defaults.headers.put['Content-Type'] = 'application/json';
 
 axios.interceptors.response.use(
   response => response,

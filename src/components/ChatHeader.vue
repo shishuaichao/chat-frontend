@@ -12,21 +12,12 @@
       :title="title"
       left-arrow
       @click-left="onClickLeft"
-      @click-right="goSettingInfo"
+      @click-right="showTop = true"
     >
       <template #right>
         <van-icon name="setting-o" />
       </template>
     </van-nav-bar>
-    <!-- <div class="left"> 
-      
-    </div>
-    <div class="title" @click="showTop = true">
-        {{ title }}
-    </div>
-    <div class="right">
-      <div class="setting" @click="goSettingInfo">。。。</div>
-    </div> -->
   </div>
   <div class="header_pad"></div>
    
@@ -60,9 +51,9 @@ const onClickLeft = () => {
 
 const showTop = ref(false)
 
-const goSettingInfo = () => {
-  router.push({ name: 'TabMine' })
-}
+// const goSettingInfo = () => {
+//   router.push({ name: 'TabMine' })
+// }
 
 
 </script>
@@ -81,7 +72,6 @@ const goSettingInfo = () => {
   right: 0;
   height: 50px;
   line-height: 50px;
-  border-bottom: 1px solid #e5e5e5;
   text-align: center;
   font-size: 18px;
   font-weight: 500;

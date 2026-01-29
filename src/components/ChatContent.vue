@@ -4,7 +4,7 @@
     <!-- 自己 -->
     <div class="msg_self msg_item right" v-if="userInfo?.id == msgInfo.sender_id || userInfo?.id == msgInfo.senderId">
       <div class="msg_box">
-        <div class="nickname">{{ formatTime(msgInfo.created_at) }} {{ msgInfo.nickname }}</div>
+        <!-- <div class="nickname">{{ formatTime(msgInfo.created_at) }} {{ msgInfo.nickname }}</div> -->
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
@@ -17,7 +17,7 @@
         <img :src="msgInfo.avatar" alt="">
       </div>
       <div class="msg_box">
-        <div class="nickname">{{ msgInfo.nickname }} {{ formatTime(msgInfo.created_at) }}</div>
+        <div class="nickname" v-if="convType != 1">{{ msgInfo.nickname }} {{ formatTime(msgInfo.created_at) }}</div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
     </div>
@@ -32,10 +32,12 @@
 <script setup>
 import { defineProps, onMounted, ref } from 'vue';
 import formatTime from '@/utils/formatTime.js'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 
+const convType = ref(route.query.type)
 defineProps({
   // 消息
   msgInfo: {
@@ -43,6 +45,7 @@ defineProps({
     required: true,
   },
 });
+
 
 const handleClickUserInfo = (msgInfo) => {
   router.push({
@@ -123,7 +126,7 @@ onMounted(() => {
   .left .msg_content::before {
     content: '';
     position: absolute;
-    top: 6px;
+    top: 8px;
     left: -5px;
     width: 0;
     height: 0;
@@ -134,7 +137,7 @@ onMounted(() => {
   .right .msg_content::before {
     content: '';
     position: absolute;
-    top: 6px;
+    top: 8px;
     right: -5px;
     width: 0;
     height: 0;

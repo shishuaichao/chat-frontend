@@ -18,7 +18,7 @@
             <van-icon name="edit" />
           </div>
         </div>
-        <div class="userId">ID: {{ userInfo.username }}</div>
+        <div class="userId">ID: {{ userInfo.id }}</div>
       </div>
     </div>
 
@@ -31,6 +31,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { showToast } from 'vant'
 
 
 
@@ -56,19 +57,22 @@ const editNickname  = () => {
 const userInfo = ref({
   avatar: '',
   nickname: '',
-  username: '',
+  id: '',
 })
 onMounted(() => {
   userInfo.value = {
     avatar: localStorage.getItem('avatar'),
     nickname: localStorage.getItem('nickname'),
-    username: localStorage.getItem('username'),
+    id: localStorage.getItem('id'),
   }
 })
 
 const logout = () => {
   // localStorage.clear()
   // router.replace({ path: '/' })
+  // localStorage.setItem('remark', '')
+  const str = localStorage.getItem('remark20')
+  showToast(str)
 }
 </script>
 

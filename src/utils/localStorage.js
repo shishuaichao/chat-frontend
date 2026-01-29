@@ -1,4 +1,4 @@
-
+import { showToast } from 'vant'
 
 export const getLocal = (key) => {
   let data = localStorage.getItem(key)
@@ -13,17 +13,10 @@ export const setLocal = (key, data) => {
 }
 
 export const getRemark = (id) => {
-  let remark = getLocal('remark')
-  if (remark) {
-    remark = remark[id] || ''
-  } else {
-    remark = ''
-  }
-  return remark
+  return localStorage.getItem(`remark${id}`) || ''
 }
 
 export const setRemark = (id, remark) => {
-  let remarkObj = getLocal('remark') || {}
-  remarkObj[id] = remark
-  setLocal('remark', remarkObj)
+  localStorage.setItem(`remark${id}`, remark)
+  showToast(`设置成功，${id}的备注为${remark}`)
 }
