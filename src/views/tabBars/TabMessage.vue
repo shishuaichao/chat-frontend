@@ -32,20 +32,7 @@ const chatList = ref([]);
 onMounted(() => {
   getConversationList()
     .then(res => {
-      console.log('getConversationList', res)
       chatList.value = res.data
-      // .map(item => {
-      //   return {
-      //     convId: item.convId,
-      //     avatar: item.type == 2 ? item.avatar.split(',') : item.avatar,
-      //     name: item.name,
-      //     type: item.type,
-      //     message: '',
-      //     time: '',
-      //     hasRedDot: false,
-      //     hasAttachment: false
-      //   }
-      // })
     })
     .catch(err => {
       console.log('getConversationList', err)

@@ -99,6 +99,7 @@ const sendMsg = (msg) => {
     convId: route.query.convId, 
     type: 1,
     status: 1,
+    created_at: Date.parse(new Date()),
     ...userInfo.value,
   }
   WS_Client.emit('message', msgData)

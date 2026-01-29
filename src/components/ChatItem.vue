@@ -2,8 +2,8 @@
   <div class="chat_item" @click="$emit('handleClick', item)">
     <div class="avatar_wrapper">
       <UserImg 
-        :avatarList="item.type == 2 ? item.avatar.split(',') : []"
-        :avatar="item.type == 1 ? item.avatar : ''" 
+        :avatarList="item.type == 2 ? item?.avatar?.split(',') : []"
+        :avatar="item.type == 1 ? item?.avatar : ''" 
       />
     </div>
     <div class="content-wrapper">
