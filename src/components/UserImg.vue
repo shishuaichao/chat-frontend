@@ -1,29 +1,41 @@
 <template>
-  <div 
-    class="user_img_box"
+  <div class="main_box"
     :class="{'mini': size == 'mini', 'normal': size == 'normal', 'large': size == 'large'}"
-    >
+  >
     <div 
-      class="img_box"
-      v-if="avatarList.length == 1 || avatar">
-      <img :src="avatar" alt="" class="avatar avatar_1" />
-    </div>
-    <div 
-      class="img_box img_box_mul" 
-      v-if="avatarList.length > 1"
+      class="user_img_box"
       >
-      <img 
-        alt="avatar" 
-        v-for="(v, index) in avatarList" 
-        :key="index" 
-        :src="v" 
-        class="avatar"
+      <div 
+        class="img_box"
+        v-if="avatarList.length == 1 || avatar">
+        <img 
+          :src="avatar" alt="" class="avatar avatar_1"
+          
+          />
+      </div>
+      <div 
+        class="img_box img_box_mul" 
         :class="{
-          'avatar_1': avatarList.length == 1,
-          'avatar_234': avatarList.length > 1 && avatarList.length <= 4,
-          'avatar_5-9': avatarList.length >= 5 && avatarList.length <= 9,
+          'img_box_234': avatarList.length > 1 && avatarList.length <= 4,
+          'img_box_2': avatarList.length == 2,
+          'img_box_3': avatarList.length == 3,
+          'img_box_5': avatarList.length == 5,
+          'img_box_6': avatarList.length == 6,
+          'img_box_7': avatarList.length == 7,
+          'img_box_8': avatarList.length == 8,
+          'img_box_5-9': avatarList.length >= 5 && avatarList.length <= 9,
         }"
-        />
+        v-if="avatarList.length > 1"
+        >
+        <img 
+          alt="avatar" 
+          v-for="(v, index) in avatarList" 
+          :key="index" 
+          :src="v" 
+          class="avatar"
+          :class="`avatar_${index + 1}`"
+          />
+      </div>
     </div>
   </div>
 </template>
@@ -45,46 +57,104 @@ defineProps({
 </script>
 
 <style scoped lang="scss">
-.user_img_box {
+.main_box {
   display: inline-block;
-  &.mini {
-    width: 40px;
-    height: 40px;
-  }
   &.normal {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
+    .img_box_234 {
+      padding: 2px;
+      .avatar {
+        width: 22px;
+        height: 22px;
+      }
+    }
+    .img_box_5-9 {
+      padding: 2px;
+      .avatar {
+        width: 14px;
+        height: 14px;
+      }
+    }
   }
-  &.large {
-    width: 64px;
-    height: 64px;
-  }
+}
+.user_img_box {
+  width: 100%;
+  height: 100%;
+  background-color: #e6e7e5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  overflow: hidden;
 }
 .img_box {
   box-sizing: border-box;
-  background-color: #f0f0f0;
-  border-radius: 4px;
+  // background-color: #a562e3;
   overflow: hidden;
-  width: 100%;
-  height: 100%;
-  .avatar_1 {
-    width: 100%;
-    height: 100%;
-  }
-  .avatar_234 {
-    width: 42%;
-    height: 42%;
-  }
-  .avatar_5-9 {
-    width: 30%;
-    height: 30%;
-  }
 }
 .img_box_mul {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  width: fit-content;
   gap: 2px;
+  &.img_box_234 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  &.img_box_2 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+  }
+  &.img_box_3 {
+    .avatar_1 {
+      grid-column: 1 / span 2;
+    }
+  }
+
+  &.img_box_5-9 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  &.img_box_5 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    .avatar_1 {
+      grid-column: 1 / span 1;
+      position: relative;
+      left: 8px;
+    }
+    .avatar_2 {
+      grid-column: 3 / span 1;
+      position: relative;
+      right: 8px;
+    }
+  }
+  &.img_box_6 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  &.img_box_7 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    .avatar_1 {
+      grid-column: 1 / span 3;
+    }
+  }
+  &.img_box_8 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    .avatar_1 {
+      grid-column: 1 / span 1;
+      position: relative;
+      left: 8px;
+    }
+    .avatar_2 {
+      grid-column: 3 / span 1;
+      position: relative;
+      right: 8px;
+    }
+  }
 }
 </style>
