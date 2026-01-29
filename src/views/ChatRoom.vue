@@ -9,15 +9,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, onUnmounted } from 'vue'
+import { ref, onActivated, nextTick, onDeactivated } from 'vue'
 import { showToast } from 'vant';
 import ChatHeader from '@/components/ChatHeader.vue';
 import ChatContent from '@/components/ChatContent.vue';
 import ChartFooter from '@/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute } from 'vue-router'
-
-import { fetchChatRecords } from '@/api/chat.js'
+import { fetchChatRecords, fetchConvInfo } from '@/api/chat.js'
+import { getRemark } from '@/utils/localStorage.js'
 
 
 const route = useRoute()  
@@ -25,21 +25,24 @@ const route = useRoute()
 
 
 const onlineUser = ref([])
-const title = ref('')
+const convInfo = ref({})
 const userInfo = ref({})
-const init = () => {
-  title.value = route.query.title || ''
-  getAllChats()
-  // 加入房间
-  WS_Client.joinRoom(route.query.convId)
+const title = ref('')
+const getConvInfo = () => {
+  fetchConvInfo({ convId: route.query.convId, type: route.query.type })
+    .then(res => {
+      convInfo.value = res.data || {}
+      title.value = route.query.type == 1 ? getRemark(convInfo.value.friendId) : convInfo.value.name
+    })
+    .catch(err => {
+      console.log('fetchConvInfo', err)
+    })
+}
 
-  // 监听连接成功
-  WS_mitt.on('join_room', () => {
-    // showToast({
-    //   message: msg,
-    //   duration: 500
-    // })
-  })
+const init = () => {
+  getConvInfo()
+  getAllChats()
+  
 
   userInfo.value = {
     senderId: localStorage.getItem('id'),
@@ -132,14 +135,14 @@ const scrollEvent = () => {
   }
 }
 
-onMounted(() => {
+onActivated(() => {
   init()
   
   chatContentRef.value.addEventListener('scroll', scrollEvent)
 })
 
-onUnmounted(() => {
-
+onDeactivated(() => {
+  chatContentRef.value.removeEventListener('scroll', scrollEvent)
 })
 
 </script>

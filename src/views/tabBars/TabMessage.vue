@@ -7,7 +7,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onActivated } from 'vue';
 import ChatList from '@/components/ChatList.vue';
 import { getConversationList } from '@/api/index.js'
 import router from '@/router';
@@ -24,13 +24,14 @@ const entryChat = (item) => {
     name: 'ChatRoom',
     query: {
       convId: item.convId,
-      title: item.name || item.remark || item.nickname,
+      type: item.type,
     }
   })
 }
 
 const chatList = ref([]);
-onMounted(() => {
+onActivated(() => {
+  console.log('TabMessage mounted')
   getConversationList()
     .then(res => {
       chatList.value = res.data
@@ -40,6 +41,13 @@ onMounted(() => {
     })
 })
 </script>
+<!-- 新增普通script标签，声明组件name -->
+<script>
+export default {
+  name: 'TabMessage'
+}
+</script>
+
 <style scoped lang="scss">
 
 </style>

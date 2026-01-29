@@ -16,10 +16,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onActivated } from 'vue';
 import { fetchFriendList, fetchGroupList } from '@/api/user.js'
 import ChatItem from '@/components/ChatItem.vue'
 import router from '@/router'
+import { setRemark } from '@/utils/localStorage.js'
 
 
 // 定义标题
@@ -35,6 +36,7 @@ const getFriendList = () => {
     .then(res => {
       if (res.code === 200) {
         friendList.value = res.data || []
+        friendList.value.map(item => setRemark(item.id, item.remark))
       }
     })
     .catch(err => {
@@ -48,7 +50,7 @@ const getGroupList = () => {
       if (res.code === 200) {
         groupList.value = res.data || []
         groupList.value.map(item => {
-          item.avatar = item.avatar.split(',')
+          item.avatar = item?.avatar?.split(',')
         })
       }
     })
@@ -78,7 +80,7 @@ const entryGroupInfo = (item) => {
 
 
 
-onMounted(() => {
+onActivated(() => {
   getFriendList()
   getGroupList()
 })

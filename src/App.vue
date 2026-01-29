@@ -1,6 +1,10 @@
 <template>
   <div class="page_view">
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
   </div>
   <van-tabbar v-model="active" class="tabbar" v-if="showTabbar">
     <van-tabbar-item 

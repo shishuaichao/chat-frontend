@@ -101,6 +101,7 @@ const entryChat = (convId) => {
     name: 'ChatRoom',
     query: {
       convId: convId,
+      type: 1,
     }
   })
 }

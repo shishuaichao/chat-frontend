@@ -7,6 +7,8 @@ export const fetchCreateConversation = (params) => fetchPost('/chat/conversation
 export const fetchJoinConversation = (params) => fetchPost('/chat/conversation/join', params)
 export const getConversationList = (params) => fetchGet('/chat/conversation/list', params)
 
+export const fetchConvInfo = (params) => fetchGet('/chat/conversation/info', params)
+
 
 export default {
   fetchChatRecords,
