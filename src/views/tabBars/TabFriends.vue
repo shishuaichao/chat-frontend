@@ -48,34 +48,15 @@ const getFriendApplyList = () => {
 
 // 同意
 const applyOperate = (item) => {
-  fetchFriendAdd({ friendId: item.id })
+  fetchFriendAdd({ friendId: item.user_id })
     .then(() => {
-      // showToast('同意')
-      createConversation(item.id)
+      showToast('同意成功')
     })
     .catch(err => {
       console.log(err)
     })
 }
-// 创建聊天会话
-const createConversation = (friendId) => {
-  fetchCreateConversation({
-    friendId: friendId,
-    memberIds: [
-      { id: localStorage.getItem('id'), type: 1, },
-      { id: friendId, type: 1, },
-    ],
-    type: 1,
-  })
-    .then(() => {
-      getFriendApplyList()
-      getFriendList()
-    })
-    .catch(err => {
-      console.log(err)
-      showToast(err.msg)
-    })
-}
+
 
 // 获取好友列表
 const getFriendList = () => {
@@ -83,7 +64,7 @@ const getFriendList = () => {
     .then(res => {
       if (res.code === 200) {
         friendList.value = res.data || []
-        friendList.value.map(item => setRemark(item.id, item.remark))
+        friendList.value.map(item => setRemark(item.id, item.remark || item.nickname))
       }
     })
     .catch(err => {

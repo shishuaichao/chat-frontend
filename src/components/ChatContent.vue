@@ -8,16 +8,16 @@
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img :src="msgInfo.avatar" alt="">
+        <img :src="convMember[msgInfo.sender_id]?.avatar" alt="">
       </div>
     </div>
     <!-- 其他人 -->
     <div class="msg_other msg_item left" v-else>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img :src="msgInfo.avatar" alt="">
+        <img :src="convMember[msgInfo.sender_id]?.avatar" alt="">
       </div>
       <div class="msg_box">
-        <div class="nickname" v-if="convType != 1">{{ msgInfo.nickname }} {{ formatTime(msgInfo.created_at) }}</div>
+        <div class="nickname" v-if="convType != 2">{{ getRemark(msgInfo.sender_id) }} {{ formatTime(msgInfo.created_at) }}</div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
     </div>
@@ -33,6 +33,7 @@
 import { defineProps, onMounted, ref } from 'vue';
 import formatTime from '@/utils/formatTime.js'
 import { useRouter, useRoute } from 'vue-router'
+import { getRemark } from '@/utils/localStorage';
 
 const router = useRouter()
 const route = useRoute()
@@ -41,6 +42,10 @@ const convType = ref(route.query.type)
 defineProps({
   // 消息
   msgInfo: {
+    type: Object,
+    required: true,
+  },
+  convMember: {
     type: Object,
     required: true,
   },
@@ -122,6 +127,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     line-height: 1.4;
+    word-break: break-word;
   }
   .left .msg_content::before {
     content: '';

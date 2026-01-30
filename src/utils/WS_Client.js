@@ -99,6 +99,13 @@ class SocketClient {
       WS_mitt.emit('room:joined', roomId);
     }
   }
+  // 离开指定房间（适配群聊场景）@param {String}  roomId - 房间ID
+  leaveRoom(roomId) {
+    this.socket.emit('room:leave', roomId);
+    WS_mitt.emit('room:left', roomId);
+  }
+    
+
 }
 
 // 导出全局单例（确保整个项目只有一个 Socket 实例）
@@ -115,10 +122,10 @@ export const linkStart = async () => {
   const handleVisibilityChange = () => {
     if (document.hidden) {
       // 切到后台
-      WS_Client.disconnect()
+      // WS_Client.disconnect()
     } else {
       // 切到前台
-      WS_Client.connect(auth);
+      // WS_Client.connect(auth);
     }
   }
   document.addEventListener('visibilitychange', handleVisibilityChange);

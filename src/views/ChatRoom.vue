@@ -2,7 +2,7 @@
   <div class="main_container">
     <ChatHeader :onlineUser="onlineUser" :title="title"></ChatHeader>
     <div class="chat_content_box" ref="chatContentRef">
-      <ChatContent v-for="v,i in msgList" :key="i" :msgInfo="v"></ChatContent>
+      <ChatContent v-for="v,i in msgList" :key="i" :msgInfo="v" :convMember="convMember"></ChatContent>
     </div>
     <ChartFooter @sendMessage="sendMsg"  @focus="scrollToBottom" />
   </div>
@@ -16,7 +16,7 @@ import ChatContent from '@/components/ChatContent.vue';
 import ChartFooter from '@/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute } from 'vue-router'
-import { fetchChatRecords, fetchConvInfo } from '@/api/chat.js'
+import { fetchChatRecords, fetchConvMember } from '@/api/chat.js'
 
 
 const route = useRoute()  
@@ -24,17 +24,23 @@ const route = useRoute()
 
 
 const onlineUser = ref([])
-const convInfo = ref({})
-const userInfo = ref({})
+const convMember = ref({})   // [ id: {nickname: '', avatar: ''}]
+const userInfo = ref({}) 
 const title = ref('')
-const getConvInfo = () => {
-  fetchConvInfo({ convId: route.query.convId, type: route.query.type })
+const getConvMember = () => {
+  fetchConvMember({ convId: route.query.convId, type: route.query.type })
     .then(res => {
-      convInfo.value = res.data || {}
-      title.value = route.query.type == 1 ? (convInfo.value.remark || convInfo.value.nickname) : convInfo.value.name
+      let arr = res.data || []
+      convMember.value = arr.reduce((pre, cur) => {
+        pre[cur.id] = {
+          nickname: cur.nickname,
+          avatar: cur.avatar,
+        }
+        return pre
+      }, {})
     })
     .catch(err => {
-      console.log('fetchConvInfo', err)
+      console.log('fetchConvMember', err)
     })
 }
 
@@ -58,12 +64,12 @@ const eventOnlineCount = (data) => {
 
 const init = () => {
   WS_Client.joinRoom(route.query.convId)
-  getConvInfo()
+  getConvMember()
   getAllChats()
   
 
   userInfo.value = {
-    senderId: localStorage.getItem('id'),
+    sender_id: localStorage.getItem('id'),
     nickname: localStorage.getItem('nickname'),
     avatar: localStorage.getItem('avatar'),
   }
@@ -145,6 +151,7 @@ onActivated(() => {
 })
 
 onDeactivated(() => {
+  WS_Client.leaveRoom(route.query.convId)
   chatContentRef.value.removeEventListener('scroll', scrollEvent)
   // 链接成功 
   WS_mitt.off('connect_success', eventConnectSuccess)
