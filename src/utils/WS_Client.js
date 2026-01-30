@@ -2,6 +2,7 @@ import { io } from 'socket.io-client';
 import mitt from 'mitt';
 import { API_BASE_URL } from './constant.js'
 import { showToast } from 'vant';
+import store from '@/store'
 
 // 1. 创建全局 mitt 事件总线（解耦 Socket 与组件）
 export const WS_mitt = mitt();
@@ -123,9 +124,11 @@ export const linkStart = async () => {
     if (document.hidden) {
       // 切到后台
       // WS_Client.disconnect()
+      store.commit('setIsInBack', true)
     } else {
       // 切到前台
       // WS_Client.connect(auth);
+      store.commit('setIsInBack', false)
     }
   }
   document.addEventListener('visibilitychange', handleVisibilityChange);

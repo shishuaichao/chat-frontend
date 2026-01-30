@@ -22,6 +22,8 @@
       </div>
     </div>
 
+    在后台：{{ isInBack }}
+
     <div class="padding_20 justify_content_center foot_box">
       <van-button block plain hairline type="danger" size="small" class="logout-btn" @click="logout">注  销</van-button>
     </div>
@@ -29,11 +31,23 @@
   </div>
 </template>
 <script setup>
-import { onActivated, ref } from 'vue'
+import { onActivated, ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-// import { showToast } from 'vant'
+import msgModule from '@/store/msgModule.js'
+import { useStore } from 'vuex'
+const store = useStore()
 
+console.log('store', store)
+const isInBack = computed(() => {
+  return store.state.count
+})
 
+setTimeout(() => {
+  console.log('msgModule', msgModule)
+  // msgModule.setIsInBack(true)
+  store.commit('increment')
+  
+}, 1000)
 
 const router = useRouter()
 const route = useRoute()  

@@ -18,15 +18,28 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import router from './router'
 import tabBarsRoutes from '@/router/tabbars.js'
 import { checkLogined } from '@/utils/checkLogin.js'
+import { showNotify } from 'vant'
+import { WS_mitt} from '@/utils/WS_Client.js'
 
 onMounted(() => {
   checkLogined()
 })
 
+onUnmounted(() => {
+  // WS_mitt.off('message')
+  // WS_Client.disconnect()
+})
+
+WS_mitt.on('message', (data) => {
+  // 成功通知
+  if (data.sender_id != localStorage.getItem('id')) {
+    showNotify({ type: 'success', message: data.content });
+  }
+})
 
 const showTabbar = ref(false)
 const homePageList = tabBarsRoutes.map(item => item.name)

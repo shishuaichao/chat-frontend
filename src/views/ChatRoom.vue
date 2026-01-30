@@ -17,7 +17,7 @@ import ChartFooter from '@/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute } from 'vue-router'
 import { fetchChatRecords, fetchConvMember } from '@/api/chat.js'
-
+// import store from '@/store'
 
 const route = useRoute()  
 
@@ -152,7 +152,7 @@ onActivated(() => {
 
 onDeactivated(() => {
   WS_Client.leaveRoom(route.query.convId)
-  chatContentRef.value.removeEventListener('scroll', scrollEvent)
+  chatContentRef.value?.removeEventListener('scroll', scrollEvent)
   // 链接成功 
   WS_mitt.off('connect_success', eventConnectSuccess)
   // 聊天消息
