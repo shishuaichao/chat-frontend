@@ -31,7 +31,7 @@
 <script setup>
 import { onActivated, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { showToast } from 'vant'
+// import { showToast } from 'vant'
 
 
 
@@ -68,8 +68,9 @@ onActivated(() => {
 })
 
 const logout = () => {
-  const str = localStorage.getItem('remark20')
-  showToast(str)
+  // const str = localStorage.getItem('remark20')
+  // showToast(str)
+  // localStorage.clear()
 }
 </script>
 

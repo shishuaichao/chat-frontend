@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 import mitt from 'mitt';
-import { SOCKET_BASE_URL } from './constant.js'
+import { API_BASE_URL } from './constant.js'
 import { showToast } from 'vant';
 
 // 1. 创建全局 mitt 事件总线（解耦 Socket 与组件）
@@ -11,7 +11,7 @@ class SocketClient {
   constructor() {
     this.socket = null; // Socket 实例
     this.isConnected = false; // 连接状态
-    this.baseUrl = SOCKET_BASE_URL; // 替换为实际后端地址（如 http://localhost:3000）
+    this.baseUrl = API_BASE_URL; // 替换为实际后端地址（如 http://localhost:3000）
     this.options = {
       // Socket.IO 核心配置
       reconnection: true, // 自动重连（默认开启）

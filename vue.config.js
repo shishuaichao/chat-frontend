@@ -3,9 +3,9 @@ const { defineConfig } = require('@vue/cli-service');
 // 引入webpack（Vue CLI 内置了webpack，无需额外安装）
 const webpack = require('webpack');
 const path = require('path')
-import { API_BASE_URL } from './src/utils/constant.js'
-import { SOCKET_BASE_URL } from './src/utils/constant.js'
 
+const base_url = 'http://172.20.10.2:5000'
+// const base_url = 'http://192.168.1.5:5000'
 
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -47,7 +47,7 @@ module.exports = defineConfig({
       // 场景1：匹配以 /api 开头的请求
       '/api': {
         // target: 'http://192.168.1.5:5000', // 后端接口的基础地址
-        target: 'http://172.20.10.2:5000', // 后端接口的基础地址
+        target: base_url, // 后端接口的基础地址
         changeOrigin: true, // 开启跨域（关键）
         pathRewrite: { // 路径重写（可选）
           '^/api': '' // 如果后端接口没有 /api 前缀，就把前端的 /api 去掉

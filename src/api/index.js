@@ -10,7 +10,6 @@ import {
   fetchRegister,
   fetchUserUpdate,
   fetchUserInfo,
-  getAllUsers,
   fetchFriendAdd,
   fetchRemarkname,
 } from './user.js'
@@ -23,7 +22,6 @@ export {
   getConversationList,
   fetchUserUpdate,
   fetchUserInfo,
-  getAllUsers,
   fetchFriendAdd,
   fetchRemarkname,
 }
