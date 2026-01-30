@@ -12,28 +12,9 @@
       />
       <div class="info">
         <div class="edit_remarkname flex" v-if="isEdit">
-          <van-field
-            type="text"
-            autofocus
-            v-model="remarkname"
-            placeholder="备注名..."
-          />
-          <van-button
-            type="primary"
-            size="mini"
-            plain 
-            @click="saveRemarkname('cancel')"
-            >
-            取 消
-          </van-button>
-          <van-button
-            type="primary"
-            size="mini"
-            :disabled="remarkname.trim().length == 0"
-            @click="saveRemarkname"
-            >
-            保 存
-          </van-button>
+          <van-field v-model="remarkname" type="text" autofocus placeholder="备注名..."/>
+          <van-button type="primary" size="mini" plain @click="saveRemarkname('cancel')"> 取 消</van-button>
+          <van-button type="primary" size="mini" :disabled="remarkname.trim().length == 0" @click="saveRemarkname" > 保 存 </van-button>
         </div>
         <div class="nickname flex align_items_center" v-else>
           {{ userInfo.remark || userInfo.nickname }}
@@ -46,32 +27,9 @@
       </div>
     </div>
     <div class="operate" v-if="!isSelf">
-      <van-button 
-        type="primary" 
-        icon="chat" 
-        block
-        plain
-        v-if="friendShipStatus == 1"
-        @click="clickChat"
-        >
-        发消息
-      </van-button>
-      <van-button 
-        type="primary" 
-        icon="plus" 
-        block
-        plain
-        v-if="friendShipStatus == null"
-        @click="addFriend"
-        >
-        加为好友
-      </van-button>
-      <van-button 
-        type="primary" block plain
-        v-if="friendShipStatus == 3"
-        >
-        已申请，等待确认
-      </van-button>
+      <van-button type="primary" icon="chat" block plain v-if="friendShipStatus == 1 && userInfo.convId != null" @click="clickChat"> 发消息 </van-button> 
+      <van-button type="primary" icon="plus" block plain v-if="friendShipStatus == null" @click="addFriend"> 加为好友 </van-button> 
+      <van-button type="primary" block plain v-if="friendShipStatus == 3"> 已申请，等待确认 </van-button>
     </div>
   </div>
 </template>
@@ -79,13 +37,13 @@
 <script setup>
 import { ref, onActivated } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { showToast } from 'vant'
+  import { showToast } from 'vant'
 import { 
-  fetchUserInfo, 
+  fetchFriendInfo, 
   fetchFriendAdd, 
   fetchRemarkname,
-  fetchCreateConversation,
-} from '@/api/index.js'
+} from '@/api/user.js'
+import { fetchCreateConversation } from '@/api/chat.js'
 import { setRemark } from '@/utils/localStorage.js'
 
 
@@ -112,24 +70,7 @@ const entryChat = (convId) => {
 const clickChat = () => {
   if (userInfo.value.convId) {
     entryChat(userInfo.value.convId)
-  } else {
-    let params = {
-      friendId: route.query.id,
-      memberIds: [
-        { id: localStorage.getItem('id'), type: 1, },
-        { id: route.query.id, type: 1, },
-      ],
-      type: 1,
-    }
-    fetchCreateConversation(params)
-      .then(res => {
-        entryChat(res?.data?.convId)
-      })
-      .catch(err => {
-        console.log(err)
-        showToast(err.msg)
-      })
-  }
+  } 
 }
 const remarkname = ref('')
 const isEdit = ref(false)
@@ -168,8 +109,12 @@ const saveRemarkname = (type) => {
 const addFriend = () => {
   fetchFriendAdd({ friendId: route.query.id })
     .then((res) => {
-      friendShipStatus.value = res?.data?.friendshipsStatus
+      friendShipStatus.value = res.data.status
+      console.log('friendShipStatus.value', res.data)
       showToast(res?.msg)
+      if (friendShipStatus.value != 3) {
+        createConversation()
+      }
     })
     .catch(err => {
       console.log(err)
@@ -177,8 +122,29 @@ const addFriend = () => {
     })
 }
 
+// 创建聊天会话
+const createConversation = () => {
+  fetchCreateConversation({
+    friendId: route.query.id,
+    memberIds: [
+      { id: localStorage.getItem('id'), type: 1, },
+      { id: route.query.id, type: 1, },
+    ],
+    type: 1,
+  })
+    .then(() => {
+      getOtherUserInfo()
+    })
+    .catch(err => {
+      console.log(err)
+      showToast(err.msg)
+    })
+}
+
+
+
 const getOtherUserInfo = () => {
-  fetchUserInfo({ id: route.query.id })
+  fetchFriendInfo({ id: route.query.id })
     .then(res => {
       userInfo.value = res.data || {}
       friendShipStatus.value = res?.data?.friendshipsStatus

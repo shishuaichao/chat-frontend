@@ -70,7 +70,7 @@ onActivated(() => {
 const logout = () => {
   // const str = localStorage.getItem('remark20')
   // showToast(str)
-  // localStorage.clear()
+  localStorage.clear()
 }
 </script>
 

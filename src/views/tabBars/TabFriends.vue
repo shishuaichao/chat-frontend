@@ -50,10 +50,30 @@ const getFriendApplyList = () => {
 const applyOperate = (item) => {
   fetchFriendAdd({ friendId: item.id })
     .then(() => {
-      showToast('同意')
+      // showToast('同意')
+      createConversation(item.id)
     })
     .catch(err => {
       console.log(err)
+    })
+}
+// 创建聊天会话
+const createConversation = (friendId) => {
+  fetchCreateConversation({
+    friendId: friendId,
+    memberIds: [
+      { id: localStorage.getItem('id'), type: 1, },
+      { id: friendId, type: 1, },
+    ],
+    type: 1,
+  })
+    .then(() => {
+      getFriendApplyList()
+      getFriendList()
+    })
+    .catch(err => {
+      console.log(err)
+      showToast(err.msg)
     })
 }
 
