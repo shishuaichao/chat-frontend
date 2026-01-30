@@ -151,7 +151,6 @@ const saveRemarkname = (type) => {
   }
   fetchRemarkname({
     friendId: route.query.id,
-    remarkname: remarkname.value,
     remark: remarkname.value,
   })
     .then(() => {

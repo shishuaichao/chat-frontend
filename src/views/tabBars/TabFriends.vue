@@ -105,8 +105,6 @@ const entryGroupInfo = (item) => {
   })
 }
 
-
-
 onActivated(() => {
   getFriendList()
   getGroupList()
