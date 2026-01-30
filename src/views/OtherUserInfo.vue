@@ -18,7 +18,7 @@
         </div>
         <div class="nickname flex align_items_center" v-else>
           {{ userInfo.remark || userInfo.nickname }}
-          <div class="edit_icon" v-if="friendShipStatus == 1" @click="editRemarkname">
+          <div class="edit_icon" v-if="friendshipsStatus == 1" @click="editRemarkname">
             <van-icon name="edit" />
           </div>
         </div>
@@ -27,9 +27,8 @@
       </div>
     </div>
     <div class="operate" v-if="!isSelf">
-      <van-button type="primary" icon="chat" block plain v-if="friendShipStatus == 1 && userInfo.convId != null" @click="clickChat"> 发消息 </van-button> 
-      <van-button type="primary" icon="plus" block plain v-if="friendShipStatus == null" @click="addFriend"> 加为好友 </van-button> 
-      <van-button type="primary" block plain v-if="friendShipStatus == 3"> 已申请，等待确认 </van-button>
+      <van-button type="primary" icon="chat" block plain v-if="friendshipsStatus == 1" @click="clickChat"> 发消息 </van-button> 
+      <van-button type="primary" icon="plus" block plain v-if="!friendshipsStatus" @click="addFriend"> 加为好友 </van-button> 
     </div>
   </div>
 </template>
@@ -43,7 +42,6 @@ import {
   fetchFriendAdd, 
   fetchRemarkname,
 } from '@/api/user.js'
-import { fetchCreateConversation } from '@/api/chat.js'
 import { setRemark } from '@/utils/localStorage.js'
 
 
@@ -53,7 +51,7 @@ import { setRemark } from '@/utils/localStorage.js'
 const router = useRouter()
 const route = useRoute()
 
-const friendShipStatus = ref(null)
+const friendshipsStatus = ref(null)
 const isSelf = ref(localStorage.getItem('id') == route.query.id)
 
 const entryChat = (convId) => {
@@ -109,31 +107,8 @@ const saveRemarkname = (type) => {
 const addFriend = () => {
   fetchFriendAdd({ friendId: route.query.id })
     .then((res) => {
-      friendShipStatus.value = res.data.status
-      console.log('friendShipStatus.value', res.data)
-      showToast(res?.msg)
-      if (friendShipStatus.value != 3) {
-        createConversation()
-      }
-    })
-    .catch(err => {
-      console.log(err)
-      showToast(err.msg)
-    })
-}
-
-// 创建聊天会话
-const createConversation = () => {
-  fetchCreateConversation({
-    friendId: route.query.id,
-    memberIds: [
-      { id: localStorage.getItem('id'), type: 1, },
-      { id: route.query.id, type: 1, },
-    ],
-    type: 1,
-  })
-    .then(() => {
-      getOtherUserInfo()
+      friendshipsStatus.value = res.data.friendshipsStatus
+      showToast(res.msg)
     })
     .catch(err => {
       console.log(err)
@@ -147,7 +122,7 @@ const getOtherUserInfo = () => {
   fetchFriendInfo({ id: route.query.id })
     .then(res => {
       userInfo.value = res.data || {}
-      friendShipStatus.value = res?.data?.friendshipsStatus
+      friendshipsStatus.value = res?.data?.friendshipsStatus
     })
     .catch(err => {
       console.log(err)

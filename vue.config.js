@@ -4,8 +4,8 @@ const { defineConfig } = require('@vue/cli-service');
 const webpack = require('webpack');
 const path = require('path')
 
-const base_url = 'http://172.20.10.2:5000'
-// const base_url = 'http://192.168.1.5:5000'
+// const base_url = 'http://172.20.10.2:5000'
+const base_url = 'http://192.168.1.5:5000'
 
 module.exports = defineConfig({
   transpileDependencies: true,

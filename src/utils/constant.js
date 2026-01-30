@@ -1,8 +1,8 @@
 
 
 
-// export const API_BASE_URL = 'http://192.168.1.5:5000'
-export const API_BASE_URL = 'http://172.20.10.2:5000'
+export const API_BASE_URL = 'http://192.168.1.5:5000'
+// export const API_BASE_URL = 'http://172.20.10.2:5000'
 
 export const IMG_SIZE = '30/30'
 export const IMG_BASE_URL = 'https://picsum.photos'
