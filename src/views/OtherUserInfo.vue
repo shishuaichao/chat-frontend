@@ -43,8 +43,8 @@ import {
   fetchRemarkname,
 } from '@/api/user.js'
 import { setRemark } from '@/utils/localStorage.js'
-
-
+import { getSessionKey } from '@/utils/utils.js'
+import { fetchGetIdBySessionKey } from '@/api/chat.js'
 
 
 
@@ -66,9 +66,14 @@ const entryChat = (convId) => {
 
 // 点击聊天
 const clickChat = () => {
-  if (userInfo.value.convId) {
-    entryChat(userInfo.value.convId)
-  } 
+  let sessionKey = getSessionKey([route.query.id, localStorage.getItem('id')])
+  fetchGetIdBySessionKey({ sessionKey })
+    .then(res => {
+      entryChat(res.data.convId)
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }
 const remarkname = ref('')
 const isEdit = ref(false)

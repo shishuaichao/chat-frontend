@@ -3,7 +3,7 @@ import { fetchGet, fetchPost } from './axios.js'
 
 
 export const fetchCreateConversation = (params) => fetchPost('/chat/conversation/createConversation', params)
-
+export const fetchGetIdBySessionKey = (params) => fetchGet('/chat/conversation/getIdBySessionKey', params)
 
 
 

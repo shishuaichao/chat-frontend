@@ -17,7 +17,6 @@ import ChartFooter from '@/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute } from 'vue-router'
 import { fetchChatRecords, fetchConvInfo } from '@/api/chat.js'
-import { getRemark } from '@/utils/localStorage.js'
 
 
 const route = useRoute()  
@@ -32,7 +31,7 @@ const getConvInfo = () => {
   fetchConvInfo({ convId: route.query.convId, type: route.query.type })
     .then(res => {
       convInfo.value = res.data || {}
-      title.value = route.query.type == 1 ? getRemark(convInfo.value.friendId) : convInfo.value.name
+      title.value = route.query.type == 1 ? (convInfo.value.remark || convInfo.value.nickname) : convInfo.value.name
     })
     .catch(err => {
       console.log('fetchConvInfo', err)
