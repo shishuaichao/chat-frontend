@@ -29,7 +29,7 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onActivated, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { showToast } from 'vant'
 
@@ -59,7 +59,7 @@ const userInfo = ref({
   nickname: '',
   id: '',
 })
-onMounted(() => {
+onActivated(() => {
   userInfo.value = {
     avatar: localStorage.getItem('avatar'),
     nickname: localStorage.getItem('nickname'),
@@ -68,9 +68,6 @@ onMounted(() => {
 })
 
 const logout = () => {
-  // localStorage.clear()
-  // router.replace({ path: '/' })
-  // localStorage.setItem('remark', '')
   const str = localStorage.getItem('remark20')
   showToast(str)
 }

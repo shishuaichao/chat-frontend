@@ -39,6 +39,24 @@ const getConvInfo = () => {
     })
 }
 
+const eventConnectSuccess = () => {
+  WS_Client.joinRoom(route.query.convId)
+}
+const eventMessage = (data) => {
+  render(data)
+}
+const eventSystemMsg = (data) => {
+  if (data.id !== userInfo.value.id) {
+    showToast(data.content);
+    render(data)
+  }
+}
+const eventOnlineCount = (data) => {
+  onlineUser.value = data
+}
+
+
+
 const init = () => {
   WS_Client.joinRoom(route.query.convId)
   getConvInfo()
@@ -51,29 +69,14 @@ const init = () => {
     avatar: localStorage.getItem('avatar'),
   }
   // 链接成功 
-  WS_mitt.on('connect_success', () => {
-    WS_Client.joinRoom(route.query.convId)
-  })
-
+  WS_mitt.on('connect_success', eventConnectSuccess)
   // 聊天消息
-  WS_mitt.on('message', (data) => {
-    // console.log('message', data)
-    render(data)
-  })
-
-
-
+  WS_mitt.on('message', eventMessage)
   // 系统消息
-  WS_mitt.on('system_msg', (data) => {
-    if (data.id !== userInfo.value.id) {
-      showToast(data.content);
-      render(data)
-    }
-  })
+  WS_mitt.on('system_msg', eventSystemMsg)
   // 在线人数
-  WS_mitt.on('online_count', (data) => {
-    onlineUser.value = data
-  })
+  WS_mitt.on('online_count', eventOnlineCount)
+
   WS_Client.emit('query_online_count')
 }
 
@@ -144,6 +147,14 @@ onActivated(() => {
 
 onDeactivated(() => {
   chatContentRef.value.removeEventListener('scroll', scrollEvent)
+  // 链接成功 
+  WS_mitt.off('connect_success', eventConnectSuccess)
+  // 聊天消息
+  WS_mitt.off('message', eventMessage)
+  // 系统消息
+  WS_mitt.off('system_msg', eventSystemMsg)
+  // 在线人数
+  WS_mitt.off('online_count', eventOnlineCount)
 })
 
 </script>
