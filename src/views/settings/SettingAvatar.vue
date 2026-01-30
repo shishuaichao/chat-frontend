@@ -7,8 +7,8 @@
   />
   <!-- 提交按钮 -->
   <div class="submit-btn-container">
-    <van-button :disabled="isLoading" size="small" plain hairline type="primary" @click="changeImgs">换一批</van-button>
-    <van-button :disabled="activeImgId === null || isLoading" size="small" type="primary" @click="handleSubmit">确认</van-button>
+    <van-button :disabled="isLoading" size="normal" plain hairline type="primary" @click="changeImgs">换一批</van-button>
+    <van-button :disabled="activeImgId === null || isLoading" size="normal" type="primary" @click="handleSubmit">确认</van-button>
   </div>
   <div class="img-batch">
     <img 

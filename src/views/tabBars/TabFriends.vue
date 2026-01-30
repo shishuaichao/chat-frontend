@@ -4,7 +4,7 @@
     />
   <van-collapse v-model="activeNames">
     <van-collapse-item title="好友申请" name="1">
-      代码是写出来给人看的，附带能在机器上运行。
+      <ChatItem v-for="item in applyList" :key="item.id" :item="item" @applyOperate="applyOperate" />
     </van-collapse-item>
     <van-collapse-item title="好友列表" name="2">
       <ChatItem v-for="item in friendList" :key="item.id" :item="item" @handleClick="entryFriendInfo" />
@@ -17,10 +17,11 @@
 
 <script setup>
 import { ref, onActivated } from 'vue';
-import { fetchFriendList, fetchGroupList } from '@/api/user.js'
+import { fetchFriendList, fetchGroupList, fetchFriendsApplyList, fetchFriendAdd } from '@/api/user.js'
 import ChatItem from '@/components/ChatItem.vue'
 import router from '@/router'
 import { setRemark } from '@/utils/localStorage.js'
+import { showToast } from 'vant'
 
 
 // 定义标题
@@ -29,6 +30,32 @@ const title = ref('好友');
 const activeNames = ref(['1', '2', '3']);
 const friendList = ref([])
 const groupList = ref([])
+const applyList = ref([])
+
+// 获取好友申请列表
+const getFriendApplyList = () => {
+  fetchFriendsApplyList()
+    .then(res => {
+      if (res.code === 200) {
+        applyList.value = res.data || []
+        applyList.value.map(e => e.type = 1)
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+// 同意
+const applyOperate = (item) => {
+  fetchFriendAdd({ friendId: item.id })
+    .then(() => {
+      showToast('同意')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
 
 // 获取好友列表
 const getFriendList = () => {
@@ -83,6 +110,7 @@ const entryGroupInfo = (item) => {
 onActivated(() => {
   getFriendList()
   getGroupList()
+  getFriendApplyList()
 })
 </script>
 

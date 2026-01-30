@@ -2,8 +2,8 @@
   <div class="chat_item" @click="$emit('handleClick', item)">
     <div class="avatar_wrapper">
       <UserImg 
-        :avatarList="item.type == 2 ? item?.avatar?.split(',') : []"
-        :avatar="item.type == 1 ? item?.avatar : ''" 
+        :avatar="item.avatar" 
+        :type="item.type"
       />
     </div>
     <div class="content-wrapper">
@@ -16,6 +16,11 @@
         <span v-if="item.hasAttachment" class="attachment-icon">📎</span>
       </div>
     </div>
+    <van-button 
+      v-if="item.status == 3"
+      size="mini" 
+      class="agree"
+      type="primary" @click="$emit('applyOperate', item)">同&nbsp;&nbsp;意</van-button>
   </div>
 </template>
 <script setup>
@@ -39,10 +44,12 @@ defineProps({
 </script>
 
 <style scoped lang="scss">
-  .chat_item {
+.chat_item {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   transition: background-color 0.2s;
+  position: relative;
   .avatar_wrapper {
     position: relative;
     padding: 11px;
@@ -59,11 +66,11 @@ defineProps({
     //   border-radius: 50%;
     // }
   }
-
+  
   .content-wrapper {
     flex: 1;
-    min-width: 0;
     border-bottom: 1px solid #e3e2e2;
+    min-width: 0;
     padding: 12px 16px 12px 0;
     height: 72px;
     display: flex;
@@ -108,6 +115,14 @@ defineProps({
       color: #999;
       margin-left: 4px;
     }
+  }
+
+  .agree {
+    width: 50px;
+    position: absolute;
+    top: calc(50% - 16px);
+    right: 20px;
+    z-index: 1;
   }
 }
 </style>

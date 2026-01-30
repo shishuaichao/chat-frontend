@@ -11,3 +11,7 @@ export const fetchRemarkname = (params) => fetchPost('/user/friendship/remark', 
 
 export const fetchFriendList = () => fetchGet('/user/friends')
 export const fetchGroupList = () => fetchGet('/user/groups')
+// 好友申请列表
+export const fetchFriendsApplyList = () => fetchGet('/user/friends/apply')
+
+
