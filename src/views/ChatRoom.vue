@@ -31,6 +31,7 @@ import { throttle } from 'lodash';
 import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
 // import store from '@/store'
 import { notify } from 'mini-notifier'
+import { addObserver } from '@/utils/utils.js'
 
 const route = useRoute()  
 
@@ -63,9 +64,9 @@ const getConvMember = () => {
 // 聊天记录
 const originList = ref([])
 const msgList = ref([])
-const firstRenderCount = 20
+const firstRenderCount = 30
 const historyList = ref([])
-const addHistoryCountOnce = 20
+const addHistoryCountOnce = 50
 const newList = ref([])
 const getAllChats = () => {
   fetchChatRecords({ convId: route.query.convId })
@@ -228,21 +229,7 @@ const toReadNewMsg = () => {
 }
 
 
-// let observerMap = new Set()
-const addObserver = (el, id) => {
-  let observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-      if (newMsgCount.value > 0) {
-        newMsgCount.value--
-        notify(`消息${id}已读`)
-      }
-      observer.unobserve(el)
-      observer.disconnect()
-      observer = null
-    }
-  })
-  observer.observe(el);
-}
+
 
 
 
@@ -265,7 +252,12 @@ const eventMessage = (data) => {
 const toAddObserver = (el, id) => {
   setTimeout(() => {
     if (el) {
-      addObserver(el, id)
+      addObserver(el, () => {
+        if (newMsgCount.value > 0) {
+          newMsgCount.value--
+          notify(`消息${id}已读`)
+        }
+      })
     } else {
       toAddObserver(el, id)
     }
