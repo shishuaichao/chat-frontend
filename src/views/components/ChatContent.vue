@@ -5,7 +5,10 @@
       :class="`msg_item_${msgInfo.id}`"
       v-if="userInfo?.id == msgInfo.sender_id">
       <div class="msg_box">
-        <div class="nickname">{{ msgInfo.created_at }}</div>
+        <div class="nickname"> 
+          ID: {{ msgInfo.id }} 
+          {{ msgInfo.created_at }}
+        </div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
@@ -20,7 +23,9 @@
       <div class="msg_box">
         <div class="nickname">
           <span>{{ getRemark(msgInfo.sender_id) }}</span>
-          {{ msgInfo.created_at }}</div>
+          {{ msgInfo.created_at }}
+        ID: {{ msgInfo.id }}
+        </div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
     </div>
@@ -112,7 +117,7 @@ onMounted(() => {
 
   .nickname {
     font-size: 12px;
-    color: #ccc;
+    color: #999;
     height: 14px;
     line-height: 10px;
     width: 100%;

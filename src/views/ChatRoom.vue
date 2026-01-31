@@ -2,6 +2,7 @@
   <div class="main_container">
     <ChatHeader :title="title"></ChatHeader>
     <div class="chat_content_box" ref="chatContentRef">
+      <ChatUnreadTip v-if="newMsgCount" :count="newMsgCount" position="bottom" @click="toReadNewMsg"></ChatUnreadTip>
       <div class="msg_container_history" key="history">
         <ChatContent v-for="v in historyList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
       </div>
@@ -26,6 +27,7 @@ import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute, onBeforeRouteLeave  } from 'vue-router'
 import { fetchChatRecords, fetchConvMember } from '@/api/chat.js'
 import { throttle } from 'lodash';
+import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
 // import store from '@/store'
 import { notify } from 'mini-notifier'
 
@@ -92,13 +94,10 @@ const scrollEvent = () => {
       chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight - lastHeight
     })
   }
+  
 }
 
-// 渲染消息
-const render = (msgData) => {
-  newList.value.push(msgData)
-  scrollToBottom()
-}
+
 
 // 发送消息
 const sendMsg = (msg) => {
@@ -130,10 +129,18 @@ const scrollToBottom = (id) => {
       }
       msgElement = document.querySelector(`.msg_item_${id}`)
     }
-    msgElement && msgElement.scrollIntoView({
-      behavior: 'smooth',
-      block: 'end'
-    });
+
+    if (msgElement?.scrollIntoView) {
+      msgElement && msgElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      })
+    } else {
+      requestAnimationFrame(() => {
+        const container = chatContentRef.value
+        container.scrollTop = container.scrollHeight
+      })
+    }
   })
 }
 
@@ -186,6 +193,7 @@ onBeforeRouteLeave((to, from, next) => {
 })
 
 onDeactivated(() => {
+  newMsgCount.value = 0
   chatContentRef.value?.removeEventListener('scroll', scrollEvent)
   // 聊天消息
   WS_mitt.off('message', eventMessage)
@@ -208,15 +216,36 @@ const entryRoomEvent = (data) => {
     time: 3000,
   })
 }
+// 是否在页面最底部
+const isBottom = () => {
+  return chatContentRef.value?.scrollTop + chatContentRef.value?.clientHeight >= chatContentRef.value?.scrollHeight
+}
+const isSelf = (id) => {
+  return id == localStorage.getItem('id')
+}
+const newMsgCount = ref(0)
+const toReadNewMsg = () => {
+  scrollToBottom()
+  newMsgCount.value = 0
+}
 const eventMessage = (data) => {
-  render(data)
+  newList.value.push(data)
+  if (isSelf(data.sender_id)) {
+    scrollToBottom(data.id)
+  } else if (isBottom()) {
+    scrollToBottom(data.id)
+  } else {
+    // 添加未读消息标识
+    newMsgCount.value++
+  }
 }
 const eventSystemMsg = (data) => {
   if (data.id !== userInfo.value.id) {
     showToast(data.content);
-    render(data)
+    newList.value.push(data)
   }
 }
+
 </script>
 
 <style scoped lang="scss">
@@ -232,6 +261,7 @@ const eventSystemMsg = (data) => {
   padding: 60px 6px 0px;
   // margin-top: 70px;
   background-color: $base_bg_color;
+  -webkit-overflow-scrolling: touch; 
 }
 .msg_item_box {
   .msg_system_content {
