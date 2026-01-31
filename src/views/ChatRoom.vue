@@ -23,10 +23,11 @@ import ChatHeader from '@/views/components/ChatHeader.vue';
 import ChatContent from '@/views/components/ChatContent.vue';
 import ChartFooter from '@/views/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteLeave  } from 'vue-router'
 import { fetchChatRecords, fetchConvMember } from '@/api/chat.js'
 import { throttle } from 'lodash';
 // import store from '@/store'
+import { notify } from 'mini-notifier'
 
 const route = useRoute()  
 
@@ -53,15 +54,6 @@ const getConvMember = () => {
 }
 
 
-const eventMessage = (data) => {
-  render(data)
-}
-const eventSystemMsg = (data) => {
-  if (data.id !== userInfo.value.id) {
-    showToast(data.content);
-    render(data)
-  }
-}
 
 
 // 聊天记录
@@ -83,7 +75,6 @@ const getAllChats = () => {
     })
 }
 // 滚动监听
-// let isRenderLoading = false
 const scrollEvent = () => {
   if (chatContentRef.value.scrollTop == 0) {
     if (!originList.value.length) {
@@ -93,10 +84,10 @@ const scrollEvent = () => {
       })
       return
     }
-    // isRenderLoading = true
     let lastHeight = chatContentRef.value.scrollHeight
     let newArr = originList.value.splice(-addHistoryCountOnce)
     historyList.value = [...newArr, ...historyList.value]
+    notify(`newMsg${historyList.value.length}`)
     nextTick(() => {
       chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight - lastHeight
     })
@@ -148,6 +139,12 @@ const scrollToBottom = (id) => {
 
 onMounted(() => {
   getAllChats()
+  
+})
+
+
+
+onActivated(() => {
   WS_Client.joinRoom(route.query.convId)
   getConvMember()
   
@@ -162,23 +159,64 @@ onMounted(() => {
   WS_mitt.on('message', eventMessage)
   // 系统消息
   WS_mitt.on('system_msg', eventSystemMsg)
+  // 重连成功
+  WS_mitt.on('connect_success', () => {
+    // notify('重连成功', {
+    //   time: 3000,
+    //   style: 'success',
+    // })
+    getAllChats()
+    WS_Client.joinRoom(route.query.convId)
+  })
+  // 加入房间
+  WS_mitt.on('join_room', entryRoomEvent)
+  // 离开房间
+  WS_mitt.on('leave_room', leaveRoomEvent)
   
   chatContentRef.value.addEventListener('scroll', throttle(scrollEvent, 200))
 })
 
-onActivated(() => {
-  
+onBeforeRouteLeave((to, from, next) => {
+  // 离开房间
+  WS_Client.leaveRoom({
+    roomId: route.query.convId,
+    userId: localStorage.getItem('id'),
+  })
+  next()
 })
 
 onDeactivated(() => {
-  WS_Client.leaveRoom(route.query.convId)
   chatContentRef.value?.removeEventListener('scroll', scrollEvent)
   // 聊天消息
   WS_mitt.off('message', eventMessage)
   // 系统消息
   WS_mitt.off('system_msg', eventSystemMsg)
+  // 有人加入房间
+  WS_mitt.off('join_room', entryRoomEvent)
+  // 有人离开房间
+  WS_mitt.off('leave_room', leaveRoomEvent)
+  
 })
-
+// 监听事件
+const leaveRoomEvent = (data) => {
+  notify(data, {
+    time: 3000,
+  })
+}
+const entryRoomEvent = (data) => {
+  notify(data, {
+    time: 3000,
+  })
+}
+const eventMessage = (data) => {
+  render(data)
+}
+const eventSystemMsg = (data) => {
+  if (data.id !== userInfo.value.id) {
+    showToast(data.content);
+    render(data)
+  }
+}
 </script>
 
 <style scoped lang="scss">

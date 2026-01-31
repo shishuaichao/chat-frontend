@@ -47,6 +47,7 @@ class SocketClient {
       'online_count', // 在线用户数
       'connect_error', // 连接错误
       'join_room', // 加入房间
+      'leave_room', // 离开房间
     ];
     eventListeners.forEach(event => {
       this.socket.on(event, (data) => {
@@ -54,13 +55,13 @@ class SocketClient {
         if (event === 'connect_success') {
           this.connectStatus = 'connected';
           notify('服务链接成功', {
-            time: 5000,
+            time: 3000,
             style: 'success',
           });
         }
         if (event === 'connect_error') {
           notify('服务连接失败，正在重连...', {
-            time: 5000,
+            time: 3000,
             style: 'error',
           });
           this.connect()
@@ -84,8 +85,8 @@ class SocketClient {
     });
   }
   // 离开指定房间
-  leaveRoom(roomId) {
-    this.socket.emit('room:leave', roomId);
+  leaveRoom(obj) {
+    this.socket.emit('room:leave', obj);
   }
 }
 

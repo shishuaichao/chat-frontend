@@ -22,7 +22,7 @@ import { onMounted, ref } from 'vue'
 import router from './router'
 import tabBarsRoutes from '@/router/tabbars.js'
 import { checkLogined } from '@/utils/checkLogin.js'
-import { showNotify } from 'vant'
+// import { showNotify } from 'vant'
 import { WS_mitt, WS_Client } from '@/utils/WS_Client.js'
 import store from '@/store/index.js'
 
@@ -48,7 +48,7 @@ onMounted(() => {
 WS_mitt.on('message', (data) => {
   // 成功通知
   if (data.sender_id != localStorage.getItem('id')) {
-    showNotify({ type: 'success', message: data.content });
+    // showNotify({ type: 'success', message: data.content });
   }
 })
 
@@ -56,7 +56,7 @@ const showTabbar = ref(false)
 const homePageList = tabBarsRoutes.map(item => item.name)
 const active = ref(homePageList[0])
 router.beforeEach((to, from, next) => {
-  console.log('to.name', to.name)
+  // console.log('to.name', to.name)
   active.value = to.name
   if (homePageList.includes(to.name)) {
     active.value = to.name
