@@ -5,11 +5,12 @@ import tabBarsRoutes from './tabbars.js'
 
 
 
+
 // 懒加载写法（推荐，优化打包体积）
 const NotFound = () => import('@/views/NotFound.vue')
 const ChatRoom = () => import('@/views/ChatRoom.vue')
 const otherUserInfo = () => import('@/views/OtherUserInfo.vue')
-
+const TestPage = () => import('@/views/testPage.vue')
 
 // 路由规则
 const routes = [
@@ -36,7 +37,13 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFound
-  }
+  },
+  {
+    path: '/testPage',
+    name: 'TestPage',
+    component: TestPage,
+    meta: { title: '测试页面' } 
+  },
 ]
 
 // 创建路由实例（Webpack 环境用 createWebHistory，无需配置 base）

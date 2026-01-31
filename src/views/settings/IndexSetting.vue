@@ -21,6 +21,7 @@
         <div class="userId">ID: {{ userInfo.id }}</div>
       </div>
     </div>
+    <van-cell title="测试页面" to="/testPage" value="查看详情" />
 
     <!-- 在后台：{{ isInBack }} -->
 

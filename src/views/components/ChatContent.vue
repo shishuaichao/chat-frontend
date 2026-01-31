@@ -1,6 +1,5 @@
 <template>
-  <div class="item_box">
-    
+  <div class="msg_item_box">
     <!-- 自己 -->
     <div class="msg_self msg_item right" 
       :class="`msg_item_${msgInfo.id}`"
@@ -10,13 +9,13 @@
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img :src="convMember[msgInfo.sender_id]?.avatar" alt="">
+        <img v-once :src="convMember[msgInfo.sender_id]?.avatar" alt="">
       </div>
     </div>
     <!-- 其他人 -->
     <div class="msg_other msg_item left" v-else>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img :src="convMember[msgInfo.sender_id]?.avatar" alt="">
+        <img v-once :src="convMember[msgInfo.sender_id]?.avatar" alt="">
       </div>
       <div class="msg_box">
         <div class="nickname">
@@ -73,6 +72,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.msg_item_box {
   .msg_system_content {
     text-align: center;
     color: #999;
@@ -171,5 +171,5 @@ onMounted(() => {
   .msg_self {
     justify-content: flex-end;
   }
-
+}
 </style>
