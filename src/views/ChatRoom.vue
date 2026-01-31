@@ -62,7 +62,7 @@ const getAllChats = () => {
   fetchChatRecords({ convId: route.query.convId })
     .then(res => {
       originList.value = res.data || []
-      msgList.value = originList.value.splice(-40)
+      msgList.value = originList.value.splice(-20)
       scrollToBottom()
     })
     .catch(err => {
@@ -73,8 +73,6 @@ const getAllChats = () => {
 // 渲染消息
 const render = (msgData) => {
   msgList.value.push(msgData)
-  // console.log('msgList', msgList.value)
-  scrollToBottom()
 }
 
 // 发送消息
@@ -94,11 +92,15 @@ const sendMsg = (msg) => {
 
 // 滚动到底部
 const chatContentRef = ref(null)
-const scrollToBottom = () => {
-  if (!chatContentRef.value) return;
+const scrollToBottom = (id) => {
+  let msgElement = null
   nextTick(() => {
-    let lastMsgElement = document.querySelector(`.msg_item_${msgList.value[msgList.value.length - 1]?.id}`)
-    lastMsgElement && lastMsgElement.scrollIntoView({
+    if (id) {
+      msgElement = document.querySelector(`.msg_item_${id}`)
+    } else {
+      msgElement = document.querySelector(`.msg_item_${msgList.value[msgList.value.length - 1]?.id}`)
+    }
+    msgElement && msgElement.scrollIntoView({
       behavior: 'smooth',
       block: 'end'
     });
@@ -107,14 +109,20 @@ const scrollToBottom = () => {
 
 // 滚动监听
 const scrollEvent = () => {
-  if (!originList.value.length) return
+  if (!originList.value.length) {
+    showToast('没有更多消息了')
+    return
+  }
   if (chatContentRef.value.scrollTop == 0) {
     let lastHeight = chatContentRef.value.scrollHeight
-    let newArr = originList.value.splice(-30)
+    let newArr = originList.value.splice(-10)
     msgList.value = [...newArr, ...msgList.value]
     nextTick(() => {
       chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight - lastHeight
+      const id = newArr[newArr.length - 1]?.id
+      scrollToBottom(id)
     })
+    
   }
 }
 
