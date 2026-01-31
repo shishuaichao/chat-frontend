@@ -58,6 +58,8 @@ const props = defineProps({
   }
 })
 
+console.log("type", props.type)
+
 const avatarList = computed(() => {
   return props.type == 1 ? props.avatar : (props?.avatar?.split(',') || [])
 })

@@ -11,9 +11,9 @@
 <script setup>
 import { ref, onActivated, nextTick, onDeactivated } from 'vue'
 import { showToast } from 'vant';
-import ChatHeader from '@/components/ChatHeader.vue';
-import ChatContent from '@/components/ChatContent.vue';
-import ChartFooter from '@/components/ChatFooter.vue';
+import ChatHeader from '@/views/components/ChatHeader.vue';
+import ChatContent from '@/views/components/ChatContent.vue';
+import ChartFooter from '@/views/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute } from 'vue-router'
 import { fetchChatRecords, fetchConvMember } from '@/api/chat.js'
@@ -73,6 +73,7 @@ const getAllChats = () => {
 // 渲染消息
 const render = (msgData) => {
   msgList.value.push(msgData)
+  scrollToBottom()
 }
 
 // 发送消息
@@ -156,8 +157,7 @@ onDeactivated(() => {
 
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
 .main_container {
   height: 100%;
   overflow-x: hidden;
@@ -168,7 +168,7 @@ onDeactivated(() => {
   flex: 1;
   overflow-y: auto;
   padding: 70px 6px 0px;
-  background-color: #f4f4f4;
+  background-color: $base_bg_color;
 }
 
 </style>

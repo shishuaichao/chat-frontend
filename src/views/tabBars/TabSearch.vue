@@ -1,27 +1,27 @@
 
 <template>
   <div class="search_box">
-    <UserImg :avatar="avatar" size="normal" />
+    <UserImg :type="1" :avatar="avatar" size="normal" />
     <hr />
-    <UserImg :avatarList="avatarList.slice(0,2)" size="normal" />
+    <UserImg :type="2" :avatar="avatarList.slice(0,2).join(',')" size="normal" />
     <hr />
-    <UserImg :avatarList="avatarList.slice(0,3)" size="normal" />
+    <UserImg :type="2" :avatar="avatarList.slice(0,3).join(',')" size="normal" />
      <hr />
-    <UserImg :avatarList="avatarList.slice(0,4)" size="normal" />
+    <UserImg :type="2" :avatar="avatarList.slice(0,4).join(',')" size="normal" />
     <hr />
-    <UserImg :avatarList="avatarList.slice(0,5)" :size="size" />
+    <UserImg :type="2" :avatar="avatarList.slice(0,5).join(',')" :size="size" />
      <hr />
-    <UserImg :avatarList="avatarList.slice(0,6)" :size="size" />
+    <UserImg :type="2" :avatar="avatarList.slice(0,6).join(',')" :size="size" />
     <hr />
-    <UserImg :avatarList="avatarList.slice(0,7)" :size="size" />
+    <UserImg :type="2" :avatar="avatarList.slice(0,7).join(',')" :size="size" />
      <hr />
-    <UserImg :avatarList="avatarList.slice(0,8)" :size="size" />
+    <UserImg :type="2" :avatar="avatarList.slice(0,8).join(',')" :size="size" />
      <hr />
-    <UserImg :avatarList="avatarList.slice(0,9)" :size="size" />
+    <UserImg :type="2" :avatar="avatarList.slice(0,9).join(',')" :size="size" />
   </div>
 </template>
 <script setup>
-import UserImg from '@/components/UserImg.vue'
+import UserImg from '@/views/components/UserImg.vue'
 import { IMG_REAL_URL } from '@/utils/constant'
 import { ref } from 'vue'
 

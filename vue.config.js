@@ -32,7 +32,8 @@ module.exports = defineConfig({
       sass: {
         sassOptions: {
           indentedSyntax: false // false=scss 语法，true=sass 语法
-        }
+        },
+        additionalData: '@import "@/styles/variables.scss";'
       }
     }
   },

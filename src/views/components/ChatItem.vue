@@ -24,7 +24,7 @@
   </div>
 </template>
 <script setup>
-import UserImg from '@/components/UserImg.vue'
+import UserImg from '@/views/components/UserImg.vue'
 
 
 

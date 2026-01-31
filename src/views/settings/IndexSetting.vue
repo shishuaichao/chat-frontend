@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    在后台：{{ isInBack }}
+    <!-- 在后台：{{ isInBack }} -->
 
     <div class="padding_20 justify_content_center foot_box">
       <van-button block plain hairline type="danger" size="small" class="logout-btn" @click="logout">注  销</van-button>
@@ -31,16 +31,16 @@
   </div>
 </template>
 <script setup>
-import { onActivated, ref, computed } from 'vue'
+import { onActivated, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import msgModule from '@/store/msgModule.js'
 import { useStore } from 'vuex'
 const store = useStore()
 
 console.log('store', store)
-const isInBack = computed(() => {
-  return store.state.count
-})
+// const isInBack = computed(() => {
+//   return store.state.count
+// })
 
 setTimeout(() => {
   console.log('msgModule', msgModule)

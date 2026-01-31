@@ -6,7 +6,7 @@
       :class="`msg_item_${msgInfo.id}`"
       v-if="userInfo?.id == msgInfo.sender_id">
       <div class="msg_box">
-        <!-- <div class="nickname">{{ formatTime(msgInfo.created_at) }} {{ msgInfo.nickname }}</div> -->
+        <div class="nickname">{{ msgInfo.created_at }}</div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
@@ -19,7 +19,9 @@
         <img :src="convMember[msgInfo.sender_id]?.avatar" alt="">
       </div>
       <div class="msg_box">
-        <div class="nickname">{{ getRemark(msgInfo.sender_id) }} {{ msgInfo.created_at }}</div>
+        <div class="nickname">
+          <span>{{ getRemark(msgInfo.sender_id) }}</span>
+          {{ msgInfo.created_at }}</div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
     </div>
@@ -110,11 +112,15 @@ onMounted(() => {
 
   .nickname {
     font-size: 12px;
-    color: #999;
+    color: #ccc;
     height: 14px;
     line-height: 10px;
     width: 100%;
     font-weight: 500;
+    span {
+      color: #666;
+
+    }
   }
   .right .nickname {
     text-align: right;
@@ -131,7 +137,7 @@ onMounted(() => {
   .left .msg_content::before {
     content: '';
     position: absolute;
-    top: 8px;
+    top: 4px;
     left: -5px;
     width: 0;
     height: 0;
@@ -142,7 +148,7 @@ onMounted(() => {
   .right .msg_content::before {
     content: '';
     position: absolute;
-    top: 8px;
+    top: 4px;
     right: -5px;
     width: 0;
     height: 0;

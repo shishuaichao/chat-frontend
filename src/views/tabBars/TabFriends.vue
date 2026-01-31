@@ -18,7 +18,7 @@
 <script setup>
 import { ref, onActivated } from 'vue';
 import { fetchFriendList, fetchGroupList, fetchFriendsApplyList, fetchFriendAdd } from '@/api/user.js'
-import ChatItem from '@/components/ChatItem.vue'
+import ChatItem from '@/views/components/ChatItem.vue'
 import router from '@/router'
 import { setRemark } from '@/utils/localStorage.js'
 // import { showToast } from 'vant'

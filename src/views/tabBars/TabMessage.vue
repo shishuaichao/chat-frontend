@@ -8,7 +8,7 @@
 </template>
 <script setup>
 import { ref, onActivated } from 'vue';
-import ChatList from '@/components/ChatList.vue';
+import ChatList from '@/views/components/ChatList.vue';
 import { getConversationList } from '@/api/index.js'
 import router from '@/router';
 
