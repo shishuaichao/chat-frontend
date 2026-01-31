@@ -21,7 +21,7 @@ import { fetchFriendList, fetchGroupList, fetchFriendsApplyList, fetchFriendAdd 
 import ChatItem from '@/components/ChatItem.vue'
 import router from '@/router'
 import { setRemark } from '@/utils/localStorage.js'
-import { showToast } from 'vant'
+// import { showToast } from 'vant'
 
 
 // 定义标题
@@ -50,7 +50,8 @@ const getFriendApplyList = () => {
 const applyOperate = (item) => {
   fetchFriendAdd({ friendId: item.user_id })
     .then(() => {
-      showToast('同意成功')
+      getFriendList()
+      getFriendApplyList()
     })
     .catch(err => {
       console.log(err)

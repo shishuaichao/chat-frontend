@@ -55,24 +55,6 @@ const eventSystemMsg = (data) => {
 }
 
 
-
-const init = () => {
-  getConvMember()
-  getAllChats()
-
-  userInfo.value = {
-    sender_id: localStorage.getItem('id'),
-    nickname: localStorage.getItem('nickname'),
-    avatar: localStorage.getItem('avatar'),
-  }
-  
-  // 聊天消息
-  WS_mitt.on('message', eventMessage)
-  // 系统消息
-  WS_mitt.on('system_msg', eventSystemMsg)
-
-}
-
 // 聊天记录
 const msgList = ref([])
 const originList = ref([])
@@ -105,7 +87,7 @@ const sendMsg = (msg) => {
     created_at: Date.parse(new Date()),
     ...userInfo.value,
   }
-  WS_Client.emit('message', msgData)
+  WS_Client.sendMsg('message', msgData)
 }
 
 
@@ -116,6 +98,10 @@ const scrollToBottom = () => {
   if (!chatContentRef.value) return;
   nextTick(() => {
     chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight
+    // chatContentRef.value.scrollIntoView({
+    //     behavior: 'smooth',
+    //     block: 'end'
+    //   });
   })
 }
 
@@ -133,7 +119,20 @@ const scrollEvent = () => {
 }
 
 onActivated(() => {
-  init()
+  WS_Client.joinRoom(route.query.convId)
+  getConvMember()
+  getAllChats()
+
+  userInfo.value = {
+    sender_id: localStorage.getItem('id'),
+    nickname: localStorage.getItem('nickname'),
+    avatar: localStorage.getItem('avatar'),
+  }
+  
+  // 聊天消息
+  WS_mitt.on('message', eventMessage)
+  // 系统消息
+  WS_mitt.on('system_msg', eventSystemMsg)
   
   chatContentRef.value.addEventListener('scroll', scrollEvent)
 })

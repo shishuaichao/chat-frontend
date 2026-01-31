@@ -2,7 +2,7 @@
   <div class="item_box">
     
     <!-- 自己 -->
-    <div class="msg_self msg_item right" v-if="userInfo?.id == msgInfo.sender_id || userInfo?.id == msgInfo.senderId">
+    <div class="msg_self msg_item right" v-if="userInfo?.id == msgInfo.sender_id">
       <div class="msg_box">
         <!-- <div class="nickname">{{ formatTime(msgInfo.created_at) }} {{ msgInfo.nickname }}</div> -->
         <div class="msg_content">{{ msgInfo.content }}</div>
@@ -17,7 +17,7 @@
         <img :src="convMember[msgInfo.sender_id]?.avatar" alt="">
       </div>
       <div class="msg_box">
-        <div class="nickname" v-if="convType != 2">{{ getRemark(msgInfo.sender_id) }} {{ formatTime(msgInfo.created_at) }}</div>
+        <div class="nickname">{{ getRemark(msgInfo.sender_id) }} {{ msgInfo.created_at }}</div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
     </div>
@@ -31,14 +31,11 @@
 
 <script setup>
 import { defineProps, onMounted, ref } from 'vue';
-import formatTime from '@/utils/formatTime.js'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { getRemark } from '@/utils/localStorage';
 
 const router = useRouter()
-const route = useRoute()
 
-const convType = ref(route.query.type)
 defineProps({
   // 消息
   msgInfo: {

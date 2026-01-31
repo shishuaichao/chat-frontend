@@ -24,7 +24,7 @@ import tabBarsRoutes from '@/router/tabbars.js'
 import { checkLogined } from '@/utils/checkLogin.js'
 import { showNotify } from 'vant'
 import { WS_mitt, WS_Client } from '@/utils/WS_Client.js'
-
+import store from '@/store/index.js'
 
 onMounted(() => {
   checkLogined()

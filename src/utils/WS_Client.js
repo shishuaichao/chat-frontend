@@ -50,7 +50,7 @@ class SocketClient {
     ];
     eventListeners.forEach(event => {
       this.socket.on(event, (data) => {
-        console.log(`收到事件 ${event}：`, data);
+        console.log(`收到消息 ${event}：`, data);
         if (event === 'connect_success') {
           this.connectStatus = 'connected';
           notify('服务链接成功', {
@@ -70,14 +70,18 @@ class SocketClient {
     });
   }
 
-  emit(event, data) {
-    console.log(`发送事件 ${event}: `, data);
+  sendMsg(event, data) {
+    console.log(`发送消息 ${event}: `, data);
     this.socket.emit(event, data);
   }
 
   // 加入指定房间
   joinRoom(roomId) {
-    this.socket.emit('room:join', roomId);
+    console.log(`加入房间 ${roomId}`)
+    this.socket.emit('room:join', {
+      roomId: roomId,
+      userId: localStorage.getItem('id'),
+    });
   }
   // 离开指定房间
   leaveRoom(roomId) {
