@@ -10,7 +10,8 @@
         <ChatContent v-for="v in msgList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
       </div>
       <div class="msg_containere_new" key="new">
-        <ChatContent v-for="v in newList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
+        <ChatContent v-for="v in newList" :key="v.id" :msgInfo="v" :convMember="convMember"
+        ></ChatContent>
       </div>
     </div>
     <ChartFooter @sendMessage="sendMsg"  @focus="scrollToBottom" />
@@ -58,6 +59,7 @@ const getConvMember = () => {
 
 
 
+
 // 聊天记录
 const originList = ref([])
 const msgList = ref([])
@@ -78,7 +80,7 @@ const getAllChats = () => {
 }
 // 滚动监听
 const scrollEvent = () => {
-  if (chatContentRef.value.scrollTop == 0) {
+  if (chatContentRef.value?.scrollTop == 0) {
     if (!originList.value.length) {
       showToast({
         message: '别滑了，一条都没有了',
@@ -86,12 +88,12 @@ const scrollEvent = () => {
       })
       return
     }
-    let lastHeight = chatContentRef.value.scrollHeight
+    let lastHeight = chatContentRef.value?.scrollHeight
     let newArr = originList.value.splice(-addHistoryCountOnce)
     historyList.value = [...newArr, ...historyList.value]
     notify(`newMsg${historyList.value.length}`)
     nextTick(() => {
-      chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight - lastHeight
+      chatContentRef.value && (chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight - lastHeight)
     })
   }
   
@@ -138,7 +140,7 @@ const scrollToBottom = (id) => {
     } else {
       requestAnimationFrame(() => {
         const container = chatContentRef.value
-        container.scrollTop = container.scrollHeight
+        container && (container.scrollTop = container.scrollHeight)
       })
     }
   })
@@ -168,10 +170,6 @@ onActivated(() => {
   WS_mitt.on('system_msg', eventSystemMsg)
   // 重连成功
   WS_mitt.on('connect_success', () => {
-    // notify('重连成功', {
-    //   time: 3000,
-    //   style: 'success',
-    // })
     getAllChats()
     WS_Client.joinRoom(route.query.convId)
   })
@@ -180,7 +178,7 @@ onActivated(() => {
   // 离开房间
   WS_mitt.on('leave_room', leaveRoomEvent)
   
-  chatContentRef.value.addEventListener('scroll', throttle(scrollEvent, 200))
+  chatContentRef.value?.addEventListener('scroll', throttle(scrollEvent, 200))
 })
 
 onBeforeRouteLeave((to, from, next) => {
@@ -228,6 +226,27 @@ const toReadNewMsg = () => {
   scrollToBottom()
   newMsgCount.value = 0
 }
+
+
+// let observerMap = new Set()
+const addObserver = (el, id) => {
+  let observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      if (newMsgCount.value > 0) {
+        newMsgCount.value--
+        notify(`消息${id}已读`)
+      }
+      observer.unobserve(el)
+      observer.disconnect()
+      observer = null
+    }
+  })
+  observer.observe(el);
+}
+
+
+
+
 const eventMessage = (data) => {
   newList.value.push(data)
   if (isSelf(data.sender_id)) {
@@ -237,7 +256,20 @@ const eventMessage = (data) => {
   } else {
     // 添加未读消息标识
     newMsgCount.value++
+    nextTick(() => {
+      let msgElement = document.querySelector(`.msg_item_${data.id}`)
+      toAddObserver(msgElement, data.id)
+    })
   }
+}
+const toAddObserver = (el, id) => {
+  setTimeout(() => {
+    if (el) {
+      addObserver(el, id)
+    } else {
+      toAddObserver(el, id)
+    }
+  }, 50);
 }
 const eventSystemMsg = (data) => {
   if (data.id !== userInfo.value.id) {

@@ -12,3 +12,20 @@
 }
 
 
+:root {
+  --primary-color500: #ffea66;
+
+  --red500: #dc3545;
+  --red200: #f8d7da;
+  --green500: #2b5229;
+  --green200: #e1fae1;
+
+  --border-radius: .25rem;
+}
+
+:root:root {
+  --van-button-primary-background: #36c275;
+  --van-nav-bar-icon-color: #36c275;
+  --van-button-primary-border-color: #36c275;
+  --van-tabbar-item-active-color: #36c275;
+}

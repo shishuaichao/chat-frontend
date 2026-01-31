@@ -1,8 +1,12 @@
 <template>
-  <div class="msg_item_box">
+  <div class="msg_item_box"
+    :class="`msg_item_${msgInfo.id}`"
+    :data-msg-id="msgInfo.id"
+    ref="msgItemRef"
+    >
     <!-- 自己 -->
     <div class="msg_self msg_item right" 
-      :class="`msg_item_${msgInfo.id}`"
+      
       v-if="userInfo?.id == msgInfo.sender_id">
       <div class="msg_box">
         <div class="nickname"> 
@@ -55,6 +59,11 @@ defineProps({
     required: true,
   },
 });
+
+const msgItemRef = ref(null)
+defineExpose({
+  msgItemRef,
+})
 
 
 const handleClickUserInfo = (msgInfo) => {
