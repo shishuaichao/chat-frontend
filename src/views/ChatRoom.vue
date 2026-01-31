@@ -1,6 +1,6 @@
 <template>
   <div class="main_container">
-    <ChatHeader :onlineUser="onlineUser" :title="title"></ChatHeader>
+    <ChatHeader :title="title"></ChatHeader>
     <div class="chat_content_box" ref="chatContentRef">
       <ChatContent v-for="v,i in msgList" :key="i" :msgInfo="v" :convMember="convMember"></ChatContent>
     </div>
@@ -23,7 +23,6 @@ const route = useRoute()
 
 
 
-const onlineUser = ref([])
 const convMember = ref({})   // [ id: {nickname: '', avatar: ''}]
 const userInfo = ref({}) 
 const title = ref('')
@@ -44,9 +43,7 @@ const getConvMember = () => {
     })
 }
 
-const eventConnectSuccess = () => {
-  WS_Client.joinRoom(route.query.convId)
-}
+
 const eventMessage = (data) => {
   render(data)
 }
@@ -56,33 +53,24 @@ const eventSystemMsg = (data) => {
     render(data)
   }
 }
-const eventOnlineCount = (data) => {
-  onlineUser.value = data
-}
 
 
 
 const init = () => {
-  WS_Client.joinRoom(route.query.convId)
   getConvMember()
   getAllChats()
-  
 
   userInfo.value = {
     sender_id: localStorage.getItem('id'),
     nickname: localStorage.getItem('nickname'),
     avatar: localStorage.getItem('avatar'),
   }
-  // 链接成功 
-  WS_mitt.on('connect_success', eventConnectSuccess)
+  
   // 聊天消息
   WS_mitt.on('message', eventMessage)
   // 系统消息
   WS_mitt.on('system_msg', eventSystemMsg)
-  // 在线人数
-  WS_mitt.on('online_count', eventOnlineCount)
 
-  WS_Client.emit('query_online_count')
 }
 
 // 聊天记录
@@ -153,14 +141,10 @@ onActivated(() => {
 onDeactivated(() => {
   WS_Client.leaveRoom(route.query.convId)
   chatContentRef.value?.removeEventListener('scroll', scrollEvent)
-  // 链接成功 
-  WS_mitt.off('connect_success', eventConnectSuccess)
   // 聊天消息
   WS_mitt.off('message', eventMessage)
   // 系统消息
   WS_mitt.off('system_msg', eventSystemMsg)
-  // 在线人数
-  WS_mitt.off('online_count', eventOnlineCount)
 })
 
 </script>

@@ -18,21 +18,32 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import router from './router'
 import tabBarsRoutes from '@/router/tabbars.js'
 import { checkLogined } from '@/utils/checkLogin.js'
 import { showNotify } from 'vant'
-import { WS_mitt} from '@/utils/WS_Client.js'
+import { WS_mitt, WS_Client } from '@/utils/WS_Client.js'
+
 
 onMounted(() => {
   checkLogined()
+  WS_Client.connect()
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
+      // 切到后台
+      store.commit('setIsInBack', true)
+    } else {
+      // 切到前台
+      store.commit('setIsInBack', false)
+    }
+  }
+  document.addEventListener('visibilitychange', handleVisibilityChange);
 })
 
-onUnmounted(() => {
-  // WS_mitt.off('message')
-  // WS_Client.disconnect()
-})
+
+
+
 
 WS_mitt.on('message', (data) => {
   // 成功通知

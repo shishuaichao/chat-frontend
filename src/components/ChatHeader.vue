@@ -1,18 +1,10 @@
 <template>
   <!-- 1. 顶部固定导航栏 -->
-  <van-popup v-model:show="showTop" position="top">
-    <van-grid :border="false" :column-num="5">
-      <van-grid-item :text="v.nickname" v-for="v,i in onlineUser" :key="i">
-        <AvatarName :info="v" />
-      </van-grid-item>
-    </van-grid>
-  </van-popup>
   <div class="header">
     <van-nav-bar
       :title="title"
       left-arrow
       @click-left="onClickLeft"
-      @click-right="showTop = true"
     >
       <template #right>
         <van-icon name="setting-o" />
@@ -25,19 +17,11 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
-import AvatarName from '@/components/AvatarName.vue'
 
 const router = useRouter()
 
 // 仅保留核心配置：文字、高度、背景色
 defineProps({
-  // 中间显示的文字
-  onlineUser: {
-    type: Array,
-    required: true,
-    default: () => [],
-  },
   title: {
     type: String,
     required: true,
@@ -49,11 +33,6 @@ const onClickLeft = () => {
   router.back()
 }
 
-const showTop = ref(false)
-
-// const goSettingInfo = () => {
-//   router.push({ name: 'TabMine' })
-// }
 
 
 </script>

@@ -84,73 +84,42 @@ const handleBlur = () => {
 const isLoading = ref(false)
 const handleSubmit = () => {
   if (isValid.value) {
-    if (!isChange.value) {
-      isLoading.value = true
-      showLoadingToast({
-        message: '注册中...',
-        forbidClick: true,
-        duration: 0,
-      })
-      let username = uuidv4().substring(0, 8)
-      let params = {
-        username: username,
-        nickname: nickname.value,
-        password: username,
-      }
-      fetchRegister(params)
-        .then(res => {
-          console.log('fetchRegister', res)
-          let data = res.data || {}
-          localStorage.setItem('id', data.id || '')
-          localStorage.setItem('username', data.username || '')
-          localStorage.setItem('nickname', data.nickname || '')
-          showSuccessToast({
-            message: '注册成功',
-            duration: 500,
-          })
-          setTimeout(() => {
-            goToSettingAvatar()
-          }, 500)
-        })
-        .catch(err => {
-          console.log('fetchRegister', err)
-        })
-        .finally(() => {
-          setTimeout(() => {
-            isLoading.value = false
-          }, 500)
-        })
-    } else {
-      isLoading.value = true
-      showLoadingToast({
-        message: '更新中...',
-        forbidClick: true,
-        duration: 0,
-      })
-      let params = {
-        username: localStorage.getItem('username'),
-        nickname: nickname.value,
-      }
-      fetchUserUpdate(params)
-        .then(() => {
-          localStorage.setItem('nickname', nickname.value)
-          showSuccessToast({
-            message: '更新成功',
-            duration: 500,
-          })
-          setTimeout(() => {
-            router.back()
-          }, 500)
-        })
-        .catch(err => {
-          console.log('fetchUserUpdate', err)
-        })
-        .finally(() => {
-          setTimeout(() => {
-            isLoading.value = false
-          }, 500)
-        })
+    isLoading.value = true
+    showLoadingToast({
+      message: isChange.value ? '更新中...' : '注册中...',
+      forbidClick: true,
+      duration: 0,
+    })
+    let username = uuidv4().substring(0, 8)
+    let params = {
+      username: username,
+      nickname: nickname.value,
+      password: username,
     }
+    let fetchUrl = isChange.value ? fetchUserUpdate : fetchRegister
+    fetchUrl(params)
+      .then(res => {
+        console.log('fetchRegister', res)
+        let data = res.data || {}
+        localStorage.setItem('id', data.id || '')
+        localStorage.setItem('username', data.username || '')
+        localStorage.setItem('nickname', data.nickname || '')
+        showSuccessToast({
+          message: isChange.value ? '更新成功' : '注册成功',
+          duration: 500,
+        })
+        setTimeout(() => {
+          goToSettingAvatar()
+        }, 500)
+      })
+      .catch(err => {
+        console.log('fetchRegister', err)
+      })
+      .finally(() => {
+        setTimeout(() => {
+          isLoading.value = false
+        }, 500)
+      })
   }
 }
 const onClickLeft = () => {
