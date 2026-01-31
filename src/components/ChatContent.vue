@@ -2,7 +2,9 @@
   <div class="item_box">
     
     <!-- 自己 -->
-    <div class="msg_self msg_item right" v-if="userInfo?.id == msgInfo.sender_id">
+    <div class="msg_self msg_item right" 
+      :class="`msg_item_${msgInfo.id}`"
+      v-if="userInfo?.id == msgInfo.sender_id">
       <div class="msg_box">
         <!-- <div class="nickname">{{ formatTime(msgInfo.created_at) }} {{ msgInfo.nickname }}</div> -->
         <div class="msg_content">{{ msgInfo.content }}</div>
@@ -78,7 +80,7 @@ onMounted(() => {
   .msg_item {
     display: flex;
     text-align: left;
-    margin-bottom: 16px;
+    padding-bottom: 16px;
   }
   .avatar {
     width: 40px;

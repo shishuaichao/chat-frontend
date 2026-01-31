@@ -97,11 +97,11 @@ const chatContentRef = ref(null)
 const scrollToBottom = () => {
   if (!chatContentRef.value) return;
   nextTick(() => {
-    chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight
-    // chatContentRef.value.scrollIntoView({
-    //     behavior: 'smooth',
-    //     block: 'end'
-    //   });
+    let lastMsgElement = document.querySelector(`.msg_item_${msgList.value[msgList.value.length - 1]?.id}`)
+    lastMsgElement && lastMsgElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end'
+    });
   })
 }
 
@@ -159,7 +159,7 @@ onDeactivated(() => {
 .chat_content_box {
   flex: 1;
   overflow-y: auto;
-  padding: 60px 6px 30px;
+  padding: 70px 6px 0px;
   background-color: #f4f4f4;
 }
 
