@@ -1,4 +1,6 @@
-import { nextTick } from "vue"
+// import { notify } from "mini-notifier"
+
+// import { nextTick } from "vue"
 
 
 export const getSessionKey = (arr) => {
@@ -7,52 +9,6 @@ export const getSessionKey = (arr) => {
 }
 
 
-// 废弃 1.0
-// export const addObserver = (el, callback, isLang = false, options = {}) => {
-//   let observer = new IntersectionObserver((entries) => {
-//     if (entries[0].isIntersecting) {
-//       callback()
-//       if (!isLang) {
-//         observer.unobserve(el)
-//         observer.disconnect()
-//         observer = null
-//       }
-//     }
-//   }, options)
-//   observer.observe(el);
-//   return observer
-// }
-
-// 废弃 2.0
-// export class AddObserverFun {
-//   constructor(el, callback, options = {}) {
-//     this.el = el
-//     this.callback = callback  
-//     this.options = options
-//     this.observer = null
-//     this.isLang = options.isLang
-//   }
-//   open() {  
-//     if (!this.observer && this.el) {
-//       this.observer = new IntersectionObserver((entries) => {
-//         if (entries[0].isIntersecting) {
-//           this.callback()
-//           if (!this.isLang) {
-//             this.close()
-//           }
-//         }
-//       }, this.options)
-//       this.observer.observe(this.el);
-//     }
-//   }
-//   close() {
-//     if (this.observer) {
-//       this.observer.unobserve(this.el)
-//       this.observer.disconnect()
-//       this.observer = null
-//     }
-//   }
-// }
 
 
 // 如果 later 动态添加新元素，需要手动 observer.observe(newEl)
@@ -83,9 +39,10 @@ export class AddObserverFun {
   }
   add(el, callback) {  
     if (!el) {
-      nextTick(() => {
+      setTimeout(() => {
+        console.log('延迟添加', el)
         this.add(el, callback)
-      })
+      }, 200)
       return
     }
     this.idCount++
