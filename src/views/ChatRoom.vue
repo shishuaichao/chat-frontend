@@ -155,6 +155,7 @@ onMounted(() => {
 
 
 onActivated(() => {
+  
   WS_Client.joinRoom(route.query.convId)
   getConvMember()
   
@@ -180,17 +181,25 @@ onActivated(() => {
   WS_mitt.on('leave_room', leaveRoomEvent)
   
   chatContentRef.value?.addEventListener('scroll', throttle(scrollEvent, 200))
+
+  chatContentRef.value.scrollTop = lastScrollTop
+  notify(`get lastScrollTop: ${lastScrollTop}`)
 })
 
 onBeforeRouteLeave((to, from, next) => {
-  // 离开房间
-  WS_Client.leaveRoom({
-    roomId: route.query.convId,
-    userId: localStorage.getItem('id'),
-  })
+  // 离开房间前 判断路由
+  if (from.name == 'ChatRoom') {
+    WS_Client.leaveRoom({
+      roomId: route.query.convId,
+      userId: localStorage.getItem('id'),
+    })
+    lastScrollTop = chatContentRef.value.scrollTop || 0
+    notify(`get lastScrollTop: ${chatContentRef.value.scrollTop}`)
+  }
   next()
 })
 
+let lastScrollTop = 0
 onDeactivated(() => {
   newMsgCount.value = 0
   chatContentRef.value?.removeEventListener('scroll', scrollEvent)
@@ -228,12 +237,6 @@ const toReadNewMsg = () => {
   newMsgCount.value = 0
 }
 
-
-
-
-
-
-
 const eventMessage = (data) => {
   newList.value.push(data)
   if (isSelf(data.sender_id)) {
@@ -266,6 +269,7 @@ const toAddObserver = (el, id) => {
     }
   }, 100);
 }
+
 const eventSystemMsg = (data) => {
   if (data.id !== userInfo.value.id) {
     showToast(data.content);
