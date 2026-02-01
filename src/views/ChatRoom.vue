@@ -306,7 +306,7 @@ const updateUnread = (id) => {
     convId: route.query.convId,
     lastReadMsgId,
     unreadCount: unreadMsgCount.value,
-  })
+  }).catch(() => {})
 }
 
 
