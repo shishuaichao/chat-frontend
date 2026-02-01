@@ -9,12 +9,8 @@
       <div class="msg_container_query" key="query">
         <ChatContent v-for="v in msgList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
       </div>
-      <div class="msg_container_query" key="unread">
+      <div class="msg_container_unread" key="unread">
         <ChatContent v-for="v in unreadList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
-      </div>
-      <div class="msg_containere_new" key="new">
-        <ChatContent v-for="v in newList" :key="v.id" :msgInfo="v" :convMember="convMember"
-        ></ChatContent>
       </div>
     </div>
     <ChartFooter @sendMessage="sendMsg"  @focus="scrollToBottom" />
@@ -70,15 +66,13 @@ const msgList = ref([])
 const firstRenderCount = 30
 const historyList = ref([])
 const addHistoryCountOnce = 30
-// 未读消息
 const unreadList = ref([])
-const newList = ref([])
 const getAllChats = () => {
   fetchChatRecords({ convId: route.query.convId })
     .then(res => {
       let resList = res.data?.records || []
-      originList.value = resList.filter(v => v.id < res.data?.last_read_msg_id)
-      unreadList.value = resList.filter(v => v.id >= res.data?.last_read_msg_id)
+      originList.value = resList.filter(v => v.id <= res.data?.last_read_msg_id)
+      unreadList.value = resList.filter(v => v.id > res.data?.last_read_msg_id)
       msgList.value = originList.value.splice(-firstRenderCount)
       unreadMsgCount.value = unreadList.value.length
       let id = msgList.value.length ? msgList.value[msgList.value.length - 1]?.id : 0
@@ -90,12 +84,13 @@ const getAllChats = () => {
         })
       })
     })
-    .catch(err => {
-      console.log('fetchChatRecords', err)
-    })
+    .catch(() => {})
 }
 const getUnreadList = () => {
   lastReadMsgId = getLastMsgId()
+  if (!lastReadMsgId) {
+    return
+  }
   fetchGetUnreadList({ convId: route.query.convId, lastReadMsgId, })
     .then(res => {
       let resList = res.data || []
@@ -155,9 +150,7 @@ const sendMsg = (msg) => {
 
 const getLastMsgId = () => {
   let id = null
-  if (newList.value.length) {
-    id = newList.value[newList.value.length - 1]?.id
-  } else if (unreadList.value.length) {
+  if (unreadList.value.length) {
     id = unreadList.value[unreadList.value.length - 1]?.id
   } else {
     id = msgList.value[msgList.value.length - 1]?.id
@@ -266,7 +259,7 @@ onDeactivated(() => {
 })
 const eventConnectSuccess = () => {
   if (route.name == 'ChatRoom') {
-    getAllChats()
+    getUnreadList()
     WS_Client.joinRoom(route.query.convId)
   }
 }
@@ -298,14 +291,19 @@ const updateUnreadMsgCount = (id) => {
   return () => {
     if (unreadMsgCount.value > 0) {
       unreadMsgCount.value--
-      notify(`消息${id}已读`)
+      // notify(`消息${id}已读`)
       lastReadMsgId = id
+      updateUnreadThrottle()
     }
   }
 }
 
+const updateUnreadThrottle = throttle(() => {
+  updateUnread()
+}, 300)
+
 const eventMessage = (data) => {
-  newList.value.push(data)
+  unreadList.value.push(data)
   if (isSelf(data.sender_id)) {
     scrollToBottom(data.id)
   } else if (isBottom()) {
@@ -322,6 +320,7 @@ const eventMessage = (data) => {
 
 const updateUnread = () => {
   let lastReadMsgId = getLastMsgId()
+  unreadMsgCount.value = 0
   lastReadMsgId && fetchUpdateUnread({
     convId: route.query.convId,
     lastReadMsgId,
