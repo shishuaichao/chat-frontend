@@ -32,7 +32,7 @@ defineProps({
   item: {
     type: Object,
     default: () => ({
-      avatar: [],
+      avatar: '',
       name: '',
       time: '',
       message: '',
