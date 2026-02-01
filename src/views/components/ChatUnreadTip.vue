@@ -1,5 +1,12 @@
 <template>
-  <div class="new-message-badge" :class="position">
+  <div class="new-message-badge" 
+    :class="{ 
+      'show': count > 0,  
+      'hide': count <= 0, 
+      'top': position === 'top',
+      'bottom': position === 'bottom',
+    }"
+  >
     <span class="badge-content">
       <span class="arrow-icon"> 
         <!-- <van-icon name="chat-o" size="16" /> -->
@@ -37,8 +44,15 @@ defineProps({
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
   margin: 10px;
   position: absolute;
-  right: -30px;
+  right: 0px;
   z-index: 1000;
+  transition: transform 0.5s linear;
+  &.show {
+    transform: translateX(30px);
+  }
+  &.hide {
+    transform: translateX(200px);
+  }
   &.top {
     top: 50px;
   }

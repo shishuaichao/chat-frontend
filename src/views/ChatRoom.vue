@@ -2,7 +2,7 @@
   <div class="main_container">
     <ChatHeader :title="title"></ChatHeader>
     <div class="chat_content_box" ref="chatContentRef">
-      <ChatUnreadTip v-if="unreadMsgCount" :count="unreadMsgCount" position="bottom" @click="toReadNewMsg"></ChatUnreadTip>
+      <ChatUnreadTip :count="unreadMsgCount" position="bottom" @click="toReadNewMsg"></ChatUnreadTip>
       <div class="msg_container_history" key="history">
         <ChatContent v-for="v in historyList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
       </div>
@@ -175,16 +175,16 @@ const scrollToBottom = (id, options={}) => {
   })
 }
 
-let observer = null
+
 onMounted(() => {
   getAllChats()
-  observer = new AddObserverFun({})
 })
 
 
-
+let observer = null
+let lastScrollTop = 0
 onActivated(() => {
-  
+  observer = new AddObserverFun({})
   WS_Client.joinRoom(route.query.convId)
   getConvMember()
   
@@ -225,8 +225,9 @@ onBeforeRouteLeave((to, from, next) => {
   next()
 })
 
-let lastScrollTop = 0
+
 onDeactivated(() => {
+  observer.close()
   updateUnread()
   chatContentRef.value?.removeEventListener('scroll', scrollEvent)
   // 聊天消息
