@@ -22,9 +22,11 @@ import { onMounted, ref } from 'vue'
 import router from './router'
 import tabBarsRoutes from '@/router/tabbars.js'
 import { checkLogined } from '@/utils/checkLogin.js'
-// import { showNotify } from 'vant'
 import { WS_mitt, WS_Client } from '@/utils/WS_Client.js'
 import store from '@/store/index.js'
+import { notify } from 'mini-notifier'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 
 onMounted(() => {
   checkLogined()
@@ -45,12 +47,15 @@ onMounted(() => {
 
 
 
-WS_mitt.on('message', (data) => {
-  // 成功通知
-  if (data.sender_id != localStorage.getItem('id')) {
-    // showNotify({ type: 'success', message: data.content });
-  }
+WS_mitt.on('private_message', (data) => {
+  console.log('route', route)
+  if (route.name == 'ChatRoom') return
+  notify(`私聊消息：${data.sender_id} 对你说：${data.content}`, {
+    time: 3000,
+    style: 'success',
+  });
 })
+
 
 const showTabbar = ref(false)
 const homePageList = tabBarsRoutes.map(item => item.name)

@@ -32,7 +32,6 @@ import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
 // import store from '@/store'
 import { notify } from 'mini-notifier'
 import { AddObserverFun } from '@/utils/utils.js'
-import router from '@/router';
 
 const route = useRoute()  
 
@@ -177,6 +176,8 @@ onActivated(() => {
   
   // 聊天消息
   WS_mitt.on('message', eventMessage)
+  // 聊天消息
+  WS_mitt.on('private_message', eventMessage)
   // 系统消息
   WS_mitt.on('system_msg', eventSystemMsg)
   // 重连成功
@@ -211,6 +212,8 @@ onDeactivated(() => {
   chatContentRef.value?.removeEventListener('scroll', scrollEvent)
   // 聊天消息
   WS_mitt.off('message', eventMessage)
+  // 聊天消息
+  WS_mitt.off('private_message', eventMessage)
   // 系统消息
   WS_mitt.off('system_msg', eventSystemMsg)
   // 有人加入房间
@@ -222,7 +225,7 @@ onDeactivated(() => {
   
 })
 const eventConnectSuccess = () => {
-  if (router.name == 'ChatRoom') {
+  if (route.name == 'ChatRoom') {
     getAllChats()
     WS_Client.joinRoom(route.query.convId)
   }

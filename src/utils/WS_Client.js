@@ -67,12 +67,6 @@ class SocketClient {
           });
           this.connect()
         }
-        if (event === 'private_message') {
-          notify(`收到私聊消息：${data.sender_id} 对你说：${data.content}`, {
-            time: 3000,
-            style: 'success',
-          });
-        }
         WS_mitt.emit(`${event}`, data);
       });
     });
