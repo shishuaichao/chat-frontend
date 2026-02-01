@@ -31,7 +31,7 @@ import { throttle } from 'lodash';
 import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
 // import store from '@/store'
 import { notify } from 'mini-notifier'
-import { addObserver } from '@/utils/utils.js'
+import { AddObserverFun } from '@/utils/utils.js'
 
 const route = useRoute()  
 
@@ -66,7 +66,7 @@ const originList = ref([])
 const msgList = ref([])
 const firstRenderCount = 30
 const historyList = ref([])
-const addHistoryCountOnce = 50
+const addHistoryCountOnce = 30
 const newList = ref([])
 const getAllChats = () => {
   fetchChatRecords({ convId: route.query.convId })
@@ -249,19 +249,22 @@ const eventMessage = (data) => {
     })
   }
 }
+
 const toAddObserver = (el, id) => {
-  setTimeout(() => {
-    if (el) {
-      addObserver(el, () => {
-        if (newMsgCount.value > 0) {
-          newMsgCount.value--
-          notify(`消息${id}已读`)
-        }
-      })
-    } else {
-      toAddObserver(el, id)
+  let callback = () => {
+    if (newMsgCount.value > 0) {
+      newMsgCount.value--
+      notify(`消息${id}已读`)
     }
-  }, 50);
+  }
+  let addServer = new AddObserverFun(el, callback)
+  addServer.open()
+  setTimeout(() => {
+    if (!el) {
+      addServer.close()
+      toAddObserver(el, id) 
+    }
+  }, 100);
 }
 const eventSystemMsg = (data) => {
   if (data.id !== userInfo.value.id) {
