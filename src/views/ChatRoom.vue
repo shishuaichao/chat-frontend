@@ -1,19 +1,21 @@
 <template>
   <div class="main_container">
-    <ChatHeader :title="title"></ChatHeader>
+    <ChatHeader></ChatHeader>
     <div class="chat_content_box" ref="chatContentRef">
       <ChatUnreadTip :count="unreadMsgCount" position="bottom" @click="toReadNewMsg"></ChatUnreadTip>
       <div class="msg_container_history" key="history">
-        <ChatContent v-for="v in historyList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
+        <ChatContent v-for="v in historyList" :key="v.id" :msgInfo="v"></ChatContent>
       </div>
       <div class="msg_container_query" key="query">
-        <ChatContent v-for="v in msgList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
+        <ChatContent v-for="v in msgList" :key="v.id" :msgInfo="v"></ChatContent>
       </div>
       <div class="msg_container_unread" key="unread">
-        <ChatContent v-for="v in unreadList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
+        <ChatContent v-for="v in unreadList" :key="v.id" :msgInfo="v"></ChatContent>
       </div>
     </div>
-    <ChartFooter @sendMessage="sendMsg"  @focus="scrollToBottom" />
+    <ChartFooter 
+      @sendMessage="sendMessage" 
+      @focus="scrollToBottom" />
   </div>
 </template>
 
@@ -25,302 +27,178 @@ import ChatContent from '@/views/components/ChatContent.vue';
 import ChartFooter from '@/views/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute, onBeforeRouteLeave  } from 'vue-router'
-import { fetchChatRecords, fetchConvMember, fetchUpdateUnread, fetchGetUnreadList } from '@/api/chat.js'
+import { fetchChatRecords, fetchUpdateUnread, fetchGetUnreadList } from '@/api/chat.js'
 import { throttle } from 'lodash';
 import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
-// import store from '@/store'
-import { notify } from 'mini-notifier'
-import { AddObserverFun } from '@/utils/utils.js'
-
+// import { notify } from 'mini-notifier'
+import { 
+  scrollToBottomUtil,
+  AddObserverFun, 
+  getUserInfo, 
+  isBottom,
+  isSelf,
+} from '@/utils/utils.js'
+import { 
+  sendMsg,
+} from '@/utils/ChatRoom.js'
 const route = useRoute()  
-
-
-
-const convMember = ref({})   // [ id: {nickname: '', avatar: ''}]
-const userInfo = ref({}) 
-const title = ref('')
-const getConvMember = () => {
-  fetchConvMember({ convId: route.query.convId, type: route.query.type })
-    .then(res => {
-      let arr = res.data || []
-      convMember.value = arr.reduce((pre, cur) => {
-        pre[cur.id] = {
-          nickname: cur.nickname,
-          avatar: cur.avatar,
-        }
-        return pre
-      }, {})
-    })
-    .catch(err => {
-      console.log('fetchConvMember', err)
-    })
-}
-
-
-
-
-
-// 聊天记录
-const originList = ref([])
-const msgList = ref([])
-const firstRenderCount = 30
-const historyList = ref([])
-const addHistoryCountOnce = 30
-const unreadList = ref([])
-const getAllChats = () => {
-  fetchChatRecords({ convId: route.query.convId })
-    .then(res => {
-      let resList = res.data?.records || []
-      originList.value = resList.filter(v => v.id <= res.data?.last_read_msg_id)
-      unreadList.value = resList.filter(v => v.id > res.data?.last_read_msg_id)
-      msgList.value = originList.value.splice(-firstRenderCount)
-      unreadMsgCount.value = unreadList.value.length
-      let id = msgList.value.length ? msgList.value[msgList.value.length - 1]?.id : 0
-      scrollToBottom(id, id ? 'end' : '')
-      nextTick(() => {
-        unreadList.value.forEach(e => {
-          let el = document.querySelector(`.msg_item_${e.id}`)
-          observer.add(el, updateUnreadMsgCount(e.id))
-        })
-      })
-    })
-    .catch(() => {})
-}
-const getUnreadList = () => {
-  lastReadMsgId = getLastMsgId()
-  if (!lastReadMsgId) {
-    return
-  }
-  fetchGetUnreadList({ convId: route.query.convId, lastReadMsgId, })
-    .then(res => {
-      let resList = res.data || []
-      unreadList.value = resList
-      unreadMsgCount.value = unreadList.value.length
-    })
-    .catch(err => {
-      console.log('fetchGetUnreadInfo', err)
-    })
-}
-
-
-
-
-// 滚动监听
-const scrollEvent = () => {
-  if (chatContentRef.value?.scrollTop == 0) {
-    if (!originList.value.length) {
-      showToast({
-        message: '别滑了，一条都没有了',
-        duration: 500,
-      })
-      return
-    }
-    let lastHeight = chatContentRef.value?.scrollHeight
-    let newArr = originList.value.splice(-addHistoryCountOnce)
-    historyList.value = [...newArr, ...historyList.value]
-    nextTick(() => {
-      chatContentRef.value && (chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight - lastHeight)
-    })
-  }
-  
-}
-
-
-
-// 发送消息
-const sendMsg = (msg) => {
-  const msgData = { 
-    content: msg, 
-    convId: route.query.convId, 
-    type: 1,
-    status: 1,
-    ...userInfo.value,
-  }
-  if (route.query.type == 1) {
-    let data = {
-      ...msgData,
-      from: localStorage.getItem('id'),
-      to: route.query.id,
-    }
-    WS_Client.sendPrivateMsg(data)
-  } else {
-    WS_Client.sendMsg(msgData)
-  }
-}
-
-const getLastMsgId = () => {
-  let id = null
-  if (unreadList.value.length) {
-    id = unreadList.value[unreadList.value.length - 1]?.id
-  } else {
-    id = msgList.value[msgList.value.length - 1]?.id
-  }
-  return id
-}
-
-
-// 滚动到底部
-const chatContentRef = ref(null)
-const scrollToBottom = (id, options={}) => {
-  let msgElement = null
-  nextTick(() => {
-    if (id) {
-      msgElement = document.querySelector(`.msg_item_${id}`)
-    } else {
-      id = getLastMsgId()
-      msgElement = document.querySelector(`.msg_item_${id}`)
-    }
-
-    if (msgElement?.scrollIntoView) {
-      msgElement && msgElement.scrollIntoView({
-        behavior: options.behavior || 'smooth',
-        block: options.block || 'end',
-        container: options.container || 'nearest',
-        inline: options.inline || 'end',
-      })
-    } else {
-      requestAnimationFrame(() => {
-        const container = chatContentRef.value
-        container && (container.scrollTop = container.scrollHeight)
-      })
-    }
-  })
-}
-
-
-onMounted(() => {
-  getAllChats()
-})
 
 
 let observer = null
 let lastScrollTop = 0
 let lastReadMsgId = null
+const chatContentRef = ref(null)
+// 页面挂载时
+onMounted(() => {
+  getAllChats()
+})
+// 页面激活时
 onActivated(() => {
   observer = new AddObserverFun({})
   WS_Client.joinRoom(route.query.convId)
-  getConvMember()
   getUnreadList()
-
-  userInfo.value = {
-    sender_id: localStorage.getItem('id'),
-    nickname: localStorage.getItem('nickname'),
-    avatar: localStorage.getItem('avatar'),
-  }
-  
-  // 聊天消息
   WS_mitt.on('message', eventMessage)
-  // 聊天消息
   WS_mitt.on('private_message', eventMessage)
-  // 系统消息
-  WS_mitt.on('system_msg', eventSystemMsg)
-  // 重连成功
+  WS_mitt.on('system_msg', eventMessage)
   WS_mitt.on('connect_success', eventConnectSuccess)
-  // 加入房间
   WS_mitt.on('join_room', entryRoomEvent)
-  // 离开房间
   WS_mitt.on('leave_room', leaveRoomEvent)
-  
-  chatContentRef.value?.addEventListener('scroll', throttle(scrollEvent, 200))
-
+  chatContentRef.value.addEventListener('scroll', throttle(scrollEvent, 200))
   chatContentRef.value.scrollTop = lastScrollTop
 })
-
+// 页面失活时
+onDeactivated(() => {
+  observer.close()
+  chatContentRef.value?.removeEventListener('scroll', scrollEvent)
+  WS_mitt.off('message', eventMessage)
+  WS_mitt.off('private_message', eventMessage)
+  WS_mitt.off('system_msg', eventMessage)
+  WS_mitt.off('connect_success', eventConnectSuccess)
+  WS_mitt.off('join_room', entryRoomEvent)
+  WS_mitt.off('leave_room', leaveRoomEvent)
+})
+// 离开页面前
 onBeforeRouteLeave((to, from, next) => {
-  // 离开房间前 判断路由
   if (from.name == 'ChatRoom') {
     WS_Client.leaveRoom({
       roomId: route.query.convId,
-      userId: localStorage.getItem('id'),
+      userId: getUserInfo().id,
     })
-    lastScrollTop = chatContentRef.value.scrollTop || 0
+    lastScrollTop = chatContentRef.value.scrollTop
     updateUnread()
   }
   next()
 })
 
 
-onDeactivated(() => {
-  observer.close()
-  chatContentRef.value?.removeEventListener('scroll', scrollEvent)
-  // 聊天消息
-  WS_mitt.off('message', eventMessage)
-  // 聊天消息
-  WS_mitt.off('private_message', eventMessage)
-  // 系统消息
-  WS_mitt.off('system_msg', eventSystemMsg)
-  // 有人加入房间
-  WS_mitt.off('join_room', entryRoomEvent)
-  // 有人离开房间
-  WS_mitt.off('leave_room', leaveRoomEvent)
-  // 重连成功
-  WS_mitt.off('connect_success', eventConnectSuccess)
-  
-})
+const unreadMsgCount = ref(0)
+const originList = ref([])
+const historyList = ref([])
+const msgList = ref([])
+const unreadList = ref([])
+const firstRenderCount = 30
+const addHistoryCountOnce = 20
+// 获取聊天记录
+const getAllChats = () => {
+  fetchChatRecords({ convId: route.query.convId })
+    .then(res => {
+      let resList = res.data?.records || []
+      lastReadMsgId = res.data?.last_read_msg_id
+      originList.value = resList.filter(v => v.id <= lastReadMsgId)
+      unreadList.value = resList.filter(v => v.id > lastReadMsgId)
+      msgList.value = originList.value.splice(-firstRenderCount)
+      unreadMsgCount.value = unreadList.value.length
+      scrollToBottom(lastReadMsgId)
+      addUnreadListObserve(unreadList.value)
+    })
+    .catch(() => {})
+}
+// 获取未读消息列表
+const getUnreadList = () => {
+  lastReadMsgId = getLastMsgId()
+  if (lastReadMsgId) {
+    fetchGetUnreadList({ convId: route.query.convId, lastReadMsgId, })
+      .then(res => {
+        let resList = res.data || []
+        unreadList.value = resList
+        unreadMsgCount.value = unreadList.value.length
+        addUnreadListObserve(unreadList.value)
+      })
+      .catch(() => {})
+  }
+}
+// 连接成功
 const eventConnectSuccess = () => {
   if (route.name == 'ChatRoom') {
     getUnreadList()
     WS_Client.joinRoom(route.query.convId)
   }
 }
-// 监听事件
+// 离开房间
 const leaveRoomEvent = (data) => {
   if (route.query.type == 2) {
     notify(data)
   }
 }
+// 进入房间
 const entryRoomEvent = (data) => {
   if (route.query.type == 2) {
     notify(data)
   }
 }
-// 是否在页面最底部
-const isBottom = () => {
-  return chatContentRef.value?.scrollTop + chatContentRef.value?.clientHeight >= chatContentRef.value?.scrollHeight
+// 发送消息
+const sendMessage = (msg) => {
+  sendMsg(route.query.type, {
+    content: msg,
+    convId: route.query.convId,
+    friendId: route.query.id,
+  })
 }
-const isSelf = (id) => {
-  return id == localStorage.getItem('id')
-}
-const unreadMsgCount = ref(0)
-const toReadNewMsg = () => {
-  scrollToBottom()
-  unreadMsgCount.value = 0
-  lastReadMsgId = getLastMsgId()
-}
-const updateUnreadMsgCount = (id) => {
-  return () => {
-    if (unreadMsgCount.value > 0) {
-      unreadMsgCount.value--
-      // notify(`消息${id}已读`)
-      lastReadMsgId = id
-      updateUnreadThrottle()
-    }
-  }
-}
-
-const updateUnreadThrottle = throttle(() => {
-  updateUnread()
-}, 300)
-
+// 接收消息/系统消息
 const eventMessage = (data) => {
   unreadList.value.push(data)
   if (isSelf(data.sender_id)) {
     scrollToBottom(data.id)
-  } else if (isBottom()) {
+  } else if (isBottom(chatContentRef.value)) {
     scrollToBottom(data.id)
+    updateUnreadThrottle(data.id)
   } else {
     // 添加未读消息标识
     unreadMsgCount.value++
-    nextTick(() => {
-      let msgElement = document.querySelector(`.msg_item_${data.id}`)
-      observer.add(msgElement, updateUnreadMsgCount(data.id))
-    })
+    addUnreadListObserve([data])
   }
 }
-
-const updateUnread = () => {
-  let lastReadMsgId = getLastMsgId()
+// 未读消息进入页面监听
+const addUnreadListObserve = async (arr) => {
+  await nextTick()
+  arr.forEach(e => {
+    let el = document.querySelector(`.msg_item_${e.id}`)
+    let id = e.id
+    observer.add(el,  () => {
+      if (unreadMsgCount.value > 0) {
+        unreadMsgCount.value--
+        // notify(`消息${id}已读`)
+        lastReadMsgId = id
+        updateUnreadThrottle(id)
+      }
+    })
+  })
+}
+// 点击未读消息，滚动到底部并更新未读消息为已读
+const toReadNewMsg = () => {
+  scrollToBottom()
   unreadMsgCount.value = 0
+  lastReadMsgId = getLastMsgId()
+  updateUnread()
+}
+// 更新未读（节流）
+const updateUnreadThrottle = throttle((id) => {
+  updateUnread(id)
+}, 300)
+// 更新未读消息为已读
+const updateUnread = (id) => {
+  let lastReadMsgId = id || getLastMsgId()
+  !id && (unreadMsgCount.value = 0)
   lastReadMsgId && fetchUpdateUnread({
     convId: route.query.convId,
     lastReadMsgId,
@@ -328,13 +206,67 @@ const updateUnread = () => {
 }
 
 
-const eventSystemMsg = (data) => {
-  if (data.id !== userInfo.value.id) {
-    showToast(data.content);
-    newList.value.push(data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/******** 非核心代码 ********/ 
+
+
+
+// 获取最后一条消息id
+const getLastMsgId = () => {
+  if (unreadList.value.length) {
+    lastReadMsgId = unreadList.value[unreadList.value.length - 1]?.id
+  } else {
+    lastReadMsgId = msgList.value[msgList.value.length - 1]?.id
+  }
+  return lastReadMsgId
+}
+// 滚动到底部
+const scrollToBottom = (id, options={}) => {
+  nextTick(() => {
+    id = id || getLastMsgId()
+    let msgElement = document.querySelector(`.msg_item_${id}`)
+    scrollToBottomUtil(msgElement, chatContentRef.value, options)
+  })
+}
+// 滚动监听
+const scrollEvent = () => {
+  if (chatContentRef.value && chatContentRef.value.scrollTop == 0) {
+    if (!originList.value.length) {
+      showToast({
+        message: '别滑了，一条都没有了',
+        duration: 500,
+      })
+      return
+    }
+    let lastHeight = chatContentRef.value.scrollHeight
+    historyList.value = [...originList.value.splice(-addHistoryCountOnce), ...historyList.value]
+    nextTick(() => {
+      chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight - lastHeight
+    })
   }
 }
-
 </script>
 
 <style scoped lang="scss">

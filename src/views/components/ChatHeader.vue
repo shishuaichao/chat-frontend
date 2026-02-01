@@ -22,8 +22,7 @@ const router = useRouter()
 defineProps({
   title: {
     type: String,
-    required: true,
-    default: () => '',
+    default: '',
   },
 });
 

@@ -16,13 +16,13 @@
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img v-once :src="convMember[msgInfo.sender_id]?.avatar" alt="">
+        <img v-once :src="msgInfo.avatar" alt="">
       </div>
     </div>
     <!-- 其他人 -->
     <div class="msg_other msg_item left" v-else>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
-        <img v-once :src="convMember[msgInfo.sender_id]?.avatar" alt="">
+        <img v-once :src="msgInfo.avatar" alt="">
       </div>
       <div class="msg_box">
         <div class="nickname">
@@ -51,10 +51,6 @@ const router = useRouter()
 defineProps({
   // 消息
   msgInfo: {
-    type: Object,
-    required: true,
-  },
-  convMember: {
     type: Object,
     required: true,
   },

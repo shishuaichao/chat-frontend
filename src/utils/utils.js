@@ -8,11 +8,63 @@ export const getSessionKey = (arr) => {
     return ids.join('_')
 }
 
+// 是否在页面最底部
+export const isBottom = (container) => {
+  if (!container) return 
+  return container.scrollTop + container.clientHeight >= container.scrollHeight
+}
+export const isSelf = (id) => {
+  return id == getUserInfo().id
+}
+
+export const getUserInfo = () => {
+  return {
+    id: localStorage.getItem('id'),
+    nickname: localStorage.getItem('nickname'),
+    avatar: localStorage.getItem('avatar'),
+  }
+}
+
+export const scrollToBottomUtil = (el, container, options) => {
+  if (!el) return
+  if (el.scrollIntoView) {
+    el.scrollIntoView({
+      behavior: options.behavior || 'smooth',
+      block: options.block || 'end',
+      container: options.container || 'nearest',
+      inline: options.inline || 'end',
+    })
+  } else {
+    requestAnimationFrame(() => {
+      if (!container) return
+      container.scrollTop = container.scrollHeight
+    })
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 // 如果 later 动态添加新元素，需要手动 observer.observe(newEl)
-
 export class AddObserverFun {
   constructor(options = {}) {
     this.options = options
