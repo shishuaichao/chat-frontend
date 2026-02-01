@@ -22,7 +22,7 @@ export class AddObserverFun {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           let id = entry.target?.dataset['observer']
-          console.log('进入视口', entry.target, id);
+          // console.log('进入视口', entry.target, id);
           if (this.idMap.has(id)) {
             let callback = this.idMap.get(id)
             callback()

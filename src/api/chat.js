@@ -6,7 +6,7 @@ export const fetchCreateConversation = (params) => fetchPost('/chat/conversation
 export const fetchGetIdBySessionKey = (params) => fetchGet('/chat/conversation/getIdBySessionKey', params)
 export const fetchConvMember = (params) => fetchGet('/chat/conversation/member', params)
 export const fetchUpdateUnread = (params) => fetchPost('/chat/conversation/updateUnread', params)
-
+export const fetchGetUnreadList = (params) => fetchGet('/chat/conversation/member/unreadList', params)
 
 export const fetchChatRecords = (params) => fetchGet('/chat/records', params)
 

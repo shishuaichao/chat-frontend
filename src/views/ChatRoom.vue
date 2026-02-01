@@ -29,7 +29,7 @@ import ChatContent from '@/views/components/ChatContent.vue';
 import ChartFooter from '@/views/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute, onBeforeRouteLeave  } from 'vue-router'
-import { fetchChatRecords, fetchConvMember, fetchUpdateUnread } from '@/api/chat.js'
+import { fetchChatRecords, fetchConvMember, fetchUpdateUnread, fetchGetUnreadList } from '@/api/chat.js'
 import { throttle } from 'lodash';
 import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
 // import store from '@/store'
@@ -86,9 +86,7 @@ const getAllChats = () => {
       nextTick(() => {
         unreadList.value.forEach(e => {
           let el = document.querySelector(`.msg_item_${e.id}`)
-          observer.add(el, () => {
-            notify(`已读${e.id}`)
-          })
+          observer.add(el, updateUnreadMsgCount(e.id))
         })
       })
     })
@@ -96,6 +94,22 @@ const getAllChats = () => {
       console.log('fetchChatRecords', err)
     })
 }
+const getUnreadList = () => {
+  lastReadMsgId = getLastMsgId()
+  fetchGetUnreadList({ convId: route.query.convId, lastReadMsgId, })
+    .then(res => {
+      let resList = res.data || []
+      unreadList.value = resList
+      unreadMsgCount.value = unreadList.value.length
+    })
+    .catch(err => {
+      console.log('fetchGetUnreadInfo', err)
+    })
+}
+
+
+
+
 // 滚动监听
 const scrollEvent = () => {
   if (chatContentRef.value?.scrollTop == 0) {
@@ -139,6 +153,17 @@ const sendMsg = (msg) => {
   }
 }
 
+const getLastMsgId = () => {
+  let id = null
+  if (newList.value.length) {
+    id = newList.value[newList.value.length - 1]?.id
+  } else if (unreadList.value.length) {
+    id = unreadList.value[unreadList.value.length - 1]?.id
+  } else {
+    id = msgList.value[msgList.value.length - 1]?.id
+  }
+  return id
+}
 
 
 // 滚动到底部
@@ -149,13 +174,7 @@ const scrollToBottom = (id, options={}) => {
     if (id) {
       msgElement = document.querySelector(`.msg_item_${id}`)
     } else {
-      if (newList.value.length) {
-        id = newList.value[newList.value.length - 1]?.id
-      } else if (unreadList.value.length) {
-        id = unreadList.value[unreadList.value.length - 1]?.id
-      } else {
-        id = msgList.value[msgList.value.length - 1]?.id
-      }
+      id = getLastMsgId()
       msgElement = document.querySelector(`.msg_item_${id}`)
     }
 
@@ -183,11 +202,12 @@ onMounted(() => {
 
 let observer = null
 let lastScrollTop = 0
+let lastReadMsgId = null
 onActivated(() => {
   observer = new AddObserverFun({})
   WS_Client.joinRoom(route.query.convId)
   getConvMember()
-  
+  getUnreadList()
 
   userInfo.value = {
     sender_id: localStorage.getItem('id'),
@@ -221,6 +241,7 @@ onBeforeRouteLeave((to, from, next) => {
       userId: localStorage.getItem('id'),
     })
     lastScrollTop = chatContentRef.value.scrollTop || 0
+    updateUnread()
   }
   next()
 })
@@ -228,7 +249,6 @@ onBeforeRouteLeave((to, from, next) => {
 
 onDeactivated(() => {
   observer.close()
-  updateUnread()
   chatContentRef.value?.removeEventListener('scroll', scrollEvent)
   // 聊天消息
   WS_mitt.off('message', eventMessage)
@@ -272,6 +292,16 @@ const unreadMsgCount = ref(0)
 const toReadNewMsg = () => {
   scrollToBottom()
   unreadMsgCount.value = 0
+  lastReadMsgId = getLastMsgId()
+}
+const updateUnreadMsgCount = (id) => {
+  return () => {
+    if (unreadMsgCount.value > 0) {
+      unreadMsgCount.value--
+      notify(`消息${id}已读`)
+      lastReadMsgId = id
+    }
+  }
 }
 
 const eventMessage = (data) => {
@@ -285,27 +315,16 @@ const eventMessage = (data) => {
     unreadMsgCount.value++
     nextTick(() => {
       let msgElement = document.querySelector(`.msg_item_${data.id}`)
-      observer.add(msgElement, () => {
-        if (unreadMsgCount.value > 0) {
-          unreadMsgCount.value--
-          notify(`消息${data.id}已读`)
-        }
-      })
+      observer.add(msgElement, updateUnreadMsgCount(data.id))
     })
   }
 }
 
-const updateUnread = (id) => {
-  let lastReadMsgId = id
-  if (newList.value.length) {
-    lastReadMsgId = newList.value[newList.value.length - 1]?.id
-  } else if (unreadList.value.length) {
-    lastReadMsgId = unreadList.value[unreadList.value.length - 1]?.id
-  }
+const updateUnread = () => {
+  let lastReadMsgId = getLastMsgId()
   lastReadMsgId && fetchUpdateUnread({
     convId: route.query.convId,
     lastReadMsgId,
-    unreadCount: unreadMsgCount.value,
   }).catch(() => {})
 }
 
