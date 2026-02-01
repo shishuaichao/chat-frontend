@@ -2,12 +2,15 @@
   <div class="main_container">
     <ChatHeader :title="title"></ChatHeader>
     <div class="chat_content_box" ref="chatContentRef">
-      <ChatUnreadTip v-if="newMsgCount" :count="newMsgCount" position="bottom" @click="toReadNewMsg"></ChatUnreadTip>
+      <ChatUnreadTip v-if="unreadMsgCount" :count="unreadMsgCount" position="bottom" @click="toReadNewMsg"></ChatUnreadTip>
       <div class="msg_container_history" key="history">
         <ChatContent v-for="v in historyList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
       </div>
       <div class="msg_container_query" key="query">
         <ChatContent v-for="v in msgList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
+      </div>
+      <div class="msg_container_query" key="unread">
+        <ChatContent v-for="v in unreadList" :key="v.id" :msgInfo="v" :convMember="convMember"></ChatContent>
       </div>
       <div class="msg_containere_new" key="new">
         <ChatContent v-for="v in newList" :key="v.id" :msgInfo="v" :convMember="convMember"
@@ -26,7 +29,7 @@ import ChatContent from '@/views/components/ChatContent.vue';
 import ChartFooter from '@/views/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute, onBeforeRouteLeave  } from 'vue-router'
-import { fetchChatRecords, fetchConvMember } from '@/api/chat.js'
+import { fetchChatRecords, fetchConvMember, fetchUpdateUnread } from '@/api/chat.js'
 import { throttle } from 'lodash';
 import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
 // import store from '@/store'
@@ -67,13 +70,25 @@ const msgList = ref([])
 const firstRenderCount = 30
 const historyList = ref([])
 const addHistoryCountOnce = 30
+// 未读消息
+const unreadList = ref([])
 const newList = ref([])
 const getAllChats = () => {
   fetchChatRecords({ convId: route.query.convId })
     .then(res => {
-      originList.value = res.data || []
+      let resList = res.data?.records || []
+      originList.value = resList.filter(v => v.id < res.data?.last_read_msg_id)
+      unreadList.value = resList.filter(v => v.id >= res.data?.last_read_msg_id)
       msgList.value = originList.value.splice(-firstRenderCount)
-      scrollToBottom()
+      unreadMsgCount.value = unreadList.value.length
+      let id = msgList.value.length ? msgList.value[msgList.value.length - 1]?.id : 0
+      scrollToBottom(id, id ? 'end' : '')
+      nextTick(() => {
+        unreadList.value.forEach(e => {
+          let el = document.querySelector(`.msg_item_${e.id}`)
+          toAddObserver(el, e.id)
+        })
+      })
     })
     .catch(err => {
       console.log('fetchChatRecords', err)
@@ -92,7 +107,6 @@ const scrollEvent = () => {
     let lastHeight = chatContentRef.value?.scrollHeight
     let newArr = originList.value.splice(-addHistoryCountOnce)
     historyList.value = [...newArr, ...historyList.value]
-    notify(`newMsg${historyList.value.length}`)
     nextTick(() => {
       chatContentRef.value && (chatContentRef.value.scrollTop = chatContentRef.value.scrollHeight - lastHeight)
     })
@@ -127,7 +141,7 @@ const sendMsg = (msg) => {
 
 // 滚动到底部
 const chatContentRef = ref(null)
-const scrollToBottom = (id) => {
+const scrollToBottom = (id, options={}) => {
   let msgElement = null
   nextTick(() => {
     if (id) {
@@ -135,6 +149,8 @@ const scrollToBottom = (id) => {
     } else {
       if (newList.value.length) {
         id = newList.value[newList.value.length - 1]?.id
+      } else if (unreadList.value.length) {
+        id = unreadList.value[unreadList.value.length - 1]?.id
       } else {
         id = msgList.value[msgList.value.length - 1]?.id
       }
@@ -143,8 +159,10 @@ const scrollToBottom = (id) => {
 
     if (msgElement?.scrollIntoView) {
       msgElement && msgElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end'
+        behavior: options.behavior || 'smooth',
+        block: options.block || 'end',
+        container: options.container || 'nearest',
+        inline: options.inline || 'end',
       })
     } else {
       requestAnimationFrame(() => {
@@ -190,7 +208,6 @@ onActivated(() => {
   chatContentRef.value?.addEventListener('scroll', throttle(scrollEvent, 200))
 
   chatContentRef.value.scrollTop = lastScrollTop
-  notify(`get lastScrollTop: ${lastScrollTop}`)
 })
 
 onBeforeRouteLeave((to, from, next) => {
@@ -201,14 +218,13 @@ onBeforeRouteLeave((to, from, next) => {
       userId: localStorage.getItem('id'),
     })
     lastScrollTop = chatContentRef.value.scrollTop || 0
-    notify(`get lastScrollTop: ${chatContentRef.value.scrollTop}`)
   }
   next()
 })
 
 let lastScrollTop = 0
 onDeactivated(() => {
-  newMsgCount.value = 0
+  updateUnread()
   chatContentRef.value?.removeEventListener('scroll', scrollEvent)
   // 聊天消息
   WS_mitt.off('message', eventMessage)
@@ -232,14 +248,14 @@ const eventConnectSuccess = () => {
 }
 // 监听事件
 const leaveRoomEvent = (data) => {
-  notify(data, {
-    time: 3000,
-  })
+  if (route.query.type == 2) {
+    notify(data)
+  }
 }
 const entryRoomEvent = (data) => {
-  notify(data, {
-    time: 3000,
-  })
+  if (route.query.type == 2) {
+    notify(data)
+  }
 }
 // 是否在页面最底部
 const isBottom = () => {
@@ -248,10 +264,10 @@ const isBottom = () => {
 const isSelf = (id) => {
   return id == localStorage.getItem('id')
 }
-const newMsgCount = ref(0)
+const unreadMsgCount = ref(0)
 const toReadNewMsg = () => {
   scrollToBottom()
-  newMsgCount.value = 0
+  unreadMsgCount.value = 0
 }
 
 const eventMessage = (data) => {
@@ -262,7 +278,7 @@ const eventMessage = (data) => {
     scrollToBottom(data.id)
   } else {
     // 添加未读消息标识
-    newMsgCount.value++
+    unreadMsgCount.value++
     nextTick(() => {
       let msgElement = document.querySelector(`.msg_item_${data.id}`)
       toAddObserver(msgElement, data.id)
@@ -270,21 +286,36 @@ const eventMessage = (data) => {
   }
 }
 
+const updateUnread = (id) => {
+  let lastReadMsgId = id
+  if (newList.value.length) {
+    lastReadMsgId = newList.value[newList.value.length - 1]?.id
+  } else if (unreadList.value.length) {
+    lastReadMsgId = unreadList.value[unreadList.value.length - 1]?.id
+  }
+  lastReadMsgId && fetchUpdateUnread({
+    convId: route.query.convId,
+    lastReadMsgId,
+    unreadCount: unreadMsgCount.value,
+  })
+}
 const toAddObserver = (el, id) => {
   let callback = () => {
-    if (newMsgCount.value > 0) {
-      newMsgCount.value--
+    console.log('进入监听', id)
+    if (unreadMsgCount.value > 0) {
+      unreadMsgCount.value--
       notify(`消息${id}已读`)
     }
   }
   let addServer = new AddObserverFun(el, callback)
   addServer.open()
-  setTimeout(() => {
+  nextTick(() => {
     if (!el) {
       addServer.close()
       toAddObserver(el, id) 
     }
-  }, 100);
+  });
+  return addServer
 }
 
 const eventSystemMsg = (data) => {
