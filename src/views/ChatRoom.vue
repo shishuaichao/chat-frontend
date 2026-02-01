@@ -86,7 +86,9 @@ const getAllChats = () => {
       nextTick(() => {
         unreadList.value.forEach(e => {
           let el = document.querySelector(`.msg_item_${e.id}`)
-          toAddObserver(el, e.id)
+          observer.add(el, () => {
+            notify(`已读${e.id}`)
+          })
         })
       })
     })
@@ -173,9 +175,10 @@ const scrollToBottom = (id, options={}) => {
   })
 }
 
+let observer = null
 onMounted(() => {
   getAllChats()
-  
+  observer = new AddObserverFun({})
 })
 
 
@@ -281,7 +284,12 @@ const eventMessage = (data) => {
     unreadMsgCount.value++
     nextTick(() => {
       let msgElement = document.querySelector(`.msg_item_${data.id}`)
-      toAddObserver(msgElement, data.id)
+      observer.add(msgElement, () => {
+        if (unreadMsgCount.value > 0) {
+          unreadMsgCount.value--
+          notify(`消息${data.id}已读`)
+        }
+      })
     })
   }
 }
@@ -299,24 +307,7 @@ const updateUnread = (id) => {
     unreadCount: unreadMsgCount.value,
   })
 }
-const toAddObserver = (el, id) => {
-  let callback = () => {
-    console.log('进入监听', id)
-    if (unreadMsgCount.value > 0) {
-      unreadMsgCount.value--
-      notify(`消息${id}已读`)
-    }
-  }
-  let addServer = new AddObserverFun(el, callback)
-  addServer.open()
-  nextTick(() => {
-    if (!el) {
-      addServer.close()
-      toAddObserver(el, id) 
-    }
-  });
-  return addServer
-}
+
 
 const eventSystemMsg = (data) => {
   if (data.id !== userInfo.value.id) {
