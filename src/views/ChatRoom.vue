@@ -32,6 +32,7 @@ import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
 // import store from '@/store'
 import { notify } from 'mini-notifier'
 import { AddObserverFun } from '@/utils/utils.js'
+import router from '@/router';
 
 const route = useRoute()  
 
@@ -109,10 +110,18 @@ const sendMsg = (msg) => {
     convId: route.query.convId, 
     type: 1,
     status: 1,
-    created_at: Date.parse(new Date()),
     ...userInfo.value,
   }
-  WS_Client.sendMsg('message', msgData)
+  if (route.query.type == 1) {
+    let data = {
+      ...msgData,
+      from: localStorage.getItem('id'),
+      to: route.query.id,
+    }
+    WS_Client.sendPrivateMsg(data)
+  } else {
+    WS_Client.sendMsg(msgData)
+  }
 }
 
 
@@ -171,10 +180,7 @@ onActivated(() => {
   // 系统消息
   WS_mitt.on('system_msg', eventSystemMsg)
   // 重连成功
-  WS_mitt.on('connect_success', () => {
-    getAllChats()
-    WS_Client.joinRoom(route.query.convId)
-  })
+  WS_mitt.on('connect_success', eventConnectSuccess)
   // 加入房间
   WS_mitt.on('join_room', entryRoomEvent)
   // 离开房间
@@ -211,8 +217,16 @@ onDeactivated(() => {
   WS_mitt.off('join_room', entryRoomEvent)
   // 有人离开房间
   WS_mitt.off('leave_room', leaveRoomEvent)
+  // 重连成功
+  WS_mitt.off('connect_success', eventConnectSuccess)
   
 })
+const eventConnectSuccess = () => {
+  if (router.name == 'ChatRoom') {
+    getAllChats()
+    WS_Client.joinRoom(route.query.convId)
+  }
+}
 // 监听事件
 const leaveRoomEvent = (data) => {
   notify(data, {

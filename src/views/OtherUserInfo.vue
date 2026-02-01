@@ -58,6 +58,7 @@ const entryChat = (convId) => {
   router.push({
     name: 'ChatRoom',
     query: {
+      id: route.query.id,
       convId: convId,
       type: 1,
     }

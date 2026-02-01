@@ -48,6 +48,7 @@ class SocketClient {
       'connect_error', // 连接错误
       'join_room', // 加入房间
       'leave_room', // 离开房间
+      'private_message', // 私聊消息
     ];
     eventListeners.forEach(event => {
       this.socket.on(event, (data) => {
@@ -66,15 +67,27 @@ class SocketClient {
           });
           this.connect()
         }
+        if (event === 'private_message') {
+          notify(`收到私聊消息：${data.sender_id} 对你说：${data.content}`, {
+            time: 3000,
+            style: 'success',
+          });
+        }
         WS_mitt.emit(`${event}`, data);
       });
     });
   }
 
-  sendMsg(event, data) {
-    console.log(`发送消息 ${event}: `, data);
-    this.socket.emit(event, data);
+  sendMsg(data) {
+    console.log(`发送消息: `, data);
+    this.socket.emit('message', data);
   }
+
+  sendPrivateMsg(data) {
+    console.log(`发送私聊消息: `, data);
+    this.socket.emit('private_message', data);
+  }
+  
 
   // 加入指定房间
   joinRoom(roomId) {

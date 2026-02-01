@@ -1,0 +1,131 @@
+<!-- client.html 客户端测试页面 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask-SocketIO 单聊测试</title>
+    <!-- 引入Socket.IO客户端CDN（版本和服务端兼容即可，推荐4.7.x） -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        .container { width: 800px; margin: 20px auto; }
+        .msg-box { margin: 20px 0; padding: 10px; border: 1px solid #eee; height: 300px; overflow-y: auto; }
+        input { padding: 8px; margin: 5px; width: 200px; }
+        button { padding: 8px 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Flask-SocketIO 点对点单聊测试</h3>
+        <!-- 1. 绑定UID区域 -->
+        <div>
+            我的UID：<input type="text" id="myUid" placeholder="输入唯一标识，如1001/zhangsan">
+            <button onclick="bindUid()">绑定UID（先执行）</button>
+        </div>
+        <hr>
+        <!-- 2. 发送消息区域 -->
+        <div>
+            目标UID：<input type="text" id="toUid" placeholder="输入对方UID，如1002/lisi">
+            消息内容：<input type="text" id="msgContent" placeholder="输入要发送的消息" onkeyup="if(event.keyCode===13) sendPrivateMsg()">
+            <button onclick="sendPrivateMsg()">发送单聊消息</button>
+        </div>
+        <hr>
+        <!-- 3. 接收消息区域 -->
+        <div class="msg-box" id="msgList"></div>
+    </div>
+
+    <script>
+        // 连接Flask-SocketIO服务端（地址为服务端运行地址，端口5000）
+        const socket = io('http://localhost:5000');
+        // 获取页面元素
+        const myUidInput = document.getElementById('myUid');
+        const toUidInput = document.getElementById('toUid');
+        const msgContentInput = document.getElementById('msgContent');
+        const msgList = document.getElementById('msgList');
+
+        // --------------- 客户端核心方法 ---------------
+        // 1. 绑定自己的UID
+        function bindUid() {
+            const myUid = myUidInput.value.trim();
+            if (!myUid) {
+                alert('请输入你的UID！');
+                return;
+            }
+            socket.emit('bind_uid', { uid: myUid });
+        }
+
+        // 2. 发送点对点单聊消息
+        function sendPrivateMsg() {
+            const myUid = myUidInput.value.trim();
+            const toUid = toUidInput.value.trim();
+            const content = msgContentInput.value.trim();
+            if (!myUid || !toUid || !content) {
+                alert('请完善我的UID、目标UID、消息内容！');
+                return;
+            }
+            // 触发服务端private_chat事件，传参和服务端约定一致
+            socket.emit('private_chat', {
+                from_uid: myUid,
+                to_uid: toUid,
+                content: content
+            });
+            // 清空消息输入框
+            msgContentInput.value = '';
+        }
+
+        // --------------- 监听服务端事件 ---------------
+        // 连接成功
+        socket.on('connect_success', (res) => {
+            console.log('服务端连接成功：', res);
+            addMsg(`系统提示：${res.msg}，你的socket.id：${res.socket_id}`, 'system');
+        });
+
+        // UID绑定成功
+        socket.on('bind_uid_success', (res) => {
+            alert(res.msg);
+            addMsg(`系统提示：${res.msg}`, 'system');
+        });
+
+        // UID绑定失败
+        socket.on('bind_uid_fail', (res) => {
+            alert(res.msg);
+            addMsg(`系统错误：${res.msg}`, 'error');
+        });
+
+        // 🌟 核心：接收点对点单聊消息（只有自己能收到）
+        socket.on('receive_private', (data) => {
+            addMsg(`[${data.time}] 来自${data.from_uid}的消息：${data.content}`, 'receive');
+        });
+
+        // 发送消息成功
+        socket.on('private_chat_success', (res) => {
+            addMsg(`系统提示：${res.msg}，对方UID：${res.to_uid}`, 'system');
+        });
+
+        // 发送消息失败
+        socket.on('private_chat_fail', (res) => {
+            alert(res.msg);
+            addMsg(`系统错误：${res.msg}`, 'error');
+        });
+
+        // 客户端断开连接
+        socket.on('disconnect', () => {
+            addMsg('系统提示：与服务端断开连接，请刷新页面重新连接！', 'error');
+        });
+
+        // --------------- 辅助方法：添加消息到页面 ---------------
+        function addMsg(content, type) {
+            const msgItem = document.createElement('div');
+            // 根据类型设置样式
+            if (type === 'system') msgItem.style.color = '#666';
+            if (type === 'error') msgItem.style.color = 'red';
+            if (type === 'receive') msgItem.style.color = 'green';
+            msgItem.style.margin = '5px 0';
+            msgItem.innerText = content;
+            msgList.appendChild(msgItem);
+            // 滚动到底部
+            msgList.scrollTop = msgList.scrollHeight;
+        }
+    </script>
+</body>
+</html>
