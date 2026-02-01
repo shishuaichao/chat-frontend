@@ -45,7 +45,7 @@ import {
 import { setRemark } from '@/utils/localStorage.js'
 import { getSessionKey } from '@/utils/utils.js'
 import { fetchGetIdBySessionKey } from '@/api/chat.js'
-import { notify } from 'mini-notifier'
+// import { notify } from 'mini-notifier'
 
 
 const router = useRouter()
@@ -66,7 +66,7 @@ const entryChat = (convId) => {
 
 // 点击聊天
 const clickChat = () => {
-  if (prevPage.value == 'ChatRoom') {
+  if (router.prePage == 'ChatRoom') {
     router.go(-1)
     return
   }
@@ -143,14 +143,6 @@ onActivated(() => {
 }) 
 
 const userInfo = ref({})
-
-// 记录前面的页面
-const prevPage = ref(null)
-router.beforeEach((to, from, next) => {
-  prevPage.value = from.name
-  notify(from.name)
-  next() // 必须调用next()，否则路由跳转中断
-})
 
 
 
