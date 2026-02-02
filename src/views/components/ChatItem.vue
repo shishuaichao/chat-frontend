@@ -49,12 +49,15 @@ defineProps({
   align-items: center;
   justify-content: space-between;
   transition: background-color 0.2s;
+  background-color: #fff;
   position: relative;
+  padding: 0 6px;
   .avatar_wrapper {
     position: relative;
     padding: 11px;
     box-sizing: border-box;
-    
+    height: 72px;
+
     // TODO: 聊天项红点
     // .red-dot {
     //   position: absolute;
@@ -69,9 +72,9 @@ defineProps({
   
   .content-wrapper {
     flex: 1;
-    border-bottom: 1px solid #e3e2e2;
+    border-bottom: 0.5px solid #e3e2e2;
     min-width: 0;
-    padding: 12px 16px 12px 0;
+    padding: 12px 16px 12px 0px;
     height: 72px;
     display: flex;
     flex-direction: column;
@@ -116,7 +119,9 @@ defineProps({
       margin-left: 4px;
     }
   }
-
+  &:nth-last-child(1) .content-wrapper {
+    border-bottom: none;
+  }
   .agree {
     width: 50px;
     position: absolute;

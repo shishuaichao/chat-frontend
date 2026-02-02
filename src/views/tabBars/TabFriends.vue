@@ -1,18 +1,25 @@
 <template>
-  <van-nav-bar
-      :title="title"
+  <div class="tab_container">
+    <van-nav-bar
+        :title="title"
     />
-  <van-collapse v-model="activeNames">
-    <van-collapse-item title="好友申请" name="1">
-      <ChatItem v-for="item in applyList" :key="item.id" :item="item" @applyOperate="applyOperate" />
-    </van-collapse-item>
-    <van-collapse-item title="好友列表" name="2">
-      <ChatItem v-for="item in friendList" :key="item.id" :item="item" @handleClick="entryFriendInfo" />
-    </van-collapse-item>
-    <van-collapse-item title="群列表" name="3">
-      <ChatItem v-for="item in groupList" :key="item.id" :item="item" @handleClick="entryGroupInfo" />
-    </van-collapse-item>
-  </van-collapse>
+    <div class="tab_content">
+      <div class="item_box">
+        <div class="item_title">好友申请</div>
+        <ChatItem v-for="item in groupList" :key="item.id" :item="item" @applyOperate="applyOperate" />
+      </div>
+      <div class="item_box">
+        <div class="item_title">好友列表</div>
+        <ChatItem v-for="item in groupList" :key="item.id" :item="item" @handleClick="entryFriendInfo" />
+      </div>
+      <div class="item_box">
+        <div class="item_title">群列表</div>
+        <ChatItem v-for="item in groupList" :key="item.id" :item="item" @handleClick="entryGroupInfo" />
+      </div>
+    </div>
+  </div>
+  
+  
 </template>
 
 <script setup>
@@ -27,7 +34,7 @@ import { setRemark } from '@/utils/localStorage.js'
 // 定义标题
 const title = ref('好友');
 // 定义当前激活的项
-const activeNames = ref(['1', '2', '3']);
+// const activeNames = ref(['1', '2', '3']);
 const friendList = ref([])
 const groupList = ref([])
 const applyList = ref([])
@@ -115,7 +122,23 @@ onActivated(() => {
 </script>
 
 <style scoped lang="scss">
-:deep(.van-collapse-item__content) {
-  padding: 0;
+.tab_container {
+  height: calc(100% - 70px);
+  display: flex;
+  flex-direction: column;
+  .tab_content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 10px;
+    .item_box {
+      .item_title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+        padding: 16px;
+        background-color: $footer_light_gray_color;
+      }
+    }
+  }
 }
 </style>
