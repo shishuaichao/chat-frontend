@@ -1,6 +1,6 @@
 <template>
   <div class="tab_container">
-    <van-nav-bar
+    <NavBar
         :title="title"
     />
     <div class="tab_content" ref="scrollerRef">
@@ -145,10 +145,9 @@ onBeforeRouteLeave((to, from, next) => {
     .item_box {
       .item_title {
         font-size: 14px;
-        font-weight: bold;
-        color: #333;
-        padding: 16px;
-        background-color: $light_gray_color;
+        color: $chat_name_color;
+        padding: 16px 16px 4px;
+        // background-color: $light_gray_color;
       }
     }
   }

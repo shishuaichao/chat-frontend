@@ -309,7 +309,6 @@ const scrollEvent = () => {
   flex: 1;
   overflow-y: auto;
   padding: 60px 6px 0px;
-  // margin-top: 70px;
   background-color: $base_bg_color;
   -webkit-overflow-scrolling: touch; 
 }

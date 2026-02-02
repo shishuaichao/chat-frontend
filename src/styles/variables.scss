@@ -13,11 +13,15 @@ $default_text_color: #555;
 $light_gray_color: #e3e3e3;
 
 
-// nav bar
-$nav-bar-height: 64px;
-// tab bar
-$tabbar_height: 70px;
+// nav bar 和main中保持一致
+$nav_bar_height: 44px;
+// tab bar 和main中保持一致
+$tabbar_height: 64px;
 // footer input
 $footer_input_pad_h: 8px;
 $footer_input_h: 36px;
 $footer_input_real_h: 52px;
+
+// 聊天
+$chat_name_color: #333;
+$chat_sys_msg_color: #999; 

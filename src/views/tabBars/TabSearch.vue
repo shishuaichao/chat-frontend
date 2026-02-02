@@ -1,7 +1,7 @@
 
 <template>
-  <div class="tab_container">
-    <van-nav-bar
+  <div class="tab_container fixed_to_top">
+    <NavBar
         :title="title"
     />
     <div class="tab_content" ref="scrollerRef">
@@ -64,5 +64,7 @@ onBeforeRouteLeave((to, from, next) => {
 })
 </script>
 <style scoped lang="scss">
-
+.tab_container {
+  background-color: $global_bg_color;
+}
 </style>

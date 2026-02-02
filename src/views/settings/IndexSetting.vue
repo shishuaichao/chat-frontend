@@ -1,9 +1,8 @@
 <template>
   <div>
-    <van-nav-bar
-      :left-arrow="showLeftArrow"  
+    <NavBar
+      v-if="showLeftArrow"  
       :title="route.meta.title"
-      @click-left="onClickLeft"
     />
     <div class="info_box">
       <van-image
@@ -41,10 +40,6 @@ import { getUserInfo } from '@/utils/utils'
 const store = useStore()
 const router = useRouter()
 const route = useRoute()  
-
-const onClickLeft = () => {
-  router.back()
-}
 
 const editAvatar  = () => {
   router.push({

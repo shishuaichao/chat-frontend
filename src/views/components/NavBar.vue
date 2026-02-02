@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header bottom_line">
     <van-nav-bar
       :title="title"
       :left-arrow="leftArrow"
@@ -16,6 +16,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { onMounted, watch } from 'vue'
 
 const router = useRouter()
 
@@ -28,7 +29,25 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  bgColor: {
+    type: String,
+    default: '',
+  },
 });
+
+onMounted(() => {
+  if (props.bgColor) {
+    document.querySelector('.header').style.backgroundColor = props.bgColor
+  }
+})
+
+watch(() => props.bgColor, (newVal) => {
+  if (newVal) {
+    console.log('newVal', newVal)
+    document.querySelector('.header').style.backgroundColor = newVal
+  }
+})
+
 
 const emit = defineEmits(['click-left'])
 
@@ -55,7 +74,7 @@ const onClickLeft = () => {
     background-color: $footer_bg_color;
 }
 .header_pad {
-    height: $nav-bar-height;
+    height: $nav_bar_height;
 }
 
 </style>

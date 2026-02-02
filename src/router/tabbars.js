@@ -16,7 +16,7 @@ export default [
     path: '/friends',
     name: 'TabFriends',
     component: TabFriends,
-    meta: { title: '好友', icon: 'friends', clearHistory: true },
+    meta: { title: '好友', icon: 'friends-o', clearHistory: true },
   },
   {
     path: '/search',
@@ -28,6 +28,6 @@ export default [
     path: '/setting',
     name: 'TabMine',
     component: TabMine,
-    meta: { title: '我', icon: 'user', clearHistory: true },
+    meta: { title: '我', icon: 'user-o', clearHistory: true },
   },
 ]
