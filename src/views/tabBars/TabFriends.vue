@@ -142,9 +142,6 @@ onBeforeRouteLeave((to, from, next) => {
 <style scoped lang="scss">
 .tab_container {
   .tab_content {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 10px;
     .item_box {
       .item_title {
         font-size: 14px;

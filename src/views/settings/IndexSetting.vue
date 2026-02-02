@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-nav-bar
-      left-arrow  
+      :left-arrow="showLeftArrow"  
       :title="route.meta.title"
       @click-left="onClickLeft"
     />
@@ -34,22 +34,11 @@
 <script setup>
 import { onActivated, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import msgModule from '@/store/msgModule.js'
 import { useStore } from 'vuex'
+import routes from '@/router/tabbars.js'
+import { showConfirmDialog } from 'vant'
+import { getUserInfo } from '@/utils/utils'
 const store = useStore()
-
-console.log('store', store)
-// const isInBack = computed(() => {
-//   return store.state.count
-// })
-
-setTimeout(() => {
-  console.log('msgModule', msgModule)
-  // msgModule.setIsInBack(true)
-  store.commit('increment')
-  
-}, 1000)
-
 const router = useRouter()
 const route = useRoute()  
 
@@ -69,23 +58,27 @@ const editNickname  = () => {
   })
 }
 
-const userInfo = ref({
-  avatar: '',
-  nickname: '',
-  id: '',
-})
+const userInfo = ref(getUserInfo())
+const showLeftArrow = ref(false)
 onActivated(() => {
-  userInfo.value = {
-    avatar: localStorage.getItem('avatar'),
-    nickname: localStorage.getItem('nickname'),
-    id: localStorage.getItem('id'),
-  }
+  userInfo.value = getUserInfo()
+  showLeftArrow.value = false
+  routes.forEach(item => {
+    showLeftArrow.value = store.state.prePageInfo.name === item.name
+  })
 })
 
 const logout = () => {
-  // const str = localStorage.getItem('remark20')
-  // showToast(str)
-  localStorage.clear()
+  showConfirmDialog({
+    title: '提示',
+    message: '确定注销吗？',
+  })
+    .then(() => {
+      localStorage.clear()
+      window.location.reload()
+    })
+    .catch(() => {});
+  
 }
 </script>
 

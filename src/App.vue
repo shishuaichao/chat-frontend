@@ -13,6 +13,7 @@
       :name="item.name" 
       :icon="item.meta.icon" 
       :to="item.path"
+      replace
     >{{ item.meta.title }}</van-tabbar-item>
   </van-tabbar>
 </template>

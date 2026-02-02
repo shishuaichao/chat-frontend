@@ -36,6 +36,8 @@ const routes = [
     name: 'NotFound',
     component: NotFound
   },
+  // 空路径占位符
+  // { path: '/__empty', component: { render: h => h('div', '') } },
   {
     path: '/testPage',
     name: 'TestPage',
@@ -52,35 +54,23 @@ const router = createRouter({
 })
 
 
-
-// 🌟 核心1：扩展router，存储【页面-path → 主动push的来源路由】映射表
-// 键：目标页面的fullPath，值：触发push的来源路由对象（from）
-router.prePage = null
-// 🌟 核心2：标记是否为【主动push】跳转（默认false，back/直接访问为false）
-router.isPushJump = false
-
-// 🌟 核心3：重写router.push，添加【主动push】标记
-const originalPush = router.push
-router.push = function push(location, onComplete, onAbort) {
-  // 主动调用push时，标记为true
-  this.isPushJump = true
-  return originalPush.call(this, location, onComplete, onAbort)
-}
-
 // 🌟 核心4：全局前置守卫，处理来源路由存储
 router.beforeEach((to, from, next) => {
   store.commit('setPrePageInfo', from)
   if (to.meta.title) {
     document.title = to.meta.title
   }
-  if (router.isPushJump) {
-    // 情况1：主动push跳转（A push到B）
-    // 存储：B的fullPath → 来源路由A（from）
-    router.prePage = from.name
-    // 重置标记，避免影响后续跳转
-    router.isPushJump = false
+  // 使用两步法清空历史
+  if (to.meta.clearHistory) {
+    // router.replace(to.fullPath);
+    console.log('clearHistory发', from.fullPath)
+    console.log('clearHistory', to.fullPath)
+    // router.replace('/__empty').then(() => {
+    //   router.replace(to.fullPath);
+    // });
+  } else {
+    next();
   }
-  // 情况2：back回退/浏览器后退（A back到B）→ 不修改映射表，直接放行
   next()
 })
 

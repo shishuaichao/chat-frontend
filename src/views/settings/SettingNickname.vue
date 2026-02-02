@@ -41,7 +41,7 @@ import { fetchRegister, fetchUserUpdate } from '@/api/index.js'
 import { v4 as uuidv4 } from 'uuid'
 
 // 响应式数据
-const isChange = ref(localStorage.getItem('username') && localStorage.getItem('nickname'))
+const isChange = ref(localStorage.getItem('id'))
 const router = useRouter()
 const route = useRoute() 
 
@@ -109,7 +109,7 @@ const handleSubmit = () => {
           duration: 500,
         })
         setTimeout(() => {
-          goToSettingAvatar()
+          isChange.value ? goToSettingAvatar() : router.back()
         }, 500)
       })
       .catch(err => {

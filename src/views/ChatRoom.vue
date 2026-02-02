@@ -1,11 +1,6 @@
 <template>
   <div class="main_container">
     <ChatHeader></ChatHeader>
-    <div>
-        <hr>
-        {{ lastConvId }}
-        <hr>
-      </div>
     <div class="chat_content_box" ref="chatContentRef">
       <ChatUnreadTip :count="unreadMsgCount" position="bottom" @click="toReadNewMsg"></ChatUnreadTip>
       <div class="msg_container_history" key="history">

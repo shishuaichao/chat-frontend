@@ -24,19 +24,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onActivated } from 'vue';
+import { ref, onMounted, onActivated, onDeactivated } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { showLoadingToast, showSuccessToast, closeToast } from 'vant'
 import { fetchUserUpdate } from '@/api/index.js'
 import { IMG_LIST_URL, IMG_REAL_URL, IMG_ONEPAGE_NUM } from '@/utils/constant.js'
+import { getUserInfo } from '@/utils/utils';
 
 const router = useRouter()
 const route = useRoute() 
 
-const isChange = ref(null)
-onActivated(() => {
-  isChange.value = localStorage.getItem('avatar') !== null
-})
+
 const handleSubmit = () => {
   isLoading.value = true
   showLoadingToast({
@@ -114,11 +112,16 @@ const activeImgId = ref(null);
 const imageCheck = (id) => {
   activeImgId.value = id;
 };
-
+const isChange = ref(null)
 onMounted(() => {
-  getBatchSmallImgs();
-  isChange.value = localStorage.getItem('avatar') !== null
 });
+onActivated(() => {
+  getBatchSmallImgs();
+  isChange.value = getUserInfo().avatar ? true : false
+})
+onDeactivated(() => {
+  closeToast()
+})
 </script>
 <style scoped lang="scss">
 .submit-btn-container {
