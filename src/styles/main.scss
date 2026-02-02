@@ -25,7 +25,23 @@
 
 :root:root {
   --van-button-primary-background: #36c275;
-  --van-nav-bar-icon-color: #36c275;
+  --van-nav-bar-icon-color: $default_text_color;
+  --van-nav-bar-title-text-color: $default_text_color;
   --van-button-primary-border-color: #36c275;
   --van-tabbar-item-active-color: #36c275;
+
+  // 自定义van-tabbar高度
+  --van-tabbar-height: 70px;
+  --van-tabbar-item-icon-size: 26px;
+  --van-tabbar-item-icon-margin-bottom: 6px;
+  --van-tabbar-item-font-size: 14px;
+  --van-tabbar-item-text-color: #888;
+  --van-nav-bar-background: $base_bg_color;
+  --van-tabbar-background: $base_bg_color;
+  --van-tabbar-item-active-background: $base_bg_color;
+
+  // 自定义van-nav-bar高度  
+  --van-nav-bar-height: 60px;
+  --van-nav-bar-arrow-size: 20px;
+  // --van-font-size-md: 20px;
 }

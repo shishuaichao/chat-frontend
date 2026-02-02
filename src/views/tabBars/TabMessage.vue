@@ -2,7 +2,11 @@
   <div class="tab_msg_box">
     <van-nav-bar
       :title="title"
-    />
+    >
+      <template #right>
+        <van-icon name="add-o" />
+      </template>
+    </van-nav-bar>
     <div class="conv_list_box">
       <ChatList :chatList="chatList" @handleClick="entryChat" />
     </div>
@@ -16,6 +20,7 @@ import { ref, onActivated } from 'vue';
 import ChatList from '@/views/components/ChatList.vue';
 import { 
   getConversationList,
+  fetchJoinConversation,
 } from '@/api/index.js'
 import router from '@/router';
 import { IMG_REAL_URL } from '@/utils/constant';
@@ -30,13 +35,21 @@ const title = ref('消息');
 
 // 进入聊天
 const entryChat = (item) => {
-  router.push({
-    name: 'ChatRoom',
-    query: {
-      convId: item.convId,
-      type: item.type,
-    }
-  })
+  fetchJoinConversation({ convId: item.id, })  
+    .then(res => {
+      console.log('fetchJoinConversation', res)
+      router.push({
+        name: 'ChatRoom',
+        query: {
+          convId: item.id,
+          type: item.type,
+        }
+      })
+    })
+    .catch(err => {
+      console.log('fetchJoinConversation', err)
+    })
+  
 }
 
 const chatList = ref([]);

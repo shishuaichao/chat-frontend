@@ -30,7 +30,7 @@ import { useRoute, onBeforeRouteLeave  } from 'vue-router'
 import { fetchChatRecords, fetchUpdateUnread, fetchGetUnreadList } from '@/api/chat.js'
 import { throttle } from 'lodash';
 import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
-// import { notify } from 'mini-notifier'
+import { notify } from 'mini-notifier'
 import { 
   scrollToBottomUtil,
   AddObserverFun, 
@@ -270,6 +270,9 @@ const scrollEvent = () => {
 </script>
 
 <style scoped lang="scss">
+:deep(.van-nav-bar__right) {
+  font-size: 28px !important;
+}
 .main_container {
   height: 100%;
   overflow-x: hidden;

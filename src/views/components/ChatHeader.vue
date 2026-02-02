@@ -7,7 +7,7 @@
       @click-left="onClickLeft"
     >
       <template #right>
-        <van-icon name="setting-o" />
+        <van-icon name="ellipsis" />
       </template>
     </van-nav-bar>
   </div>
@@ -35,40 +35,9 @@ const onClickLeft = () => {
 </script>
 
 <style scoped lang="scss">
-/* 1. 顶部固定导航栏（50px） */
-// .nickname {
-//   font-size: 8px;
-//   margin-top: 4px;
-// }
-// .header {
-//   width: 100%;
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   height: 50px;
-//   line-height: 50px;
-//   text-align: center;
-//   font-size: 18px;
-//   font-weight: 500;
-//   z-index: 999;
-// }
-// .header_pad {
-//   /* height: 50px; */
-//   width: 100%;
-// }
-// .left {
-//   opacity: 0;
-// }
-// .right {
-//   position: relative;
-//   font-size: 14px;
-// }
-// .van-popup--top {
-//   padding: 10px 4px;
-// }
-// :deep(.van-grid-item__content) {
-//   padding: 10px 4px;
-// }
+
+:deep(.van-nav-bar__right) {
+  font-size: 20px;
+}
 
 </style>

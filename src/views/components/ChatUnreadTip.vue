@@ -41,7 +41,7 @@ defineProps({
   font-size: 12px;
   padding: 8px 30px 8px 14px;
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
   margin: 10px;
   position: absolute;
   right: 0px;
@@ -57,7 +57,7 @@ defineProps({
     top: 50px;
   }
   &.bottom {
-    bottom: 60px;
+    bottom: 80px;
   }
 }
 

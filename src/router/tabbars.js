@@ -11,24 +11,24 @@ export default [
     path: '/message',
     name: 'TabMessage',
     component: TabMessage,
-    meta: { title: '消息', icon: 'home-o' },
+    meta: { title: '消息', icon: 'wechat' },
   },
   {
     path: '/friends',
     name: 'TabFriends',
     component: TabFriends,
-    meta: { title: '好友', icon: 'friends-o' },
+    meta: { title: '好友', icon: 'friends' },
   },
   {
     path: '/search',
     name: 'TabSearch',
     component: TabSearch,
-    meta: { title: '搜索', icon: 'search' },
+    meta: { title: '朋友圈', icon: 'wechat-moments' },
   },
   {
     path: '/setting',
     name: 'TabMine',
     component: IndexSetting,
-    meta: { title: '设置', icon: 'setting-o' },
+    meta: { title: '我的', icon: 'user' },
   },
 ]
