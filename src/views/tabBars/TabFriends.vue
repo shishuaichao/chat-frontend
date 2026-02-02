@@ -2,7 +2,11 @@
   <div class="tab_container">
     <NavBar
         :title="title"
-    />
+    >
+      <template #right>
+         <van-icon name="plus" />
+      </template>
+    </NavBar>
     <div class="tab_content" ref="scrollerRef">
       <div class="item_box">
         <div class="item_title" v-if="applyList.length > 0">好友申请</div>

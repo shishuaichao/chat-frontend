@@ -1,6 +1,6 @@
 
 <template>
-  <div class="tab_container fixed_to_top">
+  <div class="tab_container">
     <NavBar
         :title="title"
     />
@@ -65,6 +65,8 @@ onBeforeRouteLeave((to, from, next) => {
 </script>
 <style scoped lang="scss">
 .tab_container {
-  background-color: $global_bg_color;
+  background-color: $footer_bg_color;
+  // background-color: #f00;
+  // height: 100%;
 }
 </style>

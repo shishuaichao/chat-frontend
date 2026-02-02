@@ -1,5 +1,5 @@
 <template>
-  <div class="tab_container fixed_to_top">
+  <div class="tab_container">
     <IndexSetting />
   </div>
 </template>
@@ -8,7 +8,12 @@ import IndexSetting from '@/views/settings/IndexSetting.vue'
 </script>
 <style scoped lang="scss">
 .tab_container  {
-  height: 100%;
+  position: relative;
+  // height: 100%;
+  padding: 50px 20px;
+  width: 100vw;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 </style>

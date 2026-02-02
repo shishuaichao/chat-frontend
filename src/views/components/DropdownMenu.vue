@@ -45,8 +45,8 @@ const menuList = [
 
 .dropdown-menu {
   position: absolute;
-  top: 34px;
-  right: -16px;
+  top: 16px;
+  right: -10px;
   width: 140px;
   background: #333;
   color: #fff;
@@ -56,8 +56,8 @@ const menuList = [
   &::before {
     content: ' ';
     position: absolute;
-    top: -8px;
-    right: 16px;
+    top: -6px;
+    right: 10px;
     /* 核心：宽高必须为0，否则箭头会变形 */
     width: 0;
     height: 0;

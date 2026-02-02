@@ -33,11 +33,11 @@
 <script setup>
 import { onActivated, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useStore } from 'vuex'
-import routes from '@/router/tabbars.js'
 import { showConfirmDialog } from 'vant'
 import { getUserInfo } from '@/utils/utils'
-const store = useStore()
+// import { useStore } from 'vuex'
+// import routes from '@/router/tabbars.js'
+// const store = useStore()
 const router = useRouter()
 const route = useRoute()  
 
@@ -58,9 +58,9 @@ const showLeftArrow = ref(false)
 onActivated(() => {
   userInfo.value = getUserInfo()
   showLeftArrow.value = false
-  routes.forEach(item => {
-    showLeftArrow.value = store.state.prePageInfo.name === item.name
-  })
+  // routes.forEach(item => {
+  //   showLeftArrow.value = store.state?.prePageInfo?.name === item.name
+  // })
 })
 
 const logout = () => {

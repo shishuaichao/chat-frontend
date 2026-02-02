@@ -37,6 +37,9 @@ hr {
 .bottom_line {
   border-bottom: 0.5px solid $light_gray_color;
 }
+.top_line {
+  border-top: 0.5px solid $light_gray_color;
+}
 // 穿透安全区 要素严格
 // 1. position: fixed;
 // 2. height: 10px;  高度大于10，内容撑起来不算

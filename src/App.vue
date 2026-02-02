@@ -6,7 +6,7 @@
       </keep-alive>
     </router-view>
   </div>
-  <van-tabbar v-model="active" class="tabbar" v-if="showTabbar">
+  <van-tabbar v-model="active" class="top_line" v-if="showTabbar">
     <van-tabbar-item 
       v-for="item in tabBarsRoutes" 
       :key="item.name"
@@ -14,7 +14,11 @@
       :icon="item.meta.icon" 
       :to="item.path"
       replace
-    >{{ item.meta.title }}</van-tabbar-item>
+    >{{ item.meta.title }}
+      <template #icon="props">
+        <van-icon :name="props.active ? item.meta.activeIcon : item.meta.icon" />
+      </template>
+    </van-tabbar-item>
   </van-tabbar>
 </template>
 

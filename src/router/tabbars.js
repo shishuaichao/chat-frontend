@@ -10,24 +10,24 @@ export default [
     path: '/message',
     name: 'TabMessage',
     component: TabMessage,
-    meta: { title: '消息', icon: 'wechat', clearHistory: true },
+    meta: { title: '消息', icon: 'chat-o', activeIcon: 'chat', clearHistory: true },
   },
   {
     path: '/friends',
     name: 'TabFriends',
     component: TabFriends,
-    meta: { title: '好友', icon: 'friends-o', clearHistory: true },
+    meta: { title: '好友', icon: 'friends-o', activeIcon: 'friends', clearHistory: true },
   },
   {
     path: '/search',
     name: 'TabSearch',
     component: TabSearch,
-    meta: { title: '朋友圈', icon: 'wechat-moments', clearHistory: true },
+    meta: { title: '朋友圈', icon: 'wechat-moments', activeIcon: 'eye', clearHistory: true },
   },
   {
     path: '/setting',
     name: 'TabMine',
     component: TabMine,
-    meta: { title: '我', icon: 'user-o', clearHistory: true },
+    meta: { title: '我', icon: 'contact-o', activeIcon: 'contact', clearHistory: true },
   },
 ]

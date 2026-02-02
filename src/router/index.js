@@ -60,17 +60,6 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title
   }
-  // 使用两步法清空历史
-  if (to.meta.clearHistory) {
-    // router.replace(to.fullPath);
-    console.log('clearHistory发', from.fullPath)
-    console.log('clearHistory', to.fullPath)
-    // router.replace('/__empty').then(() => {
-    //   router.replace(to.fullPath);
-    // });
-  } else {
-    next();
-  }
   next()
 })
 
