@@ -103,6 +103,7 @@ export class AddObserverFun {
     this.options = options
     this.idMap = new Map()
     this.idCount = 0
+    this.timer = null
     this.observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -124,7 +125,7 @@ export class AddObserverFun {
   }
   add(el, callback) {  
     if (!el) {
-      setTimeout(() => {
+      this.timer = setTimeout(() => {
         console.log('延迟添加', el)
         this.add(el, callback)
       }, 200)
@@ -142,6 +143,7 @@ export class AddObserverFun {
     }
   }
   close() {
+    clearTimeout(this.timer)
     this.observer.disconnect()
   }
 }

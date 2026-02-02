@@ -55,7 +55,13 @@ WS_mitt.on('private_message', (data) => {
     style: 'success',
   });
 })
-
+WS_mitt.on('group_message', data => {
+  console.log('group_message', data)
+  notify(`群聊消息：${data.group_id} 说：${data.content}`, {
+    time: 3000,
+    style: 'success',
+  });
+})
 
 const showTabbar = ref(false)
 const homePageList = tabBarsRoutes.map(item => item.name)

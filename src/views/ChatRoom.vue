@@ -68,7 +68,8 @@ onActivated(() => {
 })
 // 页面失活时
 onDeactivated(() => {
-  observer.close()
+  msgList.value = [...msgList.value, ...unreadList.value]
+  observer?.close()
   chatContentRef.value?.removeEventListener('scroll', scrollEvent)
   WS_mitt.off('message', eventMessage)
   WS_mitt.off('private_message', eventMessage)
@@ -80,6 +81,7 @@ onDeactivated(() => {
 // 离开页面前
 onBeforeRouteLeave((to, from, next) => {
   if (from.name == 'ChatRoom') {
+    observer?.close()
     WS_Client.leaveRoom({
       roomId: route.query.convId,
       userId: getUserInfo().id,

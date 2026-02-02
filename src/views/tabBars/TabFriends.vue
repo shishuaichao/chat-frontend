@@ -5,22 +5,22 @@
     />
     <div class="tab_content">
       <div class="item_box">
-        <div class="item_title">好友申请</div>
-        <ChatItem v-for="item in groupList" :key="item.id" :item="item" @applyOperate="applyOperate" />
+        <div class="item_title" v-if="applyList.length > 0">好友申请</div>
+        <ChatItem v-for="item in applyList" :key="item.id" :item="item" @applyOperate="applyOperate(item)" />
       </div>
       <div class="item_box">
-        <div class="item_title">好友列表</div>
-        <ChatItem v-for="item in groupList" :key="item.id" :item="item" @handleClick="entryFriendInfo" />
+        <div class="item_title" v-if="friendList.length > 0">好友列表</div>
+        <ChatItem v-for="item in friendList" :key="item.id" :item="item" @handleClick="entryFriendInfo" />
       </div>
       <div class="item_box">
-        <div class="item_title">群列表</div>
+        <div class="item_title" v-if="groupList.length > 0">群列表</div>
         <ChatItem v-for="item in groupList" :key="item.id" :item="item" @handleClick="entryGroupInfo" />
       </div>
     </div>
   </div>
   
   
-</template>
+</template>·
 
 <script setup>
 import { ref, onActivated } from 'vue';

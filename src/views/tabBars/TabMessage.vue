@@ -11,7 +11,7 @@
       </template>
     </van-nav-bar>
     <div class="conv_list_box">
-      <ChatList :chatList="chatList" @handleClick="entryChat" />
+      <ChatItem v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
     </div>
 
     <!-- <van-button type="primary" block @click="addConv(10)">新增10个群聊</van-button> -->
@@ -20,7 +20,7 @@
 </template>
 <script setup>
 import { ref, onActivated } from 'vue';
-import ChatList from '@/views/components/ChatList.vue';
+import ChatItem from '@/views/components/ChatItem.vue';
 import DropdownMenu from '@/views/components/DropdownMenu.vue';
 import { 
   getConversationList,
@@ -31,6 +31,8 @@ import { IMG_REAL_URL } from '@/utils/constant';
 import { useClickAway } from '@vant/use';
 // import { v4 as uuidv4 } from 'uuid'
 // import { fetchRegister } from '@/api/index.js'
+import { WS_mitt } from '@/utils/WS_Client';
+import { notify } from 'mini-notifier'
 
 // 点击下拉菜单
 const isShow = ref(false)
@@ -43,9 +45,9 @@ const rightClick = () => {
 }
 const dropdownMenuRef = ref(null);
 useClickAway(dropdownMenuRef, () => {
-    console.log('click outside!');
-    isShow.value = false
-  });
+  console.log('click outside!');
+  isShow.value = false
+});
 
 // 定义标题
 const title = ref('消息');
@@ -70,11 +72,10 @@ const entryChat = (item) => {
   
 }
 
-const chatList = ref([]);
-onActivated(() => {
-  
 
-  console.log('TabMessage mounted')
+
+const chatList = ref([]);
+const getChatList = () => {
   getConversationList()
     .then(res => {
       chatList.value = res.data
@@ -87,6 +88,22 @@ onActivated(() => {
     .catch(err => {
       console.log('getConversationList', err)
     })
+}
+
+// 监听消息事件
+const messageEvent = (data) => {
+  notify(data.content)
+  // getChatList()
+}
+
+onActivated(() => {
+  WS_mitt.on('message', messageEvent)
+  WS_mitt.on('system_message', messageEvent)
+  WS_mitt.on('private_message', messageEvent)
+
+  getChatList()
+
+  
 })
 </script>
 <!-- 新增普通script标签，声明组件name -->
