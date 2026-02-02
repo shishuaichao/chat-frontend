@@ -51,7 +51,7 @@ onMounted(() => {
 <style scoped lang="scss">
 /* 2. 底部固定输入框（50px） */
 .footer {
-    background: $footer_light_gray_color;
+    background: $light_gray_color;
     border-top: 1px solid $base_bg_color;
     display: flex;
     align-items: center;

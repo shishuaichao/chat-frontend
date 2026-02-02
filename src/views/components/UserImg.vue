@@ -7,10 +7,9 @@
       >
       <div 
         class="img_box"
-        v-if="type == 1">
+        v-if="avatarList.length == 1">
         <img 
-          :src="avatar" alt="" class="avatar avatar_one"
-          
+          :src="avatarList[0]" alt="" class="avatar avatar_one"
           />
       </div>
       <div 
@@ -27,13 +26,13 @@
           'img_box_8': avatarList.length == 8,
           'img_box_5-9': avatarList.length >= 5 && avatarList.length <= 9,
         }"
-        v-if="type == 2"
+        v-if="avatarList.length > 1"
         >
         <img 
           alt="avatar" 
           v-for="(v, index) in avatarList" 
           :key="index" 
-          :src="v + 'x'" 
+          :src="v" 
           class="avatar"
           :class="`avatar_${index + 1}`"
           />
@@ -48,20 +47,18 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  type: {
-    type: Number,
-    default: 1,
-  },
   size: {
     type: String,
     default: 'normal',
   }
 })
 
-console.log("type", props.type)
 
 const avatarList = computed(() => {
-  return props.type == 1 ? props.avatar : (props?.avatar?.split(',') || [])
+  if (typeof props.avatar == 'string') {
+    return [props.avatar]
+  }
+  return props.avatar
 })
 </script>
 

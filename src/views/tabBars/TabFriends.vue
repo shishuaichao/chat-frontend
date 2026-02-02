@@ -3,7 +3,7 @@
     <van-nav-bar
         :title="title"
     />
-    <div class="tab_content">
+    <div class="tab_content" ref="scrollerRef">
       <div class="item_box">
         <div class="item_title" v-if="applyList.length > 0">好友申请</div>
         <ChatItem v-for="item in applyList" :key="item.id" :item="item" @applyOperate="applyOperate(item)" />
@@ -23,12 +23,14 @@
 </template>·
 
 <script setup>
-import { ref, onActivated } from 'vue';
+import { ref, onActivated, onDeactivated } from 'vue';
 import { fetchFriendList, fetchGroupList, fetchFriendsApplyList, fetchFriendAdd } from '@/api/user.js'
 import ChatItem from '@/views/components/ChatItem.vue'
 import router from '@/router'
 import { setRemark } from '@/utils/localStorage.js'
-// import { showToast } from 'vant'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
+
+const route = useRoute()
 
 
 // 定义标题
@@ -114,10 +116,26 @@ const entryGroupInfo = (item) => {
   })
 }
 
+
+const scrollerRef = ref(null);
+let lastScrollTop = 0
+// 页面激活时
 onActivated(() => {
   getFriendList()
   getGroupList()
   getFriendApplyList()
+  scrollerRef.value.scrollTop = lastScrollTop
+})
+// 页面失活时
+onDeactivated(() => {
+  
+})
+// 离开页面前
+onBeforeRouteLeave((to, from, next) => {
+  if (from.name == route.name) {  
+    lastScrollTop = scrollerRef.value.scrollTop
+  }
+  next()
 })
 </script>
 
@@ -133,7 +151,7 @@ onActivated(() => {
         font-weight: bold;
         color: #333;
         padding: 16px;
-        background-color: $footer_light_gray_color;
+        background-color: $light_gray_color;
       }
     }
   }

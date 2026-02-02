@@ -1,6 +1,11 @@
 <template>
   <div class="main_container">
     <ChatHeader></ChatHeader>
+    <div>
+        <hr>
+        {{ lastConvId }}
+        <hr>
+      </div>
     <div class="chat_content_box" ref="chatContentRef">
       <ChatUnreadTip :count="unreadMsgCount" position="bottom" @click="toReadNewMsg"></ChatUnreadTip>
       <div class="msg_container_history" key="history">
@@ -26,11 +31,12 @@ import ChatHeader from '@/views/components/ChatHeader.vue';
 import ChatContent from '@/views/components/ChatContent.vue';
 import ChartFooter from '@/views/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
-import { useRoute, onBeforeRouteLeave  } from 'vue-router'
+import { useRoute, onBeforeRouteLeave } from 'vue-router'
 import { fetchChatRecords, fetchUpdateUnread, fetchGetUnreadList } from '@/api/chat.js'
 import { throttle } from 'lodash';
 import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
 import { notify } from 'mini-notifier'
+// import store from '@/store'
 import { 
   scrollToBottomUtil,
   AddObserverFun, 
@@ -52,11 +58,26 @@ const chatContentRef = ref(null)
 onMounted(() => {
   getAllChats()
 })
+const lastConvId = ref('')
 // 页面激活时
 onActivated(() => {
+  let newConvId = route.query.convId
+  console.log('lastConvId', lastConvId.value)
+  console.log('newConvId', newConvId)
+  if (newConvId != lastConvId.value) {
+    notify('需要更新页面了', {
+      position: 'center',
+      time: 1000,
+    })
+    lastConvId.value = newConvId
+    lastScrollTop = 0
+    getAllChats()
+  } else {
+    getUnreadList()
+  }
+
   observer = new AddObserverFun({})
   WS_Client.joinRoom(route.query.convId)
-  getUnreadList()
   WS_mitt.on('message', eventMessage)
   WS_mitt.on('private_message', eventMessage)
   WS_mitt.on('system_msg', eventMessage)
@@ -70,7 +91,6 @@ onActivated(() => {
 onDeactivated(() => {
   msgList.value = [...msgList.value, ...unreadList.value]
   observer?.close()
-  chatContentRef.value?.removeEventListener('scroll', scrollEvent)
   WS_mitt.off('message', eventMessage)
   WS_mitt.off('private_message', eventMessage)
   WS_mitt.off('system_msg', eventMessage)
@@ -81,6 +101,7 @@ onDeactivated(() => {
 // 离开页面前
 onBeforeRouteLeave((to, from, next) => {
   if (from.name == 'ChatRoom') {
+    chatContentRef.value?.removeEventListener('scroll', throttle(scrollEvent, 200))
     observer?.close()
     WS_Client.leaveRoom({
       roomId: route.query.convId,
@@ -105,6 +126,10 @@ const firstRenderCount = 30
 const addHistoryCountOnce = 20
 // 获取聊天记录
 const getAllChats = () => {
+  originList.value = []
+  historyList.value = []
+  msgList.value = []  
+  unreadList.value = []
   fetchChatRecords({ convId: route.query.convId })
     .then(res => {
       let resList = res.data?.records || []
@@ -141,13 +166,13 @@ const eventConnectSuccess = () => {
 }
 // 离开房间
 const leaveRoomEvent = (data) => {
-  if (route.query.type == 2) {
+  if (route.query.type == 21) {
     notify(data)
   }
 }
 // 进入房间
 const entryRoomEvent = (data) => {
-  if (route.query.type == 2) {
+  if (route.query.type == 21) {
     notify(data)
   }
 }

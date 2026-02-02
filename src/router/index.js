@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import settingRoutes from './setting.js'
 import tabBarsRoutes from './tabbars.js'
+import store from '@/store/index.js'
 
 // 懒加载写法（推荐，优化打包体积）
 const NotFound = () => import('@/views/NotFound.vue')
@@ -68,6 +69,7 @@ router.push = function push(location, onComplete, onAbort) {
 
 // 🌟 核心4：全局前置守卫，处理来源路由存储
 router.beforeEach((to, from, next) => {
+  store.commit('setPrePageInfo', from)
   if (to.meta.title) {
     document.title = to.meta.title
   }

@@ -58,6 +58,7 @@ class SocketClient {
           notify('服务链接成功', {
             time: 3000,
             style: 'success',
+            position: 'bottom-right',
           });
         }
         if (event === 'connect_error') {
@@ -85,7 +86,7 @@ class SocketClient {
 
   // 加入指定房间
   joinRoom(roomId) {
-    console.log(`加入房间 ${roomId}`)
+    // console.log(`加入房间 ${roomId}`)
     this.socket.emit('room:join', {
       roomId: roomId,
       userId: localStorage.getItem('id'),

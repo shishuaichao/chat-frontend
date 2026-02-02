@@ -5,6 +5,7 @@ export default createStore({
   state: {
     count: 1,
     isInBack: false,
+    prePageInfo: {},
   },
   mutations: {
     increment (state) {
@@ -13,6 +14,9 @@ export default createStore({
     },
     setIsInBack (state, isInBack) {
       state.isInBack = isInBack
-    }
+    },
+    setPrePageInfo (state, prePageInfo) {
+      state.prePageInfo = prePageInfo
+    },
   }
 })
