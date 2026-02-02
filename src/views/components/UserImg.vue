@@ -33,7 +33,7 @@
           alt="avatar" 
           v-for="(v, index) in avatarList" 
           :key="index" 
-          :src="v" 
+          :src="v + 'x'" 
           class="avatar"
           :class="`avatar_${index + 1}`"
           />

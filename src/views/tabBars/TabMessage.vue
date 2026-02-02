@@ -1,5 +1,5 @@
 <template>
-  <div class="tab_msg_box">
+  <div class="tab_container">
     <van-nav-bar
       :title="title"
     >
@@ -10,7 +10,7 @@
         </div>
       </template>
     </van-nav-bar>
-    <div class="conv_list_box">
+    <div class="tab_content">
       <ChatItem v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
     </div>
 
@@ -114,15 +114,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.tab_msg_box {
-  height: calc(100vh - 50px);
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 20px;
-  .conv_list_box {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-}
+
 </style>

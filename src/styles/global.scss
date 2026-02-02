@@ -88,3 +88,17 @@ img {
 ::-webkit-scrollbar-track {
   background-color: $base_bg_color;
 }
+
+// tab页面高度
+.tab_container {
+  height: calc(100% - 70px - constant(safe-area-inset-bottom));
+  height: calc(100% - 70px - env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  flex-direction: column;
+  .tab_content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}

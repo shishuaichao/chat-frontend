@@ -123,9 +123,6 @@ onActivated(() => {
 
 <style scoped lang="scss">
 .tab_container {
-  height: calc(100% - 70px);
-  display: flex;
-  flex-direction: column;
   .tab_content {
     flex: 1;
     overflow-y: auto;
