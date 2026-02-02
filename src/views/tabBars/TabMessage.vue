@@ -1,6 +1,6 @@
 <template>
   <div class="tab_container">
-    <van-nav-bar
+    <NavBar
       :title="title"
     >
       <template #right>
@@ -9,7 +9,7 @@
           <DropdownMenu :isShow="isShow" @checkClick="checkClick" />
         </div>
       </template>
-    </van-nav-bar>
+    </NavBar>
     <div class="tab_content" ref="scrollerRef">
       <ChatItem v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
     </div>

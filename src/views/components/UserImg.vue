@@ -95,7 +95,7 @@ const avatarList = computed(() => {
 .user_img_box {
   width: 100%;
   height: 100%;
-  background-color: #e6e7e5;
+  background-color: $base_bg_color;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -2,6 +2,7 @@
 
 
 // 定义全局变量
+$global_bg_color: #fff;
 $base_bg_color: #f0f0f0;
 $footer_bg_color: #f8f8f8;
 
@@ -11,4 +12,12 @@ $default_text_color: #555;
 
 $light_gray_color: #e3e3e3;
 
+
+// nav bar
+$nav-bar-height: 64px;
+// tab bar
 $tabbar_height: 70px;
+// footer input
+$footer_input_pad_h: 8px;
+$footer_input_h: 36px;
+$footer_input_real_h: 52px;

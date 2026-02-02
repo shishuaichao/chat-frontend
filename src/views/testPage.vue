@@ -1,92 +1,55 @@
 <template>
-  <div class="dropdown-container">
-    <!-- 下拉菜单 -->
-    <transition name="dropdown">
-      <div 
-        v-if="isShow" 
-        class="dropdown-menu"
-        @click="$emit('checkClick', item)"
-      >
-        <div 
-          v-for="(item, index) in menuList" 
-          :key="index" 
-          class="menu-item"
-        >
-          <van-icon :name="item.iconClass" />
-          <span>{{ item.label }}</span>
-        </div>
-      </div>
-    </transition>
-  </div>
+  <div class="page">
+  <!-- 其他内容 -->
+  <footer class="safe-footer">sdfdf
+    <div class="footer-bg"></div>
+  </footer>
+</div>
 </template>
 
 <script setup>
 
-defineProps({
-  isShow: {
-    type: Boolean,
-    default: false
-  }
-})
-const menuList = [
-  { label: '发起群聊', type: 'group', iconClass: 'chat-o' },
-  { label: '添加朋友', type: 'friend', iconClass: 'link-o' },
-  { label: '扫一扫', type: 'scan', iconClass: 'scan' },
-  { label: '收付款', type: 'pay', iconClass: 'qr' }
-]
 
 </script>
 
 <style scoped lang="scss">
-.dropdown-container {
-  position: relative;
-  display: inline-block;
+/* 让底部背景覆盖安全区的核心思路 */
+:root {
+  /* 兼容旧版 iOS）
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  /* 备用写法用于极端旧设备 */
+  --safe-bottom-legacy: constant(safe-area-inset-bottom, 0px);
 }
 
-.dropdown-menu {
-  position: absolute;
-  top: 60px;
-  right: 0;
-  width: 200px;
-  background: #333;
-  color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  overflow: hidden;
-}
-
-.menu-item {
+.page {
+  min-height: 100vh;
   display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  cursor: pointer;
-  font-size: 16px;
-  border-bottom: 1px solid #444;
-  transition: background 0.2s;
+  flex-direction: column;
+  background: #fff; /* 页面背景色，必要时改为图片等 */
 }
 
-.menu-item:last-child {
-  border-bottom: none;
+.safe-footer {
+  /* 让底部容器撑满视口高度，背景覆盖底部区域 */
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  /* 高度可以根据实际需要调整，包含安全区底部的 inset */
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(constant(safe-area-inset-bottom, 0px));
+  /* 可选：背景覆盖整块区域 */
+  background: #ff0; /* 底部背景颜色，或者使用背景图片 */
+  color: #fff;
 }
 
-.menu-item:hover {
-  background: #444;
-}
-
-.menu-item i {
-  margin-right: 12px;
-  font-size: 18px;
-}
-
-/* 过渡动画 */
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.dropdown-enter-from,
-.dropdown-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
+/* 背景真正覆盖到底部安全区的实现 */
+.safe-footer::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  bottom: calc(-1 * env(safe-area-inset-bottom, 0px)); /* 让背景延伸到屏幕底部边界 */
+  height: env(safe-area-inset-bottom, 0px);
+  background: #333; /* 与 footer 背景一致，确保覆盖无缝 */
+  /* 注意：如果你使用的是图片背景，改成 background-image 来覆盖 */
+  z-index: -1;
 }
 </style>

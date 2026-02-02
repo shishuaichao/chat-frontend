@@ -4,6 +4,7 @@
     <input v-model="inputMsg" type="text" class="input-box" ref="inputRef" placeholder="输入消息..." @change="sendMessage" @keyup.enter="sendMessage" @focus="focus">
     <div class="send-btn" :class="{'disabled': inputMsg.trim() === ''}" ref="sendBtnRef" @click="sendMessage">发送</div>
   </div>
+  <div class="footer_pad"></div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -51,19 +52,19 @@ onMounted(() => {
 <style scoped lang="scss">
 /* 2. 底部固定输入框（50px） */
 .footer {
-    background: $light_gray_color;
-    border-top: 1px solid $base_bg_color;
+    background: $footer_bg_color;
     display: flex;
     align-items: center;
-    padding: 14px 10px;
-    z-index: 999;
-    /* iOS 关键：硬件加速 + 强制渲染 */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    will-change: bottom;
+    padding: $footer_input_pad_h 10px;
+    z-index: 1;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 .footer_pad {
-    width: 100%;
+  height: $footer_input_real_h;
+  width: 100%;
 }
 
 /* 输入框样式 */
