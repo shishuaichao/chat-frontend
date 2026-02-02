@@ -8,6 +8,7 @@ import './utils/noScale.js' // 导入禁用缩放的工具函数
 import './styles/index.scss' // 导入全局样式
 import store from './store' // 导入 Vuex 状态管理
 import 'mini-notifier/dist/style.css';
+import '@/assets/fonts/iconfont.css'
 import NavBar from './views/components/NavBar.vue'
 
 

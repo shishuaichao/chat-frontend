@@ -6,13 +6,12 @@
     >
     <!-- 自己 -->
     <div class="msg_self msg_item right" 
-      
       v-if="userInfo?.id == msgInfo.sender_id">
       <div class="msg_box">
-        <div class="nickname"> 
+        <!-- <div class="nickname"> 
           ID: {{ msgInfo.id }} 
           {{ msgInfo.created_at }}
-        </div>
+        </div> -->
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
@@ -27,8 +26,8 @@
       <div class="msg_box">
         <div class="nickname">
           <span>{{ getRemark(msgInfo.sender_id) }}</span>
-          {{ msgInfo.created_at }}
-        ID: {{ msgInfo.id }}
+          <!-- {{ msgInfo.created_at }} -->
+        <!-- ID: {{ msgInfo.id }} -->
         </div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
@@ -81,13 +80,15 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .msg_item_box {
   .msg_system_content {
     text-align: center;
     color: #999;
     font-size: 14px;
-    margin: 10px 0;
+    margin: 10px auto;
+    width: 80%;
+    line-height: 16px;
   }
   .msg_item {
     display: flex;
@@ -136,18 +137,21 @@ onMounted(() => {
     text-align: right;
   }
   .msg_content {
+    min-width: 48px;
     max-width: 80%;
     position: relative;
-    padding: 6px 12px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
     line-height: 1.4;
     word-break: break-word;
+    color: $chat_msg_color;
+    font-size: 16px;
   }
   .left .msg_content::before {
     content: '';
     position: absolute;
-    top: 4px;
+    top: 8px;
     left: -5px;
     width: 0;
     height: 0;
@@ -158,20 +162,20 @@ onMounted(() => {
   .right .msg_content::before {
     content: '';
     position: absolute;
-    top: 4px;
+    top: 8px;
     right: -5px;
     width: 0;
     height: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-    border-left: 10px solid #20d63e;
+    border-left: 10px solid $chat_pop_color;
   }
   .left .msg_content {
     background-color: #fff;
     border-radius: 4px;
   }
   .right .msg_content {
-    background-color: #20d63e;
+    background-color: $chat_pop_color;
     border-radius: 4px;
   }
   

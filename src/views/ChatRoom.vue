@@ -1,6 +1,13 @@
 <template>
   <div class="main_container">
-    <ChatHeader></ChatHeader>
+    <NavBar
+        :title="title"
+        :left-arrow="true"
+    >
+      <template #right>
+         <van-icon class="right_icon" name="ellipsis" />
+      </template>
+    </NavBar>
     <div class="chat_content_box" ref="chatContentRef">
       <ChatUnreadTip :count="unreadMsgCount" position="bottom" @click="toReadNewMsg"></ChatUnreadTip>
       <div class="msg_container_history" key="history">
@@ -22,7 +29,6 @@
 <script setup>
 import { ref, onMounted, onActivated, nextTick, onDeactivated } from 'vue'
 import { showToast } from 'vant';
-import ChatHeader from '@/views/components/ChatHeader.vue';
 import ChatContent from '@/views/components/ChatContent.vue';
 import ChartFooter from '@/views/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
@@ -182,6 +188,9 @@ const sendMessage = (msg) => {
 // 接收消息/系统消息
 const eventMessage = (data) => {
   unreadList.value.push(data)
+  let obj = JSON.parse(JSON.stringify(data))
+  obj.type = 5
+  unreadList.value.push(obj)
   if (isSelf(data.sender_id)) {
     scrollToBottom(data.id)
     updateUnreadThrottle(data.id)
@@ -312,104 +321,8 @@ const scrollEvent = () => {
   background-color: $base_bg_color;
   -webkit-overflow-scrolling: touch; 
 }
-.msg_item_box {
-  .msg_system_content {
-    text-align: center;
-    color: #999;
-    font-size: 14px;
-    margin: 10px 0;
-  }
-  .msg_item {
-    display: flex;
-    text-align: left;
-    padding-bottom: 16px;
-  }
-  .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 0 10px;
-    flex-shrink: 0;
-    background-color: #f0f0f0;
-  }
-  .avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .msg_box {
-    flex: 1;
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .left .msg_box {
-    flex-direction: row;
-  }
-  .right .msg_box {
-    flex-direction: row-reverse; 
-  }
-
-  .nickname {
-    font-size: 12px;
-    color: #ccc;
-    height: 14px;
-    line-height: 10px;
-    width: 100%;
-    font-weight: 500;
-    span {
-      color: #666;
-
-    }
-  }
-  .right .nickname {
-    text-align: right;
-  }
-  .msg_content {
-    max-width: 80%;
-    position: relative;
-    padding: 6px 12px;
-    display: flex;
-    align-items: center;
-    line-height: 1.4;
-    word-break: break-word;
-  }
-  .left .msg_content::before {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: -5px;
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-right: 10px solid #fff;
-  }
-  .right .msg_content::before {
-    content: '';
-    position: absolute;
-    top: 4px;
-    right: -5px;
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-left: 10px solid #20d63e;
-  }
-  .left .msg_content {
-    background-color: #fff;
-    border-radius: 4px;
-  }
-  .right .msg_content {
-    background-color: #20d63e;
-    border-radius: 4px;
-  }
-  
-  .msg_other {
-    justify-content: flex-start;
-  }
-  .msg_self {
-    justify-content: flex-end;
-  }
+.right_icon {
+  font-size: 24px;
+  font-weight: 600;
 }
 </style>

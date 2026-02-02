@@ -1,8 +1,14 @@
 <template>
   <!-- 2. 底部固定输入框 -->
   <div class="footer">
-    <input v-model="inputMsg" type="text" class="input-box" ref="inputRef" placeholder="输入消息..." @change="sendMessage" @keyup.enter="sendMessage" @focus="focus">
-    <div class="send-btn" :class="{'disabled': inputMsg.trim() === ''}" ref="sendBtnRef" @click="sendMessage">发送</div>
+    <!-- <van-icon class="icon icon_left" name="play-circle-o" /> -->
+    <!-- <span class="icon iconfont">&#xe66c;</span> -->
+     <span class="icon iconfont icon-yuyin icon_left"></span>
+    <input v-model="inputMsg" type="text" class="input-box" ref="inputRef" @change="sendMessage" @keyup.enter="sendMessage" @focus="focus">
+    <van-icon class="icon" name="smile-o" v-show="isSendText" @click="toSendEmoji" />
+    <span class="icon iconfont icon-jianpan" v-show="!isSendText" @click="toSendText"></span>
+    <van-icon class="icon" name="add-o" />
+    <!-- <div class="send-btn" :class="{'disabled': inputMsg.trim() === ''}" ref="sendBtnRef" @click="sendMessage">发送</div> -->
   </div>
   <div class="footer_pad"></div>
 </template>
@@ -36,17 +42,27 @@ const sendMessage = () => {
     inputRef.value.scrollIntoView({ behavior: 'instant', block: 'center' });
   }, 0);
 };
+// 切换发送文本和表情
+const isSendText = ref(true)
+const toSendEmoji = () => {
+  isSendText.value = false
+}
+const toSendText = () => {
+  isSendText.value = true
+}
+
+
 
 // 3. 绑定事件（优先用 touchstart 阻止 iOS 失焦）
 // 触摸事件（移动端核心）
-const sendBtnRef = ref(null)
+// const sendBtnRef = ref(null)
 onMounted(() => {
   // 发送按钮引用
-  sendBtnRef.value.addEventListener('touchstart', (e) => {
-    // 阻止默认行为：避免 iOS 触发输入框失焦
-    e.preventDefault();
-    sendMessage();
-  }, { passive: false });
+  // sendBtnRef.value.addEventListener('touchstart', (e) => {
+  //   // 阻止默认行为：避免 iOS 触发输入框失焦
+  //   e.preventDefault();
+  //   sendMessage();
+  // }, { passive: false });
 })
 </script>
 <style scoped lang="scss">
@@ -61,6 +77,15 @@ onMounted(() => {
     bottom: 0;
     width: 100%;
     box-sizing: border-box;
+    .icon {
+      font-size: 30px;
+      margin-left: 6px;
+      color: $chat_msg_color;
+    }
+    .icon_left {
+      margin-left: 0;
+      margin-right: 6px;
+    }
 }
 .footer_pad {
   height: $footer_input_real_h;
@@ -70,14 +95,17 @@ onMounted(() => {
 /* 输入框样式 */
 .input-box {
     flex: 1;
-    height: 36px;
+    height: 40px;
     padding: 0 10px;
     border: 1px solid #fff;
-    border-radius: 10px;
+    border-radius: 6px;
     outline: none;
-    font-size: 14px;
+    font-size: 16px;
     /* iOS 移除默认样式 */
     -webkit-appearance: none;
+}
+input[type="text"] {
+  caret-color: #20d63e;        
 }
 
 /* 发送按钮 */
