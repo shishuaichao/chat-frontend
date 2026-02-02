@@ -69,7 +69,9 @@ img {
     font-size: 20px;
   }
 }
-
+.van-nav-bar__right {
+  padding: 0 24px 0 10px;
+}
 
 /* 自定义滚动条样式 */
 ::-webkit-scrollbar {

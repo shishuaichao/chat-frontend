@@ -5,12 +5,12 @@
       <div 
         v-if="isShow" 
         class="dropdown-menu"
-        @click="$emit('checkClick', item)"
       >
         <div 
           v-for="(item, index) in menuList" 
           :key="index" 
           class="menu-item"
+          @click="$emit('checkClick', item)"
         >
           <van-icon :name="item.iconClass" />
           <span>{{ item.label }}</span>
@@ -29,7 +29,7 @@ defineProps({
   }
 })
 const menuList = [
-  { label: '发起群聊', type: 'group', iconClass: 'chat-o' },
+  { label: '发起群聊', type: 'group', iconClass: 'chat' },
   { label: '添加朋友', type: 'friend', iconClass: 'link-o' },
   { label: '扫一扫', type: 'scan', iconClass: 'scan' },
   { label: '收付款', type: 'pay', iconClass: 'qr' }
@@ -45,14 +45,28 @@ const menuList = [
 
 .dropdown-menu {
   position: absolute;
-  top: 60px;
-  right: 0;
-  width: 200px;
+  top: 34px;
+  right: -16px;
+  width: 140px;
   background: #333;
   color: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  overflow: hidden;
+  z-index: 1000;
+  &::before {
+    content: ' ';
+    position: absolute;
+    top: -8px;
+    right: 16px;
+    /* 核心：宽高必须为0，否则箭头会变形 */
+    width: 0;
+    height: 0;
+    /* 左右透明边框（控制箭头底部宽度），下边框有色（控制箭头高度+颜色） */
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #333; /* 箭头主色，可随便改 */
+    
+  }
 }
 
 .menu-item {
@@ -64,6 +78,7 @@ const menuList = [
   border-bottom: 1px solid #444;
   transition: background 0.2s;
 }
+
 
 .menu-item:last-child {
   border-bottom: none;

@@ -85,6 +85,9 @@ onBeforeRouteLeave((to, from, next) => {
       userId: getUserInfo().id,
     })
     lastScrollTop = chatContentRef.value.scrollTop
+    if (isBottom()) {
+      chatContentRef.value.scrollTop = lastScrollTop - 10
+    }
     updateUnread()
   }
   next()
@@ -159,6 +162,7 @@ const eventMessage = (data) => {
   unreadList.value.push(data)
   if (isSelf(data.sender_id)) {
     scrollToBottom(data.id)
+    updateUnreadThrottle(data.id)
   } else if (isBottom(chatContentRef.value)) {
     scrollToBottom(data.id)
     updateUnreadThrottle(data.id)

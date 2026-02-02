@@ -4,7 +4,10 @@
       :title="title"
     >
       <template #right>
-        <van-icon name="add-o" />
+        <div  ref="dropdownMenuRef">
+          <van-icon name="add-o" @click="rightClick" />
+          <DropdownMenu :isShow="isShow" @checkClick="checkClick" />
+        </div>
       </template>
     </van-nav-bar>
     <div class="conv_list_box">
@@ -18,16 +21,31 @@
 <script setup>
 import { ref, onActivated } from 'vue';
 import ChatList from '@/views/components/ChatList.vue';
+import DropdownMenu from '@/views/components/DropdownMenu.vue';
 import { 
   getConversationList,
   fetchJoinConversation,
 } from '@/api/index.js'
 import router from '@/router';
 import { IMG_REAL_URL } from '@/utils/constant';
+import { useClickAway } from '@vant/use';
 // import { v4 as uuidv4 } from 'uuid'
 // import { fetchRegister } from '@/api/index.js'
 
-
+// 点击下拉菜单
+const isShow = ref(false)
+const checkClick = (item) => {
+  isShow.value = false
+  console.log(item)
+}
+const rightClick = () => {
+  isShow.value = !isShow.value
+}
+const dropdownMenuRef = ref(null);
+useClickAway(dropdownMenuRef, () => {
+    console.log('click outside!');
+    isShow.value = false
+  });
 
 // 定义标题
 const title = ref('消息');
@@ -54,6 +72,8 @@ const entryChat = (item) => {
 
 const chatList = ref([]);
 onActivated(() => {
+  
+
   console.log('TabMessage mounted')
   getConversationList()
     .then(res => {
