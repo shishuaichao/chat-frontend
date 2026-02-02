@@ -19,7 +19,7 @@
 </template>
 <script setup>
 import UserImg from '@/views/components/UserImg.vue'
-import { IMG_REAL_URL } from '@/utils/constant'
+// import { IMG_REAL_URL } from '@/utils/constant'
 import { ref, onActivated, onDeactivated } from 'vue';
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 
@@ -29,15 +29,15 @@ const title = ref('朋友圈')
 // const size = ref('normal')
 // const avatar = ref(`${IMG_REAL_URL}23`)
 const avatarList = ref([
-  `${IMG_REAL_URL}23`, 
-  `${IMG_REAL_URL}24`, 
-  `${IMG_REAL_URL}25`, 
-  `${IMG_REAL_URL}26`,
-  `${IMG_REAL_URL}27`,
-  `${IMG_REAL_URL}28`,
-  `${IMG_REAL_URL}29`,
-  `${IMG_REAL_URL}30`,
-  `${IMG_REAL_URL}31`,
+  `23`, 
+  `24`, 
+  `25`, 
+  `26`,
+  `27`,
+  `28`,
+  `29`,
+  `30`,
+  `31`,
 ])
 
 const getFriendsShow = () => {

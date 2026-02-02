@@ -58,7 +58,7 @@ class SocketClient {
           notify('服务链接成功', {
             time: 3000,
             style: 'success',
-            position: 'bottom-right',
+            position: 'top-left',
           });
         }
         if (event === 'connect_error') {

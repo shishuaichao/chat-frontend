@@ -27,7 +27,6 @@ import {
   fetchJoinConversation,
 } from '@/api/index.js'
 import router from '@/router';
-import { IMG_REAL_URL } from '@/utils/constant';
 import { useClickAway } from '@vant/use';
 // import { v4 as uuidv4 } from 'uuid'
 // import { fetchRegister } from '@/api/index.js'
@@ -82,11 +81,6 @@ const getChatList = () => {
   getConversationList()
     .then(res => {
       chatList.value = res.data
-      // console.log('avatar', chatList.value)
-      chatList.value.map(item => {
-        // console.log('avatar', item.avatar, chatList.value)
-        item.avatar = item.avatar?.split(',').map(v => `${IMG_REAL_URL}${v}`).join(',')
-      })
     })
     .catch(err => {
       console.log('getConversationList', err)

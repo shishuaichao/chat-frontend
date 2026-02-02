@@ -42,10 +42,10 @@
 </template>
 <script setup>
 import { computed } from 'vue'
+import { IMG_REAL_URL } from '@/utils/constant'
 const props = defineProps({
   avatar: {
-    type: String,
-    default: '',
+    type: [String, Array],
   },
   size: {
     type: String,
@@ -55,10 +55,18 @@ const props = defineProps({
 
 
 const avatarList = computed(() => {
+  if (!props.avatar) {
+    return []
+  }
   if (typeof props.avatar == 'string') {
+    if (props.avatar.includes('http')) {
+      return [props.avatar]
+    } else if (props.avatar.includes(',')) {
+      return props.avatar.split(',').map(item => IMG_REAL_URL + item)
+    }
     return [props.avatar]
   }
-  return props.avatar
+  return props.avatar.length && props.avatar.map(item => IMG_REAL_URL + item)
 })
 </script>
 
