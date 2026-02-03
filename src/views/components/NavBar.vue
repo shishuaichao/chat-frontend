@@ -1,5 +1,5 @@
 <template>
-  <div class="header bottom_line">
+  <div class="header" :class="{'bottom_line': showBottomLine}">
     <van-nav-bar
       :title="title"
       :left-arrow="leftArrow"
@@ -31,6 +31,10 @@ const props = defineProps({
   bgColor: {
     type: String,
     default: '',
+  },
+  showBottomLine: {
+    type: Boolean,
+    default: true,
   },
 });
 

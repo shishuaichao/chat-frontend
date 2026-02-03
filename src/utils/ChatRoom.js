@@ -13,6 +13,7 @@ export const sendMsg = (type, msgOpt) => {
     status: msgOpt.status || 1,
     sender_id: getUserInfo().id,
     avatar: getUserInfo().avatar,
+    sender_nickname: msgOpt.sender_nickname,
   }
   if (type == 1) {
     WS_Client.sendPrivateMsg({

@@ -1,8 +1,10 @@
 <template>
   <div>
-    <van-nav-bar
+    <NavBar
       title=""
       left-arrow
+      bgColor="#fff"
+      :showBottomLine="false"
       @click-left="onClickLeft"
     />
     <div class="info_box">

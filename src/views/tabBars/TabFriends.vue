@@ -115,7 +115,8 @@ const entryGroupInfo = (item) => {
   router.push({
     name: 'ChatRoom',
     query: {
-      id: item.id,
+      convId: item.id,
+      type: 2,
     }
   })
 }
@@ -149,7 +150,7 @@ onBeforeRouteLeave((to, from, next) => {
     .item_box {
       .item_title {
         font-size: 14px;
-        color: $chat_name_color;
+        color: $chat_msg_color;
         padding: 16px 16px 4px;
         // background-color: $light_gray_color;
       }

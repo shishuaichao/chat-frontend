@@ -23,11 +23,12 @@
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
         <img v-once :src="msgInfo.avatar" alt="">
       </div>
+      
       <div class="msg_box">
-        <div class="nickname">
-          <span>{{ getRemark(msgInfo.sender_id) }}</span>
+        <div class="nickname" v-if="route.query.type != 1">
+          {{ getRemark(msgInfo.sender_id) || msgInfo.sender_nickname }}
           <!-- {{ msgInfo.created_at }} -->
-        <!-- ID: {{ msgInfo.id }} -->
+          <!-- ID: {{ msgInfo.id }} -->
         </div>
         <div class="msg_content">{{ msgInfo.content }}</div>
       </div>
@@ -42,11 +43,13 @@
 
 <script setup>
 import { defineProps, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { getRemark } from '@/utils/localStorage';
 import { getUserInfo } from '@/utils/utils';
 
+
 const router = useRouter()
+const route = useRoute()
 
 defineProps({
   // 消息
@@ -81,7 +84,7 @@ onMounted(() => {
 .msg_item_box {
   .msg_system_content {
     text-align: center;
-    color: #999;
+    color: $chat_sys_msg_color;
     font-size: 12px;
     margin: 10px auto 20px;
     width: 80%;
@@ -119,12 +122,11 @@ onMounted(() => {
   }
 
   .nickname {
-    font-size: 12px;
-    color: #999;
+    font-size: 10px;
+    color: $chat_sys_msg_color;
     height: 14px;
-    line-height: 10px;
+    line-height: 8px;
     width: 100%;
-    font-weight: 500;
     span {
       color: #666;
 

@@ -37,6 +37,8 @@ import { fetchChatRecords, fetchUpdateUnread, fetchGetUnreadList } from '@/api/c
 import { throttle } from 'lodash';
 import ChatUnreadTip from '@/views/components/ChatUnreadTip.vue'
 import { notify } from 'mini-notifier'
+import { getRemark } from '@/utils/localStorage';
+import { fetchConvInfo } from '@/api/chat.js'
 // import store from '@/store'
 import { 
   scrollToBottomUtil,
@@ -57,11 +59,16 @@ let lastReadMsgId = null
 const chatContentRef = ref(null)
 // 页面挂载时
 onMounted(() => {
-  getAllChats()
+  
 })
 const lastConvId = ref('')
 // 页面激活时
 onActivated(() => {
+  if (route.query.type == 1) {
+    setRoomName('', route.query.id)
+  } else {
+    getRoomInfo(route.query.convId)
+  }
   let newConvId = route.query.convId
   console.log('lastConvId', lastConvId.value)
   console.log('newConvId', newConvId)
@@ -72,6 +79,7 @@ onActivated(() => {
     })
     lastConvId.value = newConvId
     lastScrollTop = 0
+    
     getAllChats()
   } else {
     getUnreadList()
@@ -91,6 +99,7 @@ onActivated(() => {
 // 页面失活时
 onDeactivated(() => {
   msgList.value = [...msgList.value, ...unreadList.value]
+  unreadList.value = []
   observer?.close()
   WS_mitt.off('message', eventMessage)
   WS_mitt.off('private_message', eventMessage)
@@ -122,22 +131,31 @@ const msgList = ref([])
 const unreadList = ref([])
 const firstRenderCount = 20
 const addHistoryCountOnce = 20
+const renderOffset = 300  // 渲染偏移量，距离底部100px以内时，直接渲染新消息s
 // 获取聊天记录
 const getAllChats = () => {
   originList.value = []
   historyList.value = []
   msgList.value = []  
   unreadList.value = []
-  fetchChatRecords({ convId: route.query.convId })
-    .then(res => {
-      let resList = res.data?.records || []
-      lastReadMsgId = res.data?.last_read_msg_id
-      originList.value = resList.filter(v => v.id <= lastReadMsgId)
-      unreadList.value = resList.filter(v => v.id > lastReadMsgId)
-      msgList.value = originList.value.splice(-firstRenderCount)
+  return fetchChatRecords({ convId: route.query.convId })
+    .then((res) => {
+      let resList = res?.data?.records || []
+      lastReadMsgId = res?.data?.last_read_msg_id || null
+      if (lastReadMsgId) {
+        originList.value = resList.filter(v => v.id <= lastReadMsgId)
+        unreadList.value = resList.filter(v => v.id > lastReadMsgId)
+      } else {
+        originList.value = resList
+      }
       unreadMsgCount.value = unreadList.value.length
-      scrollToBottom(lastReadMsgId)
-      addUnreadListObserve(unreadList.value)
+      msgList.value = [...originList.value.splice(-firstRenderCount), ...unreadList.value]
+      let tempUnreadList = [...unreadList.value]
+      unreadList.value = []
+      scrollToBottom(lastReadMsgId, { isImediate: true })
+      if (unreadMsgCount.value) {
+        addUnreadListObserve(tempUnreadList)
+      }
     })
     .catch(() => {})
 }
@@ -154,7 +172,19 @@ const getUnreadList = () => {
       })
       .catch(() => {})
   }
+  return 'kong'
 }
+// 获取房间信息
+const getRoomInfo = (convId) => {
+  fetchConvInfo({ convId })
+    .then(res => {
+      setRoomName(res.data?.name)
+    })
+    .catch(err => console.log(err))
+}
+
+
+
 // 连接成功
 const eventConnectSuccess = () => {
   if (route.name == 'ChatRoom') {
@@ -180,6 +210,7 @@ const sendMessage = (msg) => {
     content: msg,
     convId: route.query.convId,
     friendId: route.query.id,
+    sender_nickname: getUserInfo().nickname,
   })
 }
 // 接收消息/系统消息
@@ -188,7 +219,7 @@ const eventMessage = (data) => {
   if (isSelf(data.sender_id)) {
     scrollToBottom(data.id)
     updateUnreadThrottle(data.id)
-  } else if (isBottom(chatContentRef.value, 50)) {
+  } else if (isBottom(chatContentRef.value, renderOffset)) {
     scrollToBottom(data.id)
     updateUnreadThrottle(data.id)
   } else {
@@ -199,10 +230,12 @@ const eventMessage = (data) => {
 }
 // 未读消息进入页面监听
 const addUnreadListObserve = async (arr) => {
+  console.log('el1111', arr)
   await nextTick()
   arr.forEach(e => {
     let el = document.querySelector(`.msg_item_${e.id}`)
     let id = e.id
+    
     observer.add(el,  () => {
       if (unreadMsgCount.value > 0) {
         unreadMsgCount.value--
@@ -212,6 +245,7 @@ const addUnreadListObserve = async (arr) => {
       }
     })
   })
+  
 }
 // 点击未读消息，滚动到底部并更新未读消息为已读
 const toReadNewMsg = () => {
@@ -260,8 +294,15 @@ const updateUnread = (id) => {
 
 /******** 非核心代码 ********/ 
 
-
-
+// 修改房间名
+const title = ref('')
+const setRoomName = (name, id) => {
+  if (name) {
+    title.value = name
+  } else {
+    title.value = getRemark(id)
+  }
+}
 // 获取最后一条消息id
 const getLastMsgId = () => {
   if (unreadList.value.length) {

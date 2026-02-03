@@ -30,7 +30,7 @@ export const scrollToBottomUtil = (el, container, options) => {
   if (!el) return
   if (el.scrollIntoView) {
     el.scrollIntoView({
-      behavior: options.behavior || 'smooth',
+      behavior: options.isImediate ? 'instant' : 'smooth',
       block: options.block || 'end',
       container: options.container || 'nearest',
       inline: options.inline || 'end',
@@ -124,13 +124,12 @@ export class AddObserverFun {
     })
   }
   add(el, callback) {  
+    console.log('添加元素监听', el)
     if (!el) {
-      this.timer = setTimeout(() => {
-        console.log('延迟添加', el)
-        this.add(el, callback)
-      }, 200)
+      console.error('添加元素监听失败，元素不存在')
       return
     }
+    console.log('验证通过，添加元素监听', el)
     this.idCount++
     let uniqId = `id_${this.idCount}`
     el.dataset['observer'] = uniqId

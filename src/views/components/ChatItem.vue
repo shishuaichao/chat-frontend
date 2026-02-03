@@ -119,9 +119,6 @@ defineProps({
       margin-left: 4px;
     }
   }
-  &:nth-last-child(1) .content-wrapper {
-    border-bottom: none;
-  }
   .agree {
     width: 50px;
     position: absolute;
