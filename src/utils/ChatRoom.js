@@ -14,6 +14,7 @@ export const sendMsg = (type, msgOpt) => {
     sender_id: getUserInfo().id,
     avatar: getUserInfo().avatar,
     sender_nickname: msgOpt.sender_nickname,
+    convType: type,
   }
   if (type == 1) {
     WS_Client.sendPrivateMsg({

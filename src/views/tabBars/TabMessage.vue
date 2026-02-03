@@ -31,7 +31,7 @@ import { useClickAway } from '@vant/use';
 // import { v4 as uuidv4 } from 'uuid'
 // import { fetchRegister } from '@/api/index.js'
 import { WS_mitt } from '@/utils/WS_Client';
-import { notify } from 'mini-notifier'
+// import { notify } from 'mini-notifier'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -87,10 +87,41 @@ const getChatList = () => {
     })
 }
 
+// 监听消息，修改列表中显示的样式，
+// 增加未读消息数量，更新最后一条消息，
+const updateChatItem = (item) => {
+  for (let i = 0; i < chatList.value.length; i++) {
+    if (chatList.value[i].id == item.convId) {
+      console.log('chatList.value[i]', chatList.value[i])
+      chatList.value[i] = {
+        ...chatList.value[i],
+        unreadMsgCount: chatList.value[i].unreadMsgCount ? chatList.value[i].unreadMsgCount + 1 : 1,
+        lastMsg: item.content,
+        lastMsgTime: item.created_at,
+        lastMsgSender: item.sender_id,
+        lastMsgType: item.type,
+      }
+      break
+    }
+  }
+}
+
 // 监听消息事件
 const messageEvent = (data) => {
-  notify(data.content)
-  // getChatList()
+  console.log('group_message', data)
+  // notify(
+  //   `
+  //   sender_id: ${data.sender_id}
+  //   内容：${data.content}
+  //   type: ${data.type}
+  //   created_at: ${data.created_at}
+  //   convId: ${data.convId}
+  //   `
+  //   , {
+  //     duration: 5000,
+  //   }
+  // )
+  updateChatItem(data)
 }
 
 onMounted(() => {
@@ -98,18 +129,15 @@ onMounted(() => {
 })
 const scrollerRef = ref(null);
 let lastScrollTop = 0
+
 // 页面激活时
 onActivated(() => {
-  WS_mitt.on('message', messageEvent)
-  WS_mitt.on('system_message', messageEvent)
-  WS_mitt.on('private_message', messageEvent)
+  WS_mitt.on('group_message', messageEvent)
   scrollerRef.value.scrollTop = lastScrollTop
 })
 // 页面失活时
 onDeactivated(() => {
-  WS_mitt.off('message', messageEvent)
-  WS_mitt.off('system_message', messageEvent)
-  WS_mitt.off('private_message', messageEvent)
+  
 })
 // 离开页面前
 onBeforeRouteLeave((to, from, next) => {

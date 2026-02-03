@@ -49,6 +49,7 @@ class SocketClient {
       'join_room', // 加入房间
       'leave_room', // 离开房间
       'private_message', // 私聊消息
+      'group_message', // 群聊消息
     ];
     eventListeners.forEach(event => {
       this.socket.on(event, (data) => {
@@ -58,7 +59,7 @@ class SocketClient {
           notify('服务链接成功', {
             time: 3000,
             style: 'success',
-            position: 'top-left',
+            position: 'center',
           });
         }
         if (event === 'connect_error') {
@@ -78,10 +79,15 @@ class SocketClient {
     this.socket.emit('message', data);
   }
 
-  sendPrivateMsg(data) {
-    console.log(`发送私聊消息: `, data);
-    this.socket.emit('private_message', data);
-  }
+  // sendPrivateMsg(data) {
+  //   console.log(`发送私聊消息: `, data);
+  //   this.socket.emit('private_message', data);
+  // }
+
+  // sendGroupMsg(data) {
+  //   console.log(`发送群聊消息: `, data);
+  //   this.socket.emit('group_message', data);
+  // }
   
 
   // 加入指定房间

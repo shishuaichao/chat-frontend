@@ -5,14 +5,23 @@
         :avatar="item.avatar" 
         :type="item.type"
       />
+      <div class="red-dot" v-if="item.unreadMsgCount">
+        {{ item.unreadMsgCount }}
+      </div>
     </div>
+    <!-- lastMsg: item.lastMsg,
+        lastMsgTime: item.created_at,
+        lastMsgSender: item.sender_id,
+        lastMsgType: item.type, 
+        unreadMsgCount
+        -->
     <div class="content-wrapper">
       <div class="top-row">
         <span class="name">{{ item.remark || item.nickname || item.name }}</span>
-        <span class="time">{{ item.time }}</span>
+        <span class="time">{{ item.lastMsgTime }}</span>
       </div>
       <div class="bottom-row">
-        <span class="message">{{ item.message }}</span>
+        <span class="message">13123{{ item.lastMsg }}</span>
         <span v-if="item.hasAttachment" class="attachment-icon">📎</span>
       </div>
     </div>
@@ -58,16 +67,16 @@ defineProps({
     box-sizing: border-box;
     height: 72px;
 
-    // TODO: 聊天项红点
-    // .red-dot {
-    //   position: absolute;
-    //   top: 10px;
-    //   right: 10px;
-    //   width: 8px;
-    //   height: 8px;
-    //   background-color: #ed3b31;
-    //   border-radius: 50%;
-    // }
+    // 聊天项红点
+    .red-dot {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 8px;
+      height: 8px;
+      background-color: #ed3b31;
+      border-radius: 50%;
+    }
   }
   
   .content-wrapper {
