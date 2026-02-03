@@ -12,7 +12,8 @@
           class="menu-item"
           @click="$emit('checkClick', item)"
         >
-          <van-icon :name="item.iconClass" />
+          <van-icon :name="item.iconClass" v-if="item.type != 'friend'" />
+          <span class="icon iconfont" :class="item.iconClass" v-if="item.type == 'friend'"></span>
           <span>{{ item.label }}</span>
         </div>
       </div>
@@ -29,8 +30,8 @@ defineProps({
   }
 })
 const menuList = [
-  { label: '发起群聊', type: 'group', iconClass: 'chat' },
-  { label: '添加朋友', type: 'friend', iconClass: 'link-o' },
+  { label: '发起群聊', type: 'group', iconClass: 'chat-o' },
+  { label: '添加朋友', type: 'friend', iconClass: 'icon-tianjiahaoyou' },
   { label: '扫一扫', type: 'scan', iconClass: 'scan' },
   { label: '收付款', type: 'pay', iconClass: 'qr' }
 ]
@@ -103,5 +104,9 @@ const menuList = [
 .dropdown-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+.iconfont {
+  margin-right: 10px;
+  font-size: 20px;
 }
 </style>

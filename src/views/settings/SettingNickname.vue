@@ -109,7 +109,7 @@ const handleSubmit = () => {
           duration: 500,
         })
         setTimeout(() => {
-          isChange.value ? goToSettingAvatar() : router.back()
+          isChange.value ? router.back() : goToSettingAvatar() 
         }, 500)
       })
       .catch(err => {

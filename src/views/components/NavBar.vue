@@ -6,7 +6,6 @@
       @click-left="onClickLeft"
     >
       <template #right>
-        <!-- <van-icon name="ellipsis" /> -->
          <slot name="right"></slot>
       </template>
     </van-nav-bar>

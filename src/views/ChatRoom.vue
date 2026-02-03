@@ -109,9 +109,6 @@ onBeforeRouteLeave((to, from, next) => {
       userId: getUserInfo().id,
     })
     lastScrollTop = chatContentRef.value.scrollTop
-    if (isBottom()) {
-      chatContentRef.value.scrollTop = lastScrollTop - 10
-    }
     updateUnread()
   }
   next()
@@ -123,7 +120,7 @@ const originList = ref([])
 const historyList = ref([])
 const msgList = ref([])
 const unreadList = ref([])
-const firstRenderCount = 30
+const firstRenderCount = 20
 const addHistoryCountOnce = 20
 // 获取聊天记录
 const getAllChats = () => {
@@ -188,13 +185,10 @@ const sendMessage = (msg) => {
 // 接收消息/系统消息
 const eventMessage = (data) => {
   unreadList.value.push(data)
-  let obj = JSON.parse(JSON.stringify(data))
-  obj.type = 5
-  unreadList.value.push(obj)
   if (isSelf(data.sender_id)) {
     scrollToBottom(data.id)
     updateUnreadThrottle(data.id)
-  } else if (isBottom(chatContentRef.value)) {
+  } else if (isBottom(chatContentRef.value, 50)) {
     scrollToBottom(data.id)
     updateUnreadThrottle(data.id)
   } else {

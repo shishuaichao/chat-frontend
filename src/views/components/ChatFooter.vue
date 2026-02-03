@@ -95,7 +95,7 @@ onMounted(() => {
 /* 输入框样式 */
 .input-box {
     flex: 1;
-    height: 40px;
+    height: $footer_input_h;
     padding: 0 10px;
     border: 1px solid #fff;
     border-radius: 6px;

@@ -44,6 +44,7 @@
 import { defineProps, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router'
 import { getRemark } from '@/utils/localStorage';
+import { getUserInfo } from '@/utils/utils';
 
 const router = useRouter()
 
@@ -72,11 +73,7 @@ const handleClickUserInfo = (msgInfo) => {
 
 const userInfo = ref({})
 onMounted(() => {
-  userInfo.value = {
-    id: localStorage.getItem('id'),
-    nickname: localStorage.getItem('nickname'),
-    avatar: localStorage.getItem('avatar'),
-  }
+  userInfo.value = getUserInfo()
 })
 </script>
 
@@ -85,8 +82,8 @@ onMounted(() => {
   .msg_system_content {
     text-align: center;
     color: #999;
-    font-size: 14px;
-    margin: 10px auto;
+    font-size: 12px;
+    margin: 10px auto 20px;
     width: 80%;
     line-height: 16px;
   }

@@ -10,9 +10,9 @@ export const getSessionKey = (arr) => {
 }
 
 // 是否在页面最底部
-export const isBottom = (container) => {
+export const isBottom = (container, offsetNum = 0) => {
   if (!container) return 
-  return container.scrollTop + container.clientHeight >= container.scrollHeight
+  return container.scrollTop + container.clientHeight + offsetNum >= container.scrollHeight
 }
 export const isSelf = (id) => {
   return id == getUserInfo().id
