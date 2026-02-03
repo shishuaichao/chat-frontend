@@ -143,7 +143,7 @@ onMounted(() => {
     padding: 8px 12px;
     display: flex;
     align-items: center;
-    line-height: 1.4;
+    line-height: 1.5;
     word-break: break-word;
     color: $chat_msg_color;
     font-size: 16px;
