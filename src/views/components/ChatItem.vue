@@ -5,7 +5,10 @@
         :avatar="item.avatar" 
         :type="item.type"
       />
-      <div class="red-dot" v-if="item.unreadCount > 0"></div>
+      <div class="red-dot" v-if="item.unreadCount > 0 && item.convType == 2"></div>
+      <div class="red-dot red_dot_num" v-if="item.unreadCount > 0 && item.convType == 1">
+        <span>{{ item.unreadCount }}</span>
+      </div>
     </div>
     <div class="content-wrapper">
       <div class="row top-row">
@@ -19,7 +22,9 @@
           <span v-if="item.convType == 2">{{ getRemark(item.senderId) || item.senderNickname }}: </span>
           <span>{{ item.content }}</span>
         </span>
-        <span v-if="item.hasAttachment" class="attachment-icon">📎</span>
+        <span class="attachment-icon" v-if="item.convType == 10">
+          <van-icon name="fire-o" color="#ee0a24" />
+        </span>
       </div>
     </div>
     <van-button 
@@ -77,9 +82,16 @@ defineProps({
       border-radius: 50%;
       color: #fff;
       font-size: 8px;
-      font-weight: 600;
       line-height: 14px;
       text-align: center;
+    }
+    .red_dot_num {
+      width: 16px;
+      height: 16px;
+      top: 4px;
+      right: 4px;
+      line-height: 15px;
+      font-size: 10px;
     }
   }
   
