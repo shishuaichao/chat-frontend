@@ -27,9 +27,9 @@
 </template>
 
 <script setup>
+import ChatContent from '@/views/components/ChatContent.vue';
 import { ref, onMounted, onActivated, nextTick, onDeactivated } from 'vue'
 import { showToast } from 'vant';
-import ChatContent from '@/views/components/ChatContent.vue';
 import ChartFooter from '@/views/components/ChatFooter.vue';
 import { WS_mitt, WS_Client } from '@/utils/WS_Client';
 import { useRoute, onBeforeRouteLeave } from 'vue-router'
@@ -73,10 +73,10 @@ onActivated(() => {
   console.log('lastConvId', lastConvId.value)
   console.log('newConvId', newConvId)
   if (newConvId != lastConvId.value) {
-    notify('需要更新页面了', {
-      position: 'center',
-      time: 1000,
-    })
+    // notify('需要更新页面了', {
+    //   position: 'center',
+    //   time: 1000,
+    // })
     lastConvId.value = newConvId
     lastScrollTop = 0
     

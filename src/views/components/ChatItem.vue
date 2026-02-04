@@ -15,6 +15,7 @@
       </div>
       <div class="row bottom-row">
         <span class="message single_line">
+          <span class="count" v-if="item.unreadCount >= 2">[{{ item.unreadCount }}条]</span>
           <span v-if="item.convType == 2">{{ getRemark(item.senderId) || item.senderNickname }}: </span>
           <span>{{ item.content }}</span>
         </span>
@@ -116,6 +117,11 @@ defineProps({
         width: calc(100% - 30px);
         font-size: 12px;
         color: $chat_sys_msg_color;
+        .count {
+          position: relative;
+          top: -1px;
+          margin-right: 2px;
+        }
       }
       // .attachment-icon {
       //   font-size: 12px;

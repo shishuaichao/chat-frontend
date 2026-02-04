@@ -150,7 +150,7 @@ onMounted(() => {
   .left .msg_content::before {
     content: '';
     position: absolute;
-    top: 8px;
+    top: 10px;
     left: -5px;
     width: 0;
     height: 0;
@@ -161,7 +161,7 @@ onMounted(() => {
   .right .msg_content::before {
     content: '';
     position: absolute;
-    top: 8px;
+    top: 10px;
     right: -5px;
     width: 0;
     height: 0;

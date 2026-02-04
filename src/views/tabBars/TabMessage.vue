@@ -22,7 +22,7 @@ import ChatItem from '@/views/components/ChatItem.vue';
 import DropdownMenu from '@/views/components/DropdownMenu.vue';
 import { 
   getConversationList,
-  fetchJoinConversation,
+  // fetchJoinConversation,
 } from '@/api/index.js'
 import router from '@/router';
 import { useClickAway } from '@vant/use';
@@ -51,20 +51,21 @@ const title = ref('消息');
 
 // 进入聊天
 const entryChat = (item) => {
-  fetchJoinConversation({ convId: item.id, })  
-    .then(res => {
-      console.log('fetchJoinConversation', res)
-      router.push({
-        name: 'ChatRoom',
-        query: {
-          convId: item.convId,
-          type: item.convType,
-        }
-      })
-    })
-    .catch(err => {
-      console.log('fetchJoinConversation', err)
-    })
+  item.unreadCount = 0
+  router.push({
+    name: 'ChatRoom',
+    query: {
+      convId: item.convId,
+      type: item.convType,
+    }
+  })
+  // fetchJoinConversation({ convId: item.convId, })  
+  //   .then(() => {
+      
+  //   })
+  //   .catch(err => {
+  //     console.log('fetchJoinConversation', err)
+  //   })
 }
 
 const chatList = ref([]);
@@ -86,7 +87,7 @@ const updateChatItem = (item) => {
       console.log('chatList.value[i]', chatList.value[i])
       chatList.value[i] = {
         ...chatList.value[i],
-        unreadMsgCount: chatList.value[i].unreadMsgCount ? chatList.value[i].unreadMsgCount + 1 : 1,
+        unreadCount: chatList.value[i].unreadCount + 1,
         content: item.content,
         createTime: item.createTime,
         senderId: item.senderId,
@@ -106,14 +107,14 @@ const messageEvent = (data) => {
 }
 
 onMounted(() => {
-  getChatList()
+  WS_mitt.on('notice_message', messageEvent)
 })
 const scrollerRef = ref(null);
 let lastScrollTop = 0
 
 // 页面激活时
 onActivated(() => {
-  WS_mitt.on('notice_message', messageEvent)
+  getChatList()
   scrollerRef.value.scrollTop = lastScrollTop
 })
 // 页面失活时
