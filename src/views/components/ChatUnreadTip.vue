@@ -57,7 +57,7 @@ defineProps({
     top: 50px;
   }
   &.bottom {
-    bottom: 80px;
+    bottom: 120px;
   }
 }
 

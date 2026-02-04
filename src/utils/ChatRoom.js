@@ -3,28 +3,23 @@
 // import { nextTick } from "vue"
 import { WS_Client } from '@/utils/WS_Client';
 import { getUserInfo } from '@/utils/utils';
-
+// # userId // 发送者id
+//   # content // 消息内容
+//   # msgType // 消息类型 1: 文本 2: 图片 3: 语音 4: 视频 5: 文件 6: 位置 7: 链接 8: 系统消息
+//   # convId // 会话id
+//   # convType  // 会话类型 1: 单聊 2: 群聊
+//   # to  // 单聊接收者id
 // 发送消息 1 私聊 2 群聊
-export const sendMsg = (type, msgOpt) => {
-  const msgData = { 
-    content: msgOpt.content, 
-    convId: msgOpt.convId, 
-    type: msgOpt.type || 1,  // 文件、图片、视频、语音 文本
-    status: msgOpt.status || 1,
-    sender_id: getUserInfo().id,
-    avatar: getUserInfo().avatar,
-    sender_nickname: msgOpt.sender_nickname,
-    convType: type,
+export const sendMsg = (msgOpt) => {
+  const msgData = {
+    userId: getUserInfo().id,
+    content: msgOpt.content,
+    msgType: msgOpt.msgType || 1,
+    convId: msgOpt.convId,
+    convType: msgOpt.convType,
+    to: msgOpt.to,
   }
-  if (type == 1) {
-    WS_Client.sendPrivateMsg({
-      ...msgData,
-      from: getUserInfo().id,
-      to: msgOpt.friendId,
-    })
-  } else {
-    WS_Client.sendMsg(msgData)
-  }
+  WS_Client.sendMsg(msgData)
 }
 
 

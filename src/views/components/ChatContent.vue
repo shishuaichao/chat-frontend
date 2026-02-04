@@ -6,7 +6,7 @@
     >
     <!-- 自己 -->
     <div class="msg_self msg_item right" 
-      v-if="userInfo?.id == msgInfo.sender_id">
+      v-if="userInfo?.id == msgInfo.senderId">
       <div class="msg_box">
         <!-- <div class="nickname"> 
           ID: {{ msgInfo.id }} 
@@ -26,7 +26,7 @@
       
       <div class="msg_box">
         <div class="nickname" v-if="route.query.type != 1">
-          {{ getRemark(msgInfo.sender_id) || msgInfo.sender_nickname }}
+          {{ getRemark(msgInfo.senderId) || msgInfo.senderNickname }}
           <!-- {{ msgInfo.created_at }} -->
           <!-- ID: {{ msgInfo.id }} -->
         </div>
@@ -69,7 +69,7 @@ const handleClickUserInfo = (msgInfo) => {
   router.push({
     name: 'OtherUserInfo',
     query: {
-      id: msgInfo.sender_id,
+      id: msgInfo.senderId,
     }
   })
 }

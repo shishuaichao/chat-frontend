@@ -5,23 +5,19 @@
         :avatar="item.avatar" 
         :type="item.type"
       />
-      <div class="red-dot" v-if="item.unreadMsgCount">
-        {{ item.unreadMsgCount }}
-      </div>
+      <div class="red-dot"></div>
     </div>
-    <!-- lastMsg: item.lastMsg,
-        lastMsgTime: item.created_at,
-        lastMsgSender: item.sender_id,
-        lastMsgType: item.type, 
-        unreadMsgCount
-        -->
     <div class="content-wrapper">
-      <div class="top-row">
-        <span class="name">{{ item.remark || item.nickname || item.name }}</span>
-        <span class="time">{{ item.lastMsgTime }}</span>
+      <div class="row top-row">
+        <span class="name single_line" v-if="item.convType == 2">{{ item.name }} </span>
+        <span class="name single_line" v-else>{{ getRemark(item.senderId) || item.senderNickname }} </span>
+        <span class="time">{{ item.createTime }}</span>
       </div>
-      <div class="bottom-row">
-        <span class="message">13123{{ item.lastMsg }}</span>
+      <div class="row bottom-row">
+        <span class="message single_line">
+          <span v-if="item.convType == 2">{{ getRemark(item.senderId) || item.senderNickname }}: </span>
+          <span>{{ item.content }}</span>
+        </span>
         <span v-if="item.hasAttachment" class="attachment-icon">📎</span>
       </div>
     </div>
@@ -33,6 +29,7 @@
   </div>
 </template>
 <script setup>
+import { getRemark } from '@/utils/localStorage';
 import UserImg from '@/views/components/UserImg.vue'
 
 
@@ -61,6 +58,7 @@ defineProps({
   background-color: #fff;
   position: relative;
   padding: 0 6px;
+  width: 100%;
   .avatar_wrapper {
     position: relative;
     padding: 11px;
@@ -70,12 +68,17 @@ defineProps({
     // 聊天项红点
     .red-dot {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 8px;
-      height: 8px;
-      background-color: #ed3b31;
+      top: 8px;
+      right: 8px;
+      width: 9px;
+      height: 9px;
+      background-color: $msg_notice_color;
       border-radius: 50%;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 600;
+      line-height: 14px;
+      text-align: center;
     }
   }
   
@@ -89,44 +92,44 @@ defineProps({
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    .row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
     .top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      .name {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        width: calc(100% - 60px);
+      }
+      .time {
+        font-size: 12px;
+        color: $chat_sys_msg_color;
+      }
     }
-
-    .name {
-      font-size: 16px;
-      font-weight: 500;
-      color: #333;
-    }
-
-    .time {
-      font-size: 10px;
-      color: #999;
-    }
-
     .bottom-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      .message {
+        width: calc(100% - 30px);
+        font-size: 12px;
+        color: $chat_sys_msg_color;
+      }
+      // .attachment-icon {
+      //   font-size: 12px;
+      //   color: #999;
+      //   margin-left: 4px;
+      // }
     }
+    
 
-    .message {
-      font-size: 13px;
-      color: #666;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex: 1;
-    }
+    
 
-    .attachment-icon {
-      font-size: 12px;
-      color: #999;
-      margin-left: 4px;
-    }
+    
+
+    
   }
   .agree {
     width: 50px;

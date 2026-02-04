@@ -206,11 +206,12 @@ const entryRoomEvent = (data) => {
 }
 // 发送消息
 const sendMessage = (msg) => {
-  sendMsg(route.query.type, {
+  sendMsg({
+    convType: route.query.type,
     content: msg,
     convId: route.query.convId,
-    friendId: route.query.id,
-    sender_nickname: getUserInfo().nickname,
+    to: route.query.id,
+    msgType: 1,
   })
 }
 // 接收消息/系统消息
@@ -230,7 +231,7 @@ const eventMessage = (data) => {
 }
 // 未读消息进入页面监听
 const addUnreadListObserve = async (arr) => {
-  console.log('el1111', arr)
+  // console.log('el1111', arr)
   await nextTick()
   arr.forEach(e => {
     let el = document.querySelector(`.msg_item_${e.id}`)

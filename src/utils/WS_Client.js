@@ -49,11 +49,14 @@ class SocketClient {
       'join_room', // 加入房间
       'leave_room', // 离开房间
       'private_message', // 私聊消息
-      'group_message', // 群聊消息
+      'notice_message', // 群聊消息
     ];
     eventListeners.forEach(event => {
       this.socket.on(event, (data) => {
-        console.log(`收到消息 ${event}：`, data);
+        // if (event == 'notice_message') {
+          console.log(`收到消息 ${event}：`, data);
+        // }
+        
         if (event === 'connect_success') {
           this.connectStatus = 'connected';
           notify('服务链接成功', {
@@ -86,7 +89,7 @@ class SocketClient {
 
   // sendGroupMsg(data) {
   //   console.log(`发送群聊消息: `, data);
-  //   this.socket.emit('group_message', data);
+  //   this.socket.emit('notice_message', data);
   // }
   
 

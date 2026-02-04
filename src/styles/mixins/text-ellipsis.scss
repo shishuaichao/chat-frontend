@@ -22,6 +22,7 @@
   @if $lines ==1 {
     white-space: nowrap;
     text-overflow: $ellipsis;
+    text-overflow: ellipsis;
   }
 
   @else {

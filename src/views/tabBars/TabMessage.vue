@@ -14,8 +14,6 @@
       <ChatItem v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
     </div>
 
-    <!-- <van-button type="primary" block @click="addConv(10)">新增10个群聊</van-button> -->
-    <!-- <van-button type="primary" block @click="addUser(10)">新增10个用户</van-button> -->
   </div>
 </template>
 <script setup>
@@ -28,10 +26,7 @@ import {
 } from '@/api/index.js'
 import router from '@/router';
 import { useClickAway } from '@vant/use';
-// import { v4 as uuidv4 } from 'uuid'
-// import { fetchRegister } from '@/api/index.js'
 import { WS_mitt } from '@/utils/WS_Client';
-// import { notify } from 'mini-notifier'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -54,7 +49,6 @@ useClickAway(dropdownMenuRef, () => {
 // 定义标题
 const title = ref('消息');
 
-
 // 进入聊天
 const entryChat = (item) => {
   fetchJoinConversation({ convId: item.id, })  
@@ -71,10 +65,7 @@ const entryChat = (item) => {
     .catch(err => {
       console.log('fetchJoinConversation', err)
     })
-  
 }
-
-
 
 const chatList = ref([]);
 const getChatList = () => {
@@ -96,10 +87,12 @@ const updateChatItem = (item) => {
       chatList.value[i] = {
         ...chatList.value[i],
         unreadMsgCount: chatList.value[i].unreadMsgCount ? chatList.value[i].unreadMsgCount + 1 : 1,
-        lastMsg: item.content,
-        lastMsgTime: item.created_at,
-        lastMsgSender: item.sender_id,
-        lastMsgType: item.type,
+        content: item.content,
+        createTime: item.createTime,
+        senderId: item.senderId,
+        senderNickname: item.senderNickname,
+        msgType: item.msgType,
+        convType: item.convType,
       }
       break
     }
@@ -108,19 +101,7 @@ const updateChatItem = (item) => {
 
 // 监听消息事件
 const messageEvent = (data) => {
-  console.log('group_message', data)
-  // notify(
-  //   `
-  //   sender_id: ${data.sender_id}
-  //   内容：${data.content}
-  //   type: ${data.type}
-  //   created_at: ${data.created_at}
-  //   convId: ${data.convId}
-  //   `
-  //   , {
-  //     duration: 5000,
-  //   }
-  // )
+  console.log('notice_message', data)
   updateChatItem(data)
 }
 
@@ -132,7 +113,7 @@ let lastScrollTop = 0
 
 // 页面激活时
 onActivated(() => {
-  WS_mitt.on('group_message', messageEvent)
+  WS_mitt.on('notice_message', messageEvent)
   scrollerRef.value.scrollTop = lastScrollTop
 })
 // 页面失活时

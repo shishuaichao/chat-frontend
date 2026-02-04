@@ -29,9 +29,9 @@ import tabBarsRoutes from '@/router/tabbars.js'
 import { checkLogined } from '@/utils/checkLogin.js'
 import { WS_mitt, WS_Client } from '@/utils/WS_Client.js'
 import store from '@/store/index.js'
-import { notify } from 'mini-notifier'
-import { useRoute } from 'vue-router'
-const route = useRoute()
+// import { notify } from 'mini-notifier'
+// import { useRoute } from 'vue-router'
+// const route = useRoute()
 
 onMounted(() => {
   checkLogined()
@@ -53,19 +53,19 @@ onMounted(() => {
 
 
 WS_mitt.on('private_message', (data) => {
-  console.log('route', route)
-  if (route.name == 'ChatRoom') return
-  notify(`私聊消息：${data.sender_id} 对你说：${data.content}`, {
-    time: 3000,
-    style: 'success',
-  });
+  console.log('data', data)
+  // if (route.name == 'ChatRoom') return
+  // notify(`私聊消息：${data.sender_id} 对你说：${data.content}`, {
+  //   time: 3000,
+  //   style: 'success',
+  // });
 })
-WS_mitt.on('group_message', data => {
-  console.log('group_message', data)
-  notify(`群聊消息：${data.group_id} 说：${data.content}`, {
-    time: 3000,
-    style: 'success',
-  });
+WS_mitt.on('notice_message', data => {
+  console.log('notice_message', data)
+  // notify(`群聊消息：${data.group_id} 说：${data.content}`, {
+  //   time: 3000,
+  //   style: 'success',
+  // });
 })
 
 const showTabbar = ref(false)

@@ -3,7 +3,7 @@
 @use './mixins/text-ellipsis' as ellipsis;
 
 // 调用时需加命名空间
-.single-line-demo {
+.single_line {
   @include ellipsis.text-ellipsis; // 命名空间 + Mixin 名
 }
 

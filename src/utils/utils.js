@@ -124,12 +124,12 @@ export class AddObserverFun {
     })
   }
   add(el, callback) {  
-    console.log('添加元素监听', el)
+    // console.log('添加元素监听', el)
     if (!el) {
       console.error('添加元素监听失败，元素不存在')
       return
     }
-    console.log('验证通过，添加元素监听', el)
+    // console.log('验证通过，添加元素监听', el)
     this.idCount++
     let uniqId = `id_${this.idCount}`
     el.dataset['observer'] = uniqId
