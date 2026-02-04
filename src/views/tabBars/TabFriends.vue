@@ -31,7 +31,7 @@ import { ref, onActivated, onDeactivated } from 'vue';
 import { fetchFriendList, fetchGroupList, fetchFriendsApplyList, fetchFriendAdd } from '@/api/user.js'
 import ChatItem from '@/views/components/ChatItem.vue'
 import router from '@/router'
-import { setRemark } from '@/utils/localStorage.js'
+// import { setRemark } from '@/utils/localStorage.js'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -78,7 +78,11 @@ const getFriendList = () => {
     .then(res => {
       if (res.code === 200) {
         friendList.value = res.data || []
-        friendList.value.map(item => setRemark(item.id, item.remark || item.nickname))
+        friendList.value.map(item => {
+          item.convType = 1,
+          item.convId = item.id,
+          item.name = item.remark || item.nickname
+        })
       }
     })
     .catch(err => {
@@ -93,6 +97,8 @@ const getGroupList = () => {
         groupList.value = res.data || []
         groupList.value.map(item => {
           item.avatar = item?.avatar?.split(',')
+          item.convType = 2,
+          item.convId = item.id
         })
       }
     })
@@ -107,6 +113,7 @@ const entryFriendInfo = (item) => {
     name: 'OtherUserInfo',
     query: {
       id: item.id,
+      type: 1,
     }
   })
 }

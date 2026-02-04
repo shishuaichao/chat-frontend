@@ -5,12 +5,18 @@
         :avatar="item.avatar" 
         :type="item.type"
       />
+      <div class="red-dot" v-if="item.unreadCount > 0 && item.convType == 2"></div>
+      <div class="red-dot red_dot_num" v-if="item.unreadCount > 0 && item.convType == 1">
+        <span>{{ item.unreadCount }}</span>
+      </div>
     </div>
     <div class="content-wrapper">
       <div class="row top-row">
-        <span class="name single_line">{{ item.name }} </span>
+        <span class="name single_line" v-if="item.convType == 2">{{ item.name }} </span>
+        <span class="name single_line" v-else>{{ getRemark(item.senderId) || item.senderNickname }} </span>
+        <span class="time">{{ item.createTime }}</span>
       </div>
-      <!-- <div class="row bottom-row">
+      <div class="row bottom-row">
         <span class="message single_line">
           <span class="count" v-if="item.unreadCount >= 2">[{{ item.unreadCount }}条]</span>
           <span v-if="item.convType == 2">{{ getRemark(item.senderId) || item.senderNickname }}: </span>
@@ -19,17 +25,12 @@
         <span class="attachment-icon" v-if="item.convType == 10">
           <van-icon name="fire-o" color="#ee0a24" />
         </span>
-      </div> -->
+      </div>
     </div>
-    <van-button 
-      v-if="item.status == 3"
-      size="mini" 
-      class="agree"
-      type="primary" @click="$emit('applyOperate', item)">同&nbsp;&nbsp;意</van-button>
   </div>
 </template>
 <script setup>
-// import { getRemark } from '@/utils/localStorage';
+import { getRemark } from '@/utils/localStorage';
 import UserImg from '@/views/components/UserImg.vue'
 
 

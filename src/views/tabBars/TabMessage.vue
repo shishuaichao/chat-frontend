@@ -11,14 +11,14 @@
       </template>
     </NavBar>
     <div class="tab_content" ref="scrollerRef">
-      <ChatItem v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
+      <ConvRecard v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
     </div>
 
   </div>
 </template>
 <script setup>
 import { ref, onActivated, onDeactivated, onMounted } from 'vue';
-import ChatItem from '@/views/components/ChatItem.vue';
+import ConvRecard from '@/views/components/ConvRecard.vue';
 import DropdownMenu from '@/views/components/DropdownMenu.vue';
 import { 
   getConversationList,
@@ -55,6 +55,7 @@ const entryChat = (item) => {
   router.push({
     name: 'ChatRoom',
     query: {
+      id: item.senderId,
       convId: item.convId,
       type: item.convType,
     }
