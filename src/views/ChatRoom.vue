@@ -40,6 +40,7 @@ import { notify } from 'mini-notifier'
 import { getRemark } from '@/utils/localStorage';
 import { fetchConvInfo } from '@/api/chat.js'
 // import store from '@/store'
+
 import { 
   scrollToBottomUtil,
   AddObserverFun, 
@@ -206,6 +207,8 @@ const entryRoomEvent = (data) => {
 }
 // 发送消息
 const sendMessage = (msg) => {
+  // 发送时
+  // await sound.send.play()
   sendMsg({
     convType: route.query.type,
     content: msg,
@@ -213,6 +216,7 @@ const sendMessage = (msg) => {
     to: route.query.id,
     msgType: 1,
   })
+  
 }
 // 接收消息/系统消息
 const eventMessage = (data) => {

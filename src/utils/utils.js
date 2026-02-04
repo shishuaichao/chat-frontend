@@ -1,7 +1,7 @@
 // import { notify } from "mini-notifier"
 
 // import { nextTick } from "vue"
-import { v4 as uuidv4 } from 'uuid'
+// import { v4 as uuidv4 } from 'uuid'
 
 
 export const getSessionKey = (arr) => {
@@ -26,6 +26,7 @@ export const getUserInfo = () => {
   }
 }
 
+// 滚动到元素底部
 export const scrollToBottomUtil = (el, container, options) => {
   if (!el) return
   if (el.scrollIntoView) {
@@ -42,44 +43,6 @@ export const scrollToBottomUtil = (el, container, options) => {
     })
   }
 }
-
-// 创建指定数量的群聊
-export const createConvByCount = (count, callback) => {
-  for (let i = 1; i <= count; i++) {
-    let id = uuidv4().substring(0, 8)
-    let avatarList = []
-    for (let j = 1; j <= i; j++) {
-      avatarList.push( Math.floor(Math.random() * 200) + 1)
-    }
-    let params = {
-      name: id,
-      avatar: avatarList.join(','),
-      type: 2,
-      memberIds: [getUserInfo().id],
-      convName: id,
-      friendId: 17
-    }
-    callback(params)
-  }
-}
-
-
-// 创建指定数量的用户
-// export const createUserByCount = (count, callback) => {
-//   for (let i = 1; i <= count; i++) {
-//     let id = uuidv4().substring(0, 8)
-//     for (let j = 1; j <= i; j++) {
-//       avatarList.push( Math.floor(Math.random() * 200) + 1)
-//     }
-//     let params = {
-//       id: id,
-//       nickname: id,
-//       username: avatarList.join(','),
-//     }
-//     callback(params)
-//   }
-// }
-
 
 
 

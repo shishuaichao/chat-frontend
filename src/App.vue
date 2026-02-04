@@ -32,6 +32,8 @@ import store from '@/store/index.js'
 // import { notify } from 'mini-notifier'
 // import { useRoute } from 'vue-router'
 // const route = useRoute()
+import { sound } from '@/utils/audio.js'
+import { getUserInfo } from './utils/utils'
 
 onMounted(() => {
   checkLogined()
@@ -62,6 +64,9 @@ WS_mitt.on('private_message', (data) => {
 })
 WS_mitt.on('notice_message', data => {
   console.log('notice_message', data)
+  if (data.senderId != getUserInfo().id) [
+    sound.receive.play()
+  ]
   // notify(`群聊消息：${data.group_id} 说：${data.content}`, {
   //   time: 3000,
   //   style: 'success',

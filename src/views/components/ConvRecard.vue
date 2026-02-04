@@ -19,7 +19,7 @@
       <div class="row bottom-row">
         <span class="message single_line">
           <span class="count" v-if="item.unreadCount >= 2">[{{ item.unreadCount }}条]</span>
-          <span v-if="item.convType == 2">{{ getRemark(item.senderId) || item.senderNickname }}: </span>
+          <span v-if="item.convType == 2 && item.senderId != getUserInfo().id">{{ getRemark(item.senderId) || item.senderNickname }}: </span>
           <span>{{ item.content }}</span>
         </span>
         <span class="attachment-icon" v-if="item.convType == 10">
@@ -32,7 +32,7 @@
 <script setup>
 import { getRemark } from '@/utils/localStorage';
 import UserImg from '@/views/components/UserImg.vue'
-
+import { getUserInfo } from '@/utils/utils';
 
 
 defineProps({
