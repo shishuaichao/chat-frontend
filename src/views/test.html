@@ -1,131 +1,215 @@
-<!-- client.html 客户端测试页面 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask-SocketIO 单聊测试</title>
-    <!-- 引入Socket.IO客户端CDN（版本和服务端兼容即可，推荐4.7.x） -->
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <style>
-        .container { width: 800px; margin: 20px auto; }
-        .msg-box { margin: 20px 0; padding: 10px; border: 1px solid #eee; height: 300px; overflow-y: auto; }
-        input { padding: 8px; margin: 5px; width: 200px; }
-        button { padding: 8px 16px; cursor: pointer; }
-    </style>
+  <meta charset="UTF-8">
+  <!-- 视口配置强化：新增initial-scale=1.0固定，禁止所有缩放 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Safari键盘终极适配（零间隙+无外层滚动）</title>
 </head>
+<style>
+  /* ********** 全局样式：彻底屏蔽所有原生滚动/偏移 ********** */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* 禁止选中文本，防止触摸触发意外行为 */
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* 屏蔽Safari所有原生弹性滚动/溢出滚动 */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden !important;
+  /* 禁止浏览器默认触摸/滚动行为，核心！ */
+  touch-action: none !important;
+  /* 屏蔽弹性滚动（overscroll），杜绝外层滚动 */
+  overscroll-behavior: none !important;
+  -webkit-overflow-scrolling: auto !important; /* 关闭Safari弹性滚动，避免偏移 */
+}
+
+/* ********** 页面唯一容器：绝对定位占满视口，弹性纵向布局 ********** */
+.page-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column; /* 内容区上，输入框下，纵向排列 */
+  background: #f5f5f5;
+  /* 硬件加速，防止Safari渲染偏移 */
+  /* transform: translateZ(0);
+  -webkit-transform: translateZ(0); */
+}
+
+/* ********** 内容区：自适应剩余高度，仅这里能滚动 ********** */
+.page-content {
+  flex: 1; /* 占满输入框以外的所有高度，核心！ */
+  overflow-y: auto;
+  /* 仅开启内容区的Safari弹性滚动，不影响外层 */
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+  /* 内容区滚动不触发外层任何行为 */
+  overscroll-behavior: contain;
+}
+/* 内容区文字恢复可选 */
+.page-content * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ********** 输入框容器：固定高度，无任何定位偏移 ********** */
+.input-bar {
+  width: 100%;
+  height: 50px; /* 固定输入框高度，按需修改 */
+  padding: 0 16px;
+  background: #f00;
+  border-top: 1px solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  /* 硬件加速，消除渲染间隙 */
+  /* transform: translateZ(0);
+  -webkit-transform: translateZ(0); */
+}
+/* 输入框样式 */
+.input {
+  flex: 1;
+  height: 36px;
+  border: 1px solid #e5e5e5;
+  border-radius: 18px;
+  padding: 0 16px;
+  outline: none;
+  font-size: 14px;
+  /* 禁止输入框的默认缩放 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+input[type="text"]::-webkit-textfield-decoration-container {
+  /* padding: 0; */
+  display: none;
+}
+input[type="text"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ********** 兼容iPhone底部小黑条（安全区），可选 ********** */
+@supports (padding-bottom: constant(safe-area-inset-bottom)) or (padding-bottom: env(safe-area-inset-bottom)) {
+  .input-bar {
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(50px + constant(safe-area-inset-bottom));
+    height: calc(50px + env(safe-area-inset-bottom));
+  }
+}
+</style>
 <body>
-    <div class="container">
-        <h3>Flask-SocketIO 点对点单聊测试</h3>
-        <!-- 1. 绑定UID区域 -->
-        <div>
-            我的UID：<input type="text" id="myUid" placeholder="输入唯一标识，如1001/zhangsan">
-            <button onclick="bindUid()">绑定UID（先执行）</button>
-        </div>
-        <hr>
-        <!-- 2. 发送消息区域 -->
-        <div>
-            目标UID：<input type="text" id="toUid" placeholder="输入对方UID，如1002/lisi">
-            消息内容：<input type="text" id="msgContent" placeholder="输入要发送的消息" onkeyup="if(event.keyCode===13) sendPrivateMsg()">
-            <button onclick="sendPrivateMsg()">发送单聊消息</button>
-        </div>
-        <hr>
-        <!-- 3. 接收消息区域 -->
-        <div class="msg-box" id="msgList"></div>
+  <!-- 唯一页面容器：包裹所有内容，绝对定位占满视口 -->
+  <div class="page-wrapper">
+    <!-- 内容区：单独滚动，所有页面内容放这里 -->
+    <div class="page-content">
+      <!-- 测试长内容，验证滚动 -->
+      <div style="line-height: 2; font-size: 16px; padding: 0 16px;">
+        测试内容1<br>测试内容<br>测试内容<br>测试内容<br>测试内容<br>
+        测试内容<br>测试内容<br>测试内容<br>测试内容<br>测试内容<br>
+        测试内容<br>测试内容<br>测试内容<br>测试内容<br>测试内容<br>
+        测试内容<br>测试内容<br>测试内容<br>测试内容<br>测试内容<br>
+        测试内容<br>测试内容<br>测试内容<br>测试内容<br>测试内容<br>
+        测试内容<br>测试内容<br>测试内容<br>测试内容<br>测试内容<br>
+        测试内容<br>测试内容<br>测试内容<br>测试内容<br>测试内容<br>
+        测试内容<br>测试内容<br>测试内容<br>测试内容<br>测试内容111<br>
+      </div>
     </div>
+    <!-- 输入框容器：固定在页面底部，无任何偏移 -->
+    <div class="input-bar">
+      <input type="text" placeholder="请输入内容..." class="input">
+    </div>
+  </div>
 
-    <script>
-        // 连接Flask-SocketIO服务端（地址为服务端运行地址，端口5000）
-        const socket = io('http://localhost:5000');
-        // 获取页面元素
-        const myUidInput = document.getElementById('myUid');
-        const toUidInput = document.getElementById('toUid');
-        const msgContentInput = document.getElementById('msgContent');
-        const msgList = document.getElementById('msgList');
+  <script>
+    // ********** 获取核心DOM **********
+const pageWrapper = document.querySelector('.page-wrapper');
+const pageContent = document.querySelector('.page-content');
+const inputBar = document.querySelector('.input-bar');
+const input = document.querySelector('.input');
+// 初始化视口高度（键盘收起时的原始高度）
+let originalViewHeight = window.innerHeight;
+// 标记键盘是否弹起
+let isKeyboardShow = false;
 
-        // --------------- 客户端核心方法 ---------------
-        // 1. 绑定自己的UID
-        function bindUid() {
-            const myUid = myUidInput.value.trim();
-            if (!myUid) {
-                alert('请输入你的UID！');
-                return;
-            }
-            socket.emit('bind_uid', { uid: myUid });
-        }
+// ********** 核心方法：键盘弹起时的精准适配（零间隙关键） **********
+function handleKeyboardShow() {
+  if (isKeyboardShow) return; // 防止重复触发
+  isKeyboardShow = true;
 
-        // 2. 发送点对点单聊消息
-        function sendPrivateMsg() {
-            const myUid = myUidInput.value.trim();
-            const toUid = toUidInput.value.trim();
-            const content = msgContentInput.value.trim();
-            if (!myUid || !toUid || !content) {
-                alert('请完善我的UID、目标UID、消息内容！');
-                return;
-            }
-            // 触发服务端private_chat事件，传参和服务端约定一致
-            socket.emit('private_chat', {
-                from_uid: myUid,
-                to_uid: toUid,
-                content: content
-            });
-            // 清空消息输入框
-            msgContentInput.value = '';
-        }
+  // 延迟100ms：等待键盘完全弹起，保证视口高度计算精准（Safari键盘弹起有延迟）
+  setTimeout(() => {
+    // 1. 计算真实键盘高度 = 原始视口高度 - 键盘弹起后的视口高度
+    const currentViewHeight = window.innerHeight;
+    const keyboardHeight = originalViewHeight - currentViewHeight;
+    if (keyboardHeight <= 0) return; // 过滤非键盘触发的视口变化
 
-        // --------------- 监听服务端事件 ---------------
-        // 连接成功
-        socket.on('connect_success', (res) => {
-            console.log('服务端连接成功：', res);
-            addMsg(`系统提示：${res.msg}，你的socket.id：${res.socket_id}`, 'system');
-        });
+    // 2. 动态调整页面容器底部边距 = 键盘高度，让输入框紧贴键盘（零间隙核心！）
+    pageWrapper.style.paddingBottom = `${keyboardHeight}px`;
 
-        // UID绑定成功
-        socket.on('bind_uid_success', (res) => {
-            alert(res.msg);
-            addMsg(`系统提示：${res.msg}`, 'system');
-        });
+    // 3. 强制视口归位：禁止浏览器自动上移页面，输入框始终在可视区底部
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+  }, 100);
+}
 
-        // UID绑定失败
-        socket.on('bind_uid_fail', (res) => {
-            alert(res.msg);
-            addMsg(`系统错误：${res.msg}`, 'error');
-        });
+// ********** 核心方法：键盘收起时的恢复 **********
+function handleKeyboardHide() {
+  if (!isKeyboardShow) return;
+  isKeyboardShow = false;
 
-        // 🌟 核心：接收点对点单聊消息（只有自己能收到）
-        socket.on('receive_private', (data) => {
-            addMsg(`[${data.time}] 来自${data.from_uid}的消息：${data.content}`, 'receive');
-        });
+  // 1. 恢复页面容器样式，移除底部边距
+  pageWrapper.style.paddingBottom = '0px';
+  // 2. 恢复原始视口高度（适配窗口大小变化）
+  originalViewHeight = window.innerHeight;
+  // 3. 强制视口归位
+  window.scrollTo(0, 0);
+  document.body.scrollTop = 0;
+}
 
-        // 发送消息成功
-        socket.on('private_chat_success', (res) => {
-            addMsg(`系统提示：${res.msg}，对方UID：${res.to_uid}`, 'system');
-        });
+// ********** 监听事件：100%触发，替代resize，无遗漏 **********
+// 1. 输入框聚焦 → 键盘弹起
+input.addEventListener('focus', handleKeyboardShow);
+// 2. 输入框失焦 → 键盘收起
+input.addEventListener('blur', handleKeyboardHide);
+// 3. 点击页面空白处 → 收起键盘（解决点击空白处无blur的情况）
+document.addEventListener('click', (e) => {
+  if (e.target !== input && !inputBar.contains(e.target)) {
+    input.blur(); // 主动失焦
+    handleKeyboardHide();
+  }
+});
+// 4. 屏蔽所有触摸/滚动的默认行为，杜绝外层滚动（终极保险）
+document.addEventListener('touchmove', (e) => {
+  // 仅当键盘弹起时屏蔽，避免影响内容区正常滚动
+  if (isKeyboardShow) {
+    // e.preventDefault();
+    // e.stopPropagation();
+  }
+}, { passive: false }); // passive: false 必须加，否则preventDefault失效！
+// 5. 兼容部分会触发resize的浏览器，双重保险
+window.addEventListener('resize', () => {
+  if (window.innerHeight < originalViewHeight - 50) {
+    handleKeyboardShow();
+  } else {
+    handleKeyboardHide();
+  }
+});
 
-        // 发送消息失败
-        socket.on('private_chat_fail', (res) => {
-            alert(res.msg);
-            addMsg(`系统错误：${res.msg}`, 'error');
-        });
-
-        // 客户端断开连接
-        socket.on('disconnect', () => {
-            addMsg('系统提示：与服务端断开连接，请刷新页面重新连接！', 'error');
-        });
-
-        // --------------- 辅助方法：添加消息到页面 ---------------
-        function addMsg(content, type) {
-            const msgItem = document.createElement('div');
-            // 根据类型设置样式
-            if (type === 'system') msgItem.style.color = '#666';
-            if (type === 'error') msgItem.style.color = 'red';
-            if (type === 'receive') msgItem.style.color = 'green';
-            msgItem.style.margin = '5px 0';
-            msgItem.innerText = content;
-            msgList.appendChild(msgItem);
-            // 滚动到底部
-            msgList.scrollTop = msgList.scrollHeight;
-        }
-    </script>
+// ********** 初始化：防止页面加载时的视口偏移 **********
+window.addEventListener('load', () => {
+  originalViewHeight = window.innerHeight;
+  window.scrollTo(0, 0);
+  document.body.scrollTop = 0;
+});
+  </script>
 </body>
 </html>
