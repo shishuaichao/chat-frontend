@@ -28,7 +28,7 @@ import router from '@/router';
 import { useClickAway } from '@vant/use';
 import { WS_mitt } from '@/utils/WS_Client';
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-
+import { getUserInfo } from '@/utils/utils';
 const route = useRoute()
 
 // 点击下拉菜单
@@ -55,7 +55,7 @@ const entryChat = (item) => {
   router.push({
     name: 'ChatRoom',
     query: {
-      id: item.senderId,
+      id: getUserInfo().id,
       convId: item.convId,
       type: item.convType,
     }

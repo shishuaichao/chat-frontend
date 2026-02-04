@@ -39,6 +39,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { showLoadingToast, showSuccessToast } from 'vant'
 import { fetchRegister, fetchUserUpdate } from '@/api/index.js'
 import { v4 as uuidv4 } from 'uuid'
+import { WS_Client } from '@/utils/WS_Client'
 
 // 响应式数据
 const isChange = ref(localStorage.getItem('id'))
@@ -111,6 +112,7 @@ const handleSubmit = () => {
         setTimeout(() => {
           isChange.value ? router.back() : goToSettingAvatar() 
         }, 500)
+        WS_Client.connect()
       })
       .catch(err => {
         console.log('fetchRegister', err)

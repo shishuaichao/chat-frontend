@@ -65,11 +65,7 @@ onMounted(() => {
 const lastConvId = ref('')
 // 页面激活时
 onActivated(() => {
-  if (route.query.type == 1) {
-    setRoomName('', route.query.id)
-  } else {
-    getRoomInfo(route.query.convId)
-  }
+  getRoomInfo(route.query.convId)
   let newConvId = route.query.convId
   console.log('lastConvId', lastConvId.value)
   console.log('newConvId', newConvId)
@@ -177,9 +173,13 @@ const getUnreadList = () => {
 }
 // 获取房间信息
 const getRoomInfo = (convId) => {
-  fetchConvInfo({ convId })
+  fetchConvInfo({ convId, convType: route.query.type })
     .then(res => {
-      setRoomName(res.data?.name)
+      if (route.query.type == 1) {
+        setRoomName(res.data?.remark || res.data?.nickname)
+      } else {
+        setRoomName(res.data?.name)
+      }
     })
     .catch(err => console.log(err))
 }
