@@ -57,8 +57,8 @@ const entryChat = (item) => {
       router.push({
         name: 'ChatRoom',
         query: {
-          convId: item.id,
-          type: item.type,
+          convId: item.convId,
+          type: item.convType,
         }
       })
     })
@@ -82,7 +82,7 @@ const getChatList = () => {
 // 增加未读消息数量，更新最后一条消息，
 const updateChatItem = (item) => {
   for (let i = 0; i < chatList.value.length; i++) {
-    if (chatList.value[i].id == item.convId) {
+    if (chatList.value[i].convId == item.convId) {
       console.log('chatList.value[i]', chatList.value[i])
       chatList.value[i] = {
         ...chatList.value[i],
@@ -101,7 +101,7 @@ const updateChatItem = (item) => {
 
 // 监听消息事件
 const messageEvent = (data) => {
-  console.log('notice_message', data)
+  // console.log('notice_message', data)
   updateChatItem(data)
 }
 

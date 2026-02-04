@@ -5,7 +5,7 @@
         :avatar="item.avatar" 
         :type="item.type"
       />
-      <div class="red-dot"></div>
+      <div class="red-dot" v-if="item.unreadCount > 0"></div>
     </div>
     <div class="content-wrapper">
       <div class="row top-row">
