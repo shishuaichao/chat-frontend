@@ -18,12 +18,13 @@
       </div>
       <div class="row bottom-row">
         <span class="message single_line">
-          <span class="count" v-if="item.unreadCount >= 2">[{{ item.unreadCount }}条]</span>
+          <span class="count" v-if="item.unreadCount >= 2 && item.convType == 2">[{{ item.unreadCount }}条]</span>
           <span v-if="item.convType == 2 && item.senderId != getUserInfo().id">{{ getRemark(item.senderId) || item.senderNickname }}: </span>
           <span>{{ item.content }}</span>
         </span>
-        <span class="attachment-icon" v-if="item.convType == 10">
-          <van-icon name="fire-o" color="#ee0a24" />
+        <span class="attachment-icon" v-if="item.unreadCount >= 10">
+          <van-icon name="fire" color="#ee0a24" v-if="item.convType == 2" />
+          <van-icon name="hot" color="#ee8a24" v-if="item.convType == 1" />
         </span>
       </div>
     </div>

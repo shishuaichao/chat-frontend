@@ -77,32 +77,43 @@ const getChatList = () => {
 // 监听消息，修改列表中显示的样式，
 // 增加未读消息数量，更新最后一条消息，
 const updateChatItem = (item) => {
-  for (let i = 0; i < chatList.value.length; i++) {
-    if (chatList.value[i].convId == item.convId) {
-      console.log('chatList.value[i]', chatList.value[i])
-      chatList.value[i] = {
-        ...chatList.value[i],
-        unreadCount: chatList.value[i].unreadCount + 1,
-        content: item.content,
-        createTime: item.createTime,
-        senderId: item.senderId,
-        senderNickname: item.senderNickname,
-        msgType: item.msgType,
-        convType: item.convType,
-      }
-      break
+  let updateIndex = chatList.value.findIndex((i) => i.convId == item.convId)
+  console.log('updateIndex', updateIndex)
+  if (updateIndex == -1) {
+    chatList.value.unshift({
+      ...item,
+      unreadCount: 1,
+    })
+  } else {
+    const newItem = {
+      ...chatList.value[updateIndex],
+      ...item,
+      unreadCount: chatList.value[updateIndex].unreadCount + 1,
     }
+    chatList.value.splice(updateIndex, 1)
+    chatList.value.unshift(newItem)
   }
+  // for (let i = 0; i < chatList.value.length; i++) {
+  //   if (chatList.value[i].convId == item.convId) {
+  //     console.log('chatList.value[i]', chatList.value[i])
+  //     chatList.value[i] = {
+  //       unreadCount: xxx.unreadCount + 1,
+  //       content: item.content,
+  //       createTime: item.createTime,
+  //       senderId: item.senderId,
+  //       senderNickname: item.senderNickname,
+  //       msgType: item.msgType,
+  //       convType: item.convType,
+  //     }
+  //     break
+  //   }
+  // }
 }
 
-// 监听消息事件
-const messageEvent = (data) => {
-  // console.log('notice_message', data)
-  updateChatItem(data)
-}
+
 
 onMounted(() => {
-  WS_mitt.on('notice_message', messageEvent)
+  WS_mitt.on('notice_message', updateChatItem)
 })
 const scrollerRef = ref(null);
 let lastScrollTop = 0

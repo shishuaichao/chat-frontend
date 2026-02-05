@@ -88,7 +88,7 @@ export default {
     //     pressBgElements.delete(item);
     //   }
     // });
-    pressBgElements = null
+    // pressBgElements = null
     delete el.__pressBgEvents__;
   }
 };
