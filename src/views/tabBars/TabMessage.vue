@@ -11,7 +11,7 @@
       </template>
     </NavBar>
     <div class="tab_content" ref="scrollerRef">
-      <ConvRecard v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
+      <ConvRecard v-pressBg v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
     </div>
 
   </div>

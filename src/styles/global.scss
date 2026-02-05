@@ -13,7 +13,9 @@ body {
   padding: 0;
   color: $base_color;
 }
-
+* {
+  user-select: none;
+}
 
 #app {
   background: $global_bg_color;

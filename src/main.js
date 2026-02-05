@@ -10,6 +10,7 @@ import store from './store' // 导入 Vuex 状态管理
 import 'mini-notifier/dist/style.css';
 import '@/assets/fonts/iconfont.css'
 import NavBar from './views/components/NavBar.vue'
+import pressBg from './directives/pressBg.js'
 
 
 
@@ -17,6 +18,8 @@ import NavBar from './views/components/NavBar.vue'
 const app = createApp(App);
 
 app.component('NavBar', NavBar)
+app.directive('pressBg', pressBg)
+
 
 app.use(store) // 注册 Vuex 状态管理
 app.use(Vant);
