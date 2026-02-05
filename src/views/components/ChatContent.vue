@@ -6,7 +6,7 @@
     >
     <!-- 自己 -->
     <div class="msg_self msg_item right" 
-      v-if="userInfo?.id == msgInfo.senderId">
+      v-if="userInfo?.id == msgInfo.senderId && msgInfo.msgType != 8">
       <div class="msg_box">
         <!-- <div class="nickname"> 
           ID: {{ msgInfo.id }} 
@@ -19,7 +19,7 @@
       </div>
     </div>
     <!-- 其他人 -->
-    <div class="msg_other msg_item left" v-else>
+    <div class="msg_other msg_item left" v-else-if="msgInfo.msgType != 8 && userInfo?.id != msgInfo.senderId">
       <div class="avatar" @click="handleClickUserInfo(msgInfo)">
         <img v-once :src="msgInfo.avatar" alt="">
       </div>
@@ -34,7 +34,7 @@
       </div>
     </div>
     <!-- 系统消息 -->
-    <div class="msg_system" v-if="msgInfo.type == 5">
+    <div class="msg_system" v-if="msgInfo.msgType == 8">
       <div class="msg_system_content">{{ msgInfo.content }}</div>
     </div>
   </div>
@@ -85,7 +85,7 @@ onMounted(() => {
   .msg_system_content {
     text-align: center;
     color: $chat_sys_msg_color;
-    font-size: 12px;
+    font-size: 14px;
     margin: 10px auto 20px;
     width: 80%;
     line-height: 16px;

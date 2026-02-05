@@ -63,7 +63,7 @@ WS_mitt.on('private_message', (data) => {
   // });
 })
 WS_mitt.on('notice_message', data => {
-  console.log('notice_message', data)
+  // console.log('notice_message', data)
   if (data.senderId != getUserInfo().id) [
     sound.receive.play()
   ]

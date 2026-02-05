@@ -121,6 +121,7 @@ defineProps({
       }
     }
     .bottom-row {
+      margin-top: 2px;
       .message {
         width: calc(100% - 30px);
         font-size: 12px;

@@ -87,7 +87,12 @@ const updateChatItem = (item) => {
   } else {
     const newItem = {
       ...chatList.value[updateIndex],
-      ...item,
+      content: item.content,
+      createTime: item.createTime,
+      senderId: item.senderId,
+      senderNickname: item.senderNickname,
+      msgType: item.msgType,
+      convType: item.convType,
       unreadCount: chatList.value[updateIndex].unreadCount + 1,
     }
     chatList.value.splice(updateIndex, 1)
