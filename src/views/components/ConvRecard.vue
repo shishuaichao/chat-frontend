@@ -5,8 +5,8 @@
         :avatar="item.avatar" 
         :type="item.type"
       />
-      <div class="red-dot" v-if="item.unreadCount > 0 && item.convType == 2"></div>
-      <div class="red-dot red_dot_num" v-if="item.unreadCount > 0 && item.convType == 1">
+      <div class="red-dot" v-if="item.unreadCount > 0 && item.convType == 2 && item.senderId != getUserInfo().id"></div>
+      <div class="red-dot red_dot_num" v-if="item.unreadCount > 0 && item.convType == 1 && item.senderId != getUserInfo().id">
         <span>{{ item.unreadCount }}</span>
       </div>
     </div>
@@ -128,6 +128,7 @@ defineProps({
           position: relative;
           top: -1px;
           margin-right: 2px;
+          color: $msg_notice_color;
         }
       }
       // .attachment-icon {

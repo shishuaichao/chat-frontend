@@ -17,7 +17,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onActivated, onDeactivated, onMounted } from 'vue';
+import { ref, onActivated, onDeactivated, onMounted, nextTick } from 'vue';
 import ConvRecard from '@/views/components/ConvRecard.vue';
 import DropdownMenu from '@/views/components/DropdownMenu.vue';
 import { 
@@ -50,8 +50,9 @@ useClickAway(dropdownMenuRef, () => {
 const title = ref('消息');
 
 // 进入聊天
-const entryChat = (item) => {
+const entryChat = async (item) => {
   item.unreadCount = 0
+  await nextTick()
   router.push({
     name: 'ChatRoom',
     query: {
