@@ -5,12 +5,14 @@
  * 用法：v-press-bg / v-press-bg="{ bg: '#e6f7ff', scale: 0.99 }"
  */
 // 全局缓存：存储所有绑定指令的元素及原始样式 { el: 元素, originStyle: 原始样式 }
-const pressBgElements = new Set();
+let pressBgElements = null
 // 标记是否已注册路由监听，避免重复注册
 let isRouterListened = false;
+import router from '@/router';
+// import { notify } from "mini-notifier"
 
 export default {
-  mounted(el, binding, vnode) {
+  mounted(el, binding) {
     // 1. 默认配置 + 合并用户传参
     const defaultOptions = {
       bg: '#f0f0f0',
@@ -29,7 +31,8 @@ export default {
       boxShadow: el.style.boxShadow || ''
     };
     // 把元素和原始样式存入全局缓存
-    pressBgElements.add({ el, originStyle });
+    pressBgElements = el
+    el.originStyle = originStyle
 
     // 3. 按压样式添加
     const pressDown = () => {
@@ -61,7 +64,7 @@ export default {
 
     // 7. 注册路由切换监听（仅注册一次，全局生效）
     if (!isRouterListened) {
-      registerRouterListener(vnode);
+      registerRouterListener();
       isRouterListened = true;
     }
   },
@@ -79,12 +82,13 @@ export default {
       el.removeEventListener('touchmove', pressUp);
     }
     // 从全局缓存中删除并恢复样式
-    pressBgElements.forEach(item => {
-      if (item.el === el) {
-        item.originStyle && pressUp.call(el);
-        pressBgElements.delete(item);
-      }
-    });
+    // pressBgElements.forEach(item => {
+    //   if (item.el === el) {
+    //     item.originStyle && pressUp.call(el);
+    //     pressBgElements.delete(item);
+    //   }
+    // });
+    pressBgElements = null
     delete el.__pressBgEvents__;
   }
 };
@@ -93,10 +97,10 @@ export default {
  * 注册路由跳转前监听：强制重置所有按压元素的样式
  * @param {VNode} vnode - 指令绑定的虚拟节点，用于获取路由实例
  */
-function registerRouterListener(vnode) {
+function registerRouterListener() {
   try {
     // 方式1：从vnode上下文获取路由实例（Vue3 setup 全局注册路由时可用）
-    const router = vnode.appContext.config.globalProperties.$router;
+    // const router = vnode.appContext.config.globalProperties.$router;
     if (router) {
       // 路由**开始跳转前**执行：重置所有样式（核心钩子）
       router.beforeEach((to, from, next) => {
@@ -126,13 +130,9 @@ function registerRouterListener(vnode) {
  * 全局重置函数：遍历所有缓存元素，强制恢复原始样式
  */
 function resetAllPressBgStyles() {
-  pressBgElements.forEach(item => {
-    const { el, originStyle } = item;
-    if (el && originStyle) {
-      el.style.background = originStyle.background;
-      el.style.borderColor = originStyle.borderColor;
-      el.style.transform = originStyle.transform;
-      el.style.boxShadow = originStyle.boxShadow;
-    }
-  });
+  let el = pressBgElements
+  el.style.background = el.originStyle.background;
+  el.style.borderColor = el.originStyle.borderColor;
+  el.style.transform = el.originStyle.transform;
+  el.style.boxShadow = el.originStyle.boxShadow;
 }

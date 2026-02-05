@@ -61,13 +61,6 @@ const entryChat = async (item) => {
       type: item.convType,
     }
   })
-  // fetchJoinConversation({ convId: item.convId, })  
-  //   .then(() => {
-      
-  //   })
-  //   .catch(err => {
-  //     console.log('fetchJoinConversation', err)
-  //   })
 }
 
 const chatList = ref([]);
