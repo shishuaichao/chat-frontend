@@ -11,13 +11,13 @@
       </template>
     </NavBar>
     <div class="tab_content" ref="scrollerRef">
-      <ConvRecard v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
+      <ConvRecard v-pressBg v-for="(item, index) in chatList" :key="index" :item="item" @handleClick="entryChat" />
     </div>
 
   </div>
 </template>
 <script setup>
-import { ref, onActivated, onDeactivated, onMounted } from 'vue';
+import { ref, onActivated, onDeactivated, onMounted, nextTick } from 'vue';
 import ConvRecard from '@/views/components/ConvRecard.vue';
 import DropdownMenu from '@/views/components/DropdownMenu.vue';
 import { 
@@ -50,8 +50,9 @@ useClickAway(dropdownMenuRef, () => {
 const title = ref('消息');
 
 // 进入聊天
-const entryChat = (item) => {
+const entryChat = async (item) => {
   item.unreadCount = 0
+  await nextTick()
   router.push({
     name: 'ChatRoom',
     query: {
@@ -60,13 +61,6 @@ const entryChat = (item) => {
       type: item.convType,
     }
   })
-  // fetchJoinConversation({ convId: item.convId, })  
-  //   .then(() => {
-      
-  //   })
-  //   .catch(err => {
-  //     console.log('fetchJoinConversation', err)
-  //   })
 }
 
 const chatList = ref([]);
@@ -83,32 +77,48 @@ const getChatList = () => {
 // 监听消息，修改列表中显示的样式，
 // 增加未读消息数量，更新最后一条消息，
 const updateChatItem = (item) => {
-  for (let i = 0; i < chatList.value.length; i++) {
-    if (chatList.value[i].convId == item.convId) {
-      console.log('chatList.value[i]', chatList.value[i])
-      chatList.value[i] = {
-        ...chatList.value[i],
-        unreadCount: chatList.value[i].unreadCount + 1,
-        content: item.content,
-        createTime: item.createTime,
-        senderId: item.senderId,
-        senderNickname: item.senderNickname,
-        msgType: item.msgType,
-        convType: item.convType,
-      }
-      break
+  let updateIndex = chatList.value.findIndex((i) => i.convId == item.convId)
+  console.log('updateIndex', updateIndex)
+  if (updateIndex == -1) {
+    chatList.value.unshift({
+      ...item,
+      unreadCount: 1,
+    })
+  } else {
+    const newItem = {
+      ...chatList.value[updateIndex],
+      content: item.content,
+      createTime: item.createTime,
+      senderId: item.senderId,
+      senderNickname: item.senderNickname,
+      msgType: item.msgType,
+      convType: item.convType,
+      unreadCount: chatList.value[updateIndex].unreadCount + 1,
     }
+    chatList.value.splice(updateIndex, 1)
+    chatList.value.unshift(newItem)
   }
+  // for (let i = 0; i < chatList.value.length; i++) {
+  //   if (chatList.value[i].convId == item.convId) {
+  //     console.log('chatList.value[i]', chatList.value[i])
+  //     chatList.value[i] = {
+  //       unreadCount: xxx.unreadCount + 1,
+  //       content: item.content,
+  //       createTime: item.createTime,
+  //       senderId: item.senderId,
+  //       senderNickname: item.senderNickname,
+  //       msgType: item.msgType,
+  //       convType: item.convType,
+  //     }
+  //     break
+  //   }
+  // }
 }
 
-// 监听消息事件
-const messageEvent = (data) => {
-  // console.log('notice_message', data)
-  updateChatItem(data)
-}
+
 
 onMounted(() => {
-  WS_mitt.on('notice_message', messageEvent)
+  WS_mitt.on('notice_message', updateChatItem)
 })
 const scrollerRef = ref(null);
 let lastScrollTop = 0

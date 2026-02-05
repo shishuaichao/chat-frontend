@@ -12,8 +12,17 @@ body {
   margin: 0;
   padding: 0;
   color: $base_color;
+    /* 内容区滚动不触发外层任何行为 */
+    overscroll-behavior: contain;
+    touch-action: none !important;
+      /* 屏蔽弹性滚动（overscroll），杜绝外层滚动 */
+      overscroll-behavior: none !important;
+      -webkit-overflow-scrolling: auto !important;
+      /* 关闭Safari弹性滚动，避免偏移 */
 }
-
+* {
+  user-select: none;
+}
 
 #app {
   background: $global_bg_color;

@@ -59,11 +59,11 @@ class SocketClient {
         
         if (event === 'connect_success') {
           this.connectStatus = 'connected';
-          notify('服务链接成功', {
-            time: 1000,
-            style: 'success',
-            position: 'top-right',
-          });
+          // notify('服务链接成功', {
+          //   time: 1000,
+          //   style: 'success',
+          //   position: 'top-right',
+          // });
         }
         if (event === 'connect_error') {
           notify('服务连接失败，正在重连...', {

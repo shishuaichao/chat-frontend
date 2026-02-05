@@ -5,8 +5,8 @@ export const createSoundPlayer = (src) => {
   audio.preload = 'auto';
   return {
     play: () => {
-      audio.currentTime = 0;
-      return audio.play().catch(e => console.warn('音效播放失败', e));
+      // audio.currentTime = 0;
+      // return audio.play().catch(e => console.warn('音效播放失败', e));
     },
     pause: () => audio.pause()
   };

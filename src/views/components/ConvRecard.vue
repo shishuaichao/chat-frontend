@@ -5,8 +5,8 @@
         :avatar="item.avatar" 
         :type="item.type"
       />
-      <div class="red-dot" v-if="item.unreadCount > 0 && item.convType == 2"></div>
-      <div class="red-dot red_dot_num" v-if="item.unreadCount > 0 && item.convType == 1">
+      <div class="red-dot" v-if="item.unreadCount > 0 && item.convType == 2 && item.senderId != getUserInfo().id"></div>
+      <div class="red-dot red_dot_num" v-if="item.unreadCount > 0 && item.convType == 1 && item.senderId != getUserInfo().id">
         <span>{{ item.unreadCount }}</span>
       </div>
     </div>
@@ -18,12 +18,13 @@
       </div>
       <div class="row bottom-row">
         <span class="message single_line">
-          <span class="count" v-if="item.unreadCount >= 2">[{{ item.unreadCount }}条]</span>
+          <span class="count" v-if="item.unreadCount >= 2 && item.convType == 2">[{{ item.unreadCount }}条]</span>
           <span v-if="item.convType == 2 && item.senderId != getUserInfo().id">{{ getRemark(item.senderId) || item.senderNickname }}: </span>
           <span>{{ item.content }}</span>
         </span>
-        <span class="attachment-icon" v-if="item.convType == 10">
-          <van-icon name="fire-o" color="#ee0a24" />
+        <span class="attachment-icon" v-if="item.unreadCount >= 10">
+          <van-icon name="fire" color="#ee0a24" v-if="item.convType == 2" />
+          <van-icon name="hot" color="#ee8a24" v-if="item.convType == 1" />
         </span>
       </div>
     </div>
@@ -120,6 +121,7 @@ defineProps({
       }
     }
     .bottom-row {
+      margin-top: 2px;
       .message {
         width: calc(100% - 30px);
         font-size: 12px;
@@ -128,6 +130,7 @@ defineProps({
           position: relative;
           top: -1px;
           margin-right: 2px;
+          color: $msg_notice_color;
         }
       }
       // .attachment-icon {

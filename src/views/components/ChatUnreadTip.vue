@@ -33,7 +33,7 @@ defineProps({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .new-message-badge {
   display: inline-block;
   background: #ffffff;
@@ -46,7 +46,7 @@ defineProps({
   position: absolute;
   right: 0px;
   z-index: 1000;
-  transition: transform 0.5s linear;
+  transition: transform $unread_msg_tips_duration linear;
   &.show {
     transform: translateX(30px);
   }
